@@ -22,7 +22,7 @@ python -m http.server 4173
 
 ## 發布至 GitHub Pages
 
-將變更 push 到 GitHub 後，前往 **Settings → Pages**，選擇 **Deploy from a branch**，再選擇要發布的分支與資料夾 **/(root)**。此專案的 `.nojekyll` 會讓 GitHub Pages 直接提供根目錄中的靜態檔案。
+將變更 push 到 `main` 或 `master` 後，前往 **Settings → Pages**，將 Source 設為 **GitHub Actions**。`.github/workflows/pages.yml` 會建立乾淨的發布目錄，只上傳 `index.html`、`styles.css`、`.nojekyll` 與 `assets/`，再部署至 GitHub Pages；也可由 Actions 頁面手動執行 workflow。
 
 ## 發布前檢查
 

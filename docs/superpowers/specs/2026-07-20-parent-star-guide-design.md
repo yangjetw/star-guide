@@ -11,7 +11,7 @@
 - 現有品牌頁：`https://parent-star-guide-1tpyu0y.gamma.site/`
 - 官方 LINE：`https://lin.ee/gMMpzNy`
 - 付款完成回報單：`https://docs.google.com/forms/d/e/1FAIpQLSffcXc1FyJsZwo8qBXpAna4_lMZ_n04s4t9wWYlo5NSD1qxUQ/viewform`
-- 指南申請／兌換表單：`https://docs.google.com/forms/d/e/1FAIpQLSevM95Op1gL8g8iZqnEKVR5u9s_NSyIo7mgHKp5KTxtpRFABA/viewform`
+- 指南申請／兌換表單：私人兌換表單（網址不寫入公開 repository）
 - 現有 Google Sheet 與 Apps Script 的付款核對、兌換碼、Email 與指南處理流程
 
 「feishu 的副本」試算表不是新網站流程的準據，不納入實作範圍。

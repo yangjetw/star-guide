@@ -224,7 +224,7 @@ a {
 .hero h1 {
   max-width: 13ch;
   margin: 0;
-  font-size: clamp(38px, 11vw, 46px);
+  font-size: clamp(54px, 5.2vw, 72px);
   text-wrap: balance;
 }
 
@@ -432,10 +432,21 @@ a {
   color: var(--ink);
 }
 
-.plan-card:nth-child(2) {
+.plan-featured {
   border: 2px solid var(--starlight);
   background: linear-gradient(150deg, #fffaf0, #f1eafe);
   transform: translateY(-0.6rem);
+}
+
+.plan-badge {
+  align-self: flex-start;
+  margin-top: 0;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: var(--starlight);
+  color: var(--night);
+  font-size: 0.82rem;
+  font-weight: 800;
 }
 
 .plan-card strong {
@@ -493,8 +504,7 @@ a {
 }
 
 .faq-list summary {
-  display: flex;
-  align-items: center;
+  display: list-item;
   min-height: 48px;
   padding: 1rem 3.25rem 1rem 1.25rem;
   cursor: pointer;
@@ -642,7 +652,7 @@ a {
     min-height: auto;
   }
 
-  .plan-card:nth-child(2) {
+  .plan-featured {
     transform: none;
   }
 

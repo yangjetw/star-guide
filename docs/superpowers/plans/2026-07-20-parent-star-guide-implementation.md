@@ -139,7 +139,7 @@ $git = 'C:\Users\je235\.cache\codex-runtimes\codex-primary-runtime\dependencies\
 
 ~~~js
 const PAYMENT = 'https://docs.google.com/forms/d/e/1FAIpQLSffcXc1FyJsZwo8qBXpAna4_lMZ_n04s4t9wWYlo5NSD1qxUQ/viewform';
-const PRIVATE_REDEMPTION_ID = '1FAIpQLSevM95Op1gL8g8iZqnEKVR5u9s_NSyIo7mgHKp5KTxtpRFABA';
+const PRIVATE_REDEMPTION_ID = '私人兌換表單（網址不寫入公開 repository）';
 
 test('required sections are present in order', async () => {
   const html = await read('index.html');
@@ -385,7 +385,7 @@ Create an empty .nojekyll. README.md must contain:
 執行 python -m http.server 4173，開啟 http://localhost:4173。
 
 ## GitHub Pages
-推送到 GitHub，在 Settings → Pages 選擇 Deploy from a branch、主分支、/ (root)。發佈後驗證 LINE、付款回報表單、手機版與 FAQ。
+推送到 GitHub 後，在 Settings → Pages 選擇 GitHub Actions，讓 workflow 以乾淨 staging directory 發佈 allowlist 內的網站檔案。發佈後驗證 LINE、付款回報表單、手機版與 FAQ。
 
 ## 資料邊界
 本站不收集個人資料。付款回報與指南申請由既有 Google Forms 處理；公開原始碼不包含收款帳號。
