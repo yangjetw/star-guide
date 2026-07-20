@@ -27,6 +27,22 @@ test('frames local images without the old glass-card treatment', async () => {
   assert.doesNotMatch(css, /backdrop-filter/);
 });
 
+test('shows the portrait process image at its natural ratio without cropping', async () => {
+  const [html, css] = await Promise.all([
+    readFile(new URL('../index.html', import.meta.url), 'utf8'),
+    readFile(new URL('../styles.css', import.meta.url), 'utf8'),
+  ]);
+  const method = html.match(/<section\b[^>]*id="method"[\s\S]*?<\/section>/i)?.[0] ?? '';
+  const processFrameRule = css.match(/\.process-media\s*\{([^}]*)\}/s)?.[1] ?? '';
+  const processImageRule = css.match(/\.process-media img\s*\{([^}]*)\}/s)?.[1] ?? '';
+
+  assert.match(method, /<figure\b[^>]*class="[^"]*\bprocess-media\b[^"]*"/i);
+  assert.match(method, /<img\b[^>]*src="assets\/images\/process-wonder\.webp"[^>]*width="864"[^>]*height="1152"/i);
+  assert.match(processFrameRule, /aspect-ratio:\s*3\s*\/\s*4/i);
+  assert.match(processImageRule, /object-fit:\s*contain/i);
+  assert.doesNotMatch(method, /\bstory-media-landscape\b/i);
+});
+
 test('preserves the closing image aspect ratio at mobile widths', async () => {
   const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
   const closingImageRule = css.match(/\.closing-media img\s*\{([^}]*)\}/s)?.[1] ?? '';

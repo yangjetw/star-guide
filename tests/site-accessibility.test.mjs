@@ -37,22 +37,23 @@ test('respects reduced motion and protects external navigation', async () => {
   }
 });
 
-test('keeps text and keyboard focus legible on light and dark surfaces', async () => {
+test('keeps current story components and keyboard focus legible', async () => {
   const { css } = await siteFiles();
-  assert.match(css, /\.steps span\s*\{[^}]*color:\s*var\(--ink\)/i);
-  assert.match(css, /\.deliverable-list li\s*\{[^}]*color:\s*var\(--ink\)/i);
+  assert.match(css, /\.process-list li\s*\{[^}]*color:\s*var\(--ink\)/i);
+  assert.match(css, /\.deliverable-list article\s*\{[^}]*color:\s*var\(--ink\)/i);
   assert.match(css, /\.eyebrow\s*\{[^}]*color:\s*var\(--night-soft\)/i);
-  assert.match(css, /\.hero \.eyebrow,\s*\.section:nth-of-type\(3n \+ 2\) \.eyebrow\s*\{[^}]*color:\s*var\(--starlight\)/i);
+  assert.match(css, /\.hero-section \.eyebrow\s*\{[^}]*color:\s*var\(--starlight\)/i);
+  assert.doesNotMatch(css, /\.steps\b|\.deliverable-list li\b|\.hero\s+\.eyebrow|\.section:nth-of-type/i);
   assert.match(css, /:focus-visible\s*\{[^}]*outline:\s*3px solid var\(--night-soft\)[^}]*box-shadow:\s*0 0 0 6px var\(--cream\),\s*0 0 0 9px var\(--starlight\)/i);
 });
 
 test('adds trustworthy metadata and original accessible brand assets', async () => {
   const { html } = await siteFiles();
-  assert.match(html, /<meta\s+name=["']description["']\s+content=["'][^"']+["']/i);
-  assert.match(html, /<meta\s+name=["']theme-color["']\s+content=["']#101329["']/i);
+  assert.match(html, /<meta\s+name=["']description["']\s+content=["']專為 3–12 歲孩子打造的親子成長指南，協助家長理解孩子的氣質、情緒與互動節奏。["']/i);
+  assert.match(html, /<meta\s+name=["']theme-color["']\s+content=["']#fffaf6["']/i);
   assert.match(html, /<meta\s+property=["']og:type["']\s+content=["']website["']/i);
-  assert.match(html, /<meta\s+property=["']og:title["']\s+content=["'][^"']+["']/i);
-  assert.match(html, /<meta\s+property=["']og:description["']\s+content=["'][^"']+["']/i);
+  assert.match(html, /<meta\s+property=["']og:title["']\s+content=["']親子成長指南｜看見孩子獨特的宇宙["']/i);
+  assert.match(html, /<meta\s+property=["']og:description["']\s+content=["']一份讓你真正懂孩子、可長期使用的親子溝通工具書。["']/i);
   assert.match(html, /<meta\s+property=["']og:image["']\s+content=["']assets\/images\/hero-parent-child\.webp["']/i);
   assert.match(html, /<link\s+rel=["']icon["']\s+href=["']assets\/favicon\.svg["']/i);
   for (const asset of ['assets/brand-mark.svg', 'assets/favicon.svg']) {

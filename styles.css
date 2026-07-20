@@ -182,8 +182,12 @@ h3 {
   aspect-ratio: 4 / 5;
 }
 
-.story-media-landscape {
-  aspect-ratio: 16 / 10;
+.process-media {
+  aspect-ratio: 3 / 4;
+}
+
+.process-media img {
+  object-fit: contain;
 }
 
 .concern-list,
@@ -241,18 +245,14 @@ blockquote,
 .process-list li {
   padding: 18px 20px;
   border-bottom: 1px solid var(--color-border);
-}
-
-.steps span {
   color: var(--ink);
 }
 
-.deliverable-list li {
+.deliverable-list article {
   color: var(--ink);
 }
 
-.hero .eyebrow,
-.section:nth-of-type(3n + 2) .eyebrow {
+.hero-section .eyebrow {
   color: var(--starlight);
 }
 
@@ -438,10 +438,6 @@ thead {
 
   .story-media-portrait {
     aspect-ratio: 4 / 5;
-  }
-
-  .story-media-landscape {
-    aspect-ratio: 16 / 10;
   }
 
   .button-row .button {

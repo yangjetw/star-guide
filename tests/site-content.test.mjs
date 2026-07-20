@@ -306,6 +306,18 @@ test('retains the complete exact comparison-table cell copy', async () => {
   assert.deepEqual(cells, expectedSectionText['value-comparison'].slice(3));
 });
 
+test('identifies comparison table column and row headers for assistive technology', async () => {
+  const html = await read('index.html');
+  const comparison = section(html, 'value-comparison');
+  const columnHeaders = comparison.match(/<thead[\s\S]*?<\/thead>/i)?.[0].match(/<th\b[^>]*>/gi) ?? [];
+  const rowHeaders = comparison.match(/<tbody[\s\S]*?<\/tbody>/i)?.[0].match(/<th\b[^>]*>/gi) ?? [];
+
+  assert.equal(columnHeaders.length, 4);
+  assert.equal(rowHeaders.length, 5);
+  for (const header of columnHeaders) assert.match(header, /\bscope="col"/i);
+  for (const header of rowHeaders) assert.match(header, /\bscope="row"/i);
+});
+
 test('retains the exact visible site chrome copy', async () => {
   const html = await read('index.html');
   assert.equal(visibleText(html.match(/<a\b[^>]*class="skip-link"[\s\S]*?<\/a>/i)?.[0] ?? ''), '跳到主要內容');
