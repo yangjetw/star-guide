@@ -19,6 +19,26 @@ test('defines the zero-install static site package contract', async () => {
   });
 });
 
+test('includes the GitHub Pages publishing package', async () => {
+  const noJekyll = new URL('.nojekyll', root);
+  const readme = new URL('README.md', root);
+
+  assert.ok(existsSync(noJekyll), '.nojekyll must exist for GitHub Pages');
+  assert.equal(await readFile(noJekyll, 'utf8'), '', '.nojekyll must be empty');
+  assert.ok(existsSync(readme), 'README.md must exist');
+
+  const readmeText = await readFile(readme, 'utf8');
+  for (const requiredText of [
+    'node --test',
+    'http.server 4173',
+    'GitHub Pages',
+    'Deploy from a branch',
+    '/(root)',
+  ]) {
+    assert.match(readmeText, new RegExp(requiredText.replace(/[().]/g, '\\$&')));
+  }
+});
+
 test('defines the Traditional Chinese HTML page contract', async () => {
   assert.ok(existsSync(new URL('index.html', root)), 'index.html must exist');
   assert.ok(existsSync(new URL('styles.css', root)), 'styles.css must exist');
