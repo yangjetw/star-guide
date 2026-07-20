@@ -84,11 +84,20 @@ test('presents the guide content and a privacy-safe conversion flow', async () =
   assert.match(html, /加入 LINE 諮詢[／/]選方案/);
   assert.match(html, /依 LINE 指示付款/);
   assert.match(html, /填寫付款回報/);
-  assert.match(html, /收到兌換碼[／/]連結並申請指南/);
+  assert.match(html, /訂單處理完成後，兌換連結將寄至購買者(?:的)? Email/);
+  assert.match(html, /由 Email 連結進入禮物頁，再依指示申請指南/);
+  assert.doesNotMatch(html, /透過 LINE 提供後續申請所需的兌換碼或連結/);
   assert.match(html, /製作時間/);
   assert.match(html, /需要資料/);
   assert.match(html, /付款後流程/);
   assert.match(html, /退費|個資/);
+  assert.match(
+    html,
+    /<summary>付款後流程是什麼？<\/summary>[\s\S]*?訂單處理完成後，兌換連結將寄至購買者(?:的)? Email[\s\S]*?由 Email 連結進入禮物頁/,
+  );
+  assert.match(html, /本服務屬客製化數位內容/);
+  assert.match(html, /完成付款並提交製作所需資料、開始製作後，不接受取消或退費/);
+  assert.match(html, /尚未提交資料或有特殊狀況，請先透過 LINE 聯繫確認/);
 
   assert.doesNotMatch(html, /<(?:form|input|textarea)\b/i);
   assert.doesNotMatch(html, new RegExp(redemptionFormId));
