@@ -26,6 +26,9 @@ test('keeps actions comfortably tappable and the mobile CTA available', async ()
   assert.match(css, /\.mobile-purchase\s*\{[^}]*position:\s*fixed/i);
   assert.match(css, /\.mobile-purchase\s*\{[^}]*min-height:\s*54px/i);
   assert.match(css, /body\s*\{[^}]*padding-bottom:\s*(?:68|70)px/i);
+  assert.match(css, /\.final-cta\s+\.payment-report-link\s*\{[^}]*min-height:\s*48px/i);
+  const mobileRule = css.match(/@media\s*\(max-width:\s*768px\)\s*\{([\s\S]*)$/i)?.[1] ?? '';
+  assert.match(mobileRule, /\.final-cta\s+\.payment-report-link\s*\{[^}]*width:\s*100%/i);
 });
 
 test('stacks the content into a readable single column on small screens', async () => {
