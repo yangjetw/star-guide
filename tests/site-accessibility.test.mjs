@@ -14,12 +14,14 @@ async function siteFiles() {
 }
 
 test('preserves the Task 1 semantic landmarks and Gamma section flow', async () => {
-  const { html } = await siteFiles();
+  const { html, css } = await siteFiles();
   assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
   assert.match(html, /<main\b[^>]*id=["']main-content["']/i);
   assert.match(html, /<a[^>]+class=["'][^"']*skip-link[^"']*["'][^>]*href=["']#main-content["']/i);
   const ids = ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'pricing', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'closing'];
   assert.deepEqual([...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]), ids);
+  assert.match(css, /:focus-visible\s*\{[^}]*outline:\s*3px/i);
+  assert.match(css, /\.skip-link:focus(?:-visible)?\s*\{[^}]*top:\s*0/i);
 });
 
 test('respects reduced motion and protects external navigation', async () => {

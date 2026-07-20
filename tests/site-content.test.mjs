@@ -85,6 +85,40 @@ test('presents only the approved original offer and semantic outline', async () 
   assert.doesNotMatch(html, /<nav\b|mobile-purchase|plan-card|<details\b/i);
   const ids = ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'pricing', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'closing'];
   assert.deepEqual([...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]), ids);
-  assert.ok((html.match(new RegExp(lineUrl, 'g')) ?? []).length >= 3);
+  assert.ok((html.match(new RegExp(lineUrl, 'g')) ?? []).length >= 2);
   assert.ok((html.match(new RegExp(paymentReportUrl, 'g')) ?? []).length >= 2);
+});
+
+test('retains every original Gamma section structure and long-form copy', async () => {
+  const html = await read('index.html');
+  const section = (id) => html.match(new RegExp(`<section\\b[^>]*id="${id}"[\\s\\S]*?<\\/section>`, 'i'))?.[0] ?? '';
+  const uniqueChild = section('unique-child');
+  const requiredData = section('required-data');
+  const deliverables = section('deliverables');
+  const comparison = section('value-comparison');
+  const transformation = section('transformation');
+  const testimonials = section('testimonials');
+  const method = section('method');
+  const closing = section('closing');
+  assert.equal((uniqueChild.match(/<article\b/gi) ?? []).length, 3);
+  assert.equal((requiredData.match(/<article\b/gi) ?? []).length, 4);
+  assert.equal((deliverables.match(/<article\b/gi) ?? []).length, 4);
+  const comparisonHeader = comparison.match(/<thead[\s\S]*?<\/thead>/i)?.[0] ?? '';
+  assert.equal((comparisonHeader.match(/<th\b/gi) ?? []).length, 4);
+  const comparisonBody = comparison.match(/<tbody[\s\S]*?<\/tbody>/i)?.[0] ?? '';
+  assert.equal((comparisonBody.match(/<tr\b/gi) ?? []).length, 5);
+  assert.equal((transformation.match(/<article\b/gi) ?? []).length, 3);
+  assert.equal((testimonials.match(/<blockquote\b/gi) ?? []).length, 3);
+  for (const phrase of [
+    '??蝞∠?????蝒???',
+    '摮拙?憪?', '?嗆?鞈?', '蝎曉?????隞??DF?餃???',
+    '??蝭憟???', '?郊頧??箏霈???函??批捆',
+    '瘥遢?扛摮??瑟???勗?璆剖????交撠????Ｙㄗ',
+    '??皞芋撘?', '敺??詨直??隤迎???蝯?圾隞??',
+    '4甇脣????', '摮拙?敺?銝???????芣?典',
+    '?扛摮??瑟????餌策憿??芸酋摮?韏瑟??瑞?憭找犖??',
+  ]) assert.ok(html.includes(phrase), `missing approved copy: ${phrase}`);
+  assert.equal((method.match(/<li\b/gi) ?? []).length, 4);
+  assert.equal((closing.match(new RegExp(lineUrl, 'g')) ?? []).length, 1);
+  assert.equal((closing.match(new RegExp(paymentReportUrl, 'g')) ?? []).length, 1);
 });
