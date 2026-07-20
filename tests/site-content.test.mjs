@@ -63,7 +63,160 @@ test('defines the Traditional Chinese HTML page contract', async () => {
   assert.ok(css.trim());
 });
 
-const orderedMarkers = ['?扛摮??瑟???', '雿?虫????唳?嚗?', '瘥酋摮?舐?寧?', '?獐??嚗?', '??皜祇?嚗?憛怠??瘀??閬?', '?寞??寞嚗?', '雿?敺隞暻潘?', '?????箔?暻澆潮嚗?', '??撣嗡???霈?', '摰園???祕敹', '銝隞賢惇?潔??酋摮????啣?'];
+const orderedMarkers = [
+  '《親子成長指南》',
+  '你是否也有這些困惑？',
+  '每個孩子都是獨特的',
+  '我們怎麼做的？',
+  '❌做測驗，❌填問卷，✅只要：',
+  '方案價格？',
+  '你將得到什麼？',
+  '我們的指南為什麼值這個價？',
+  '指南帶來的轉變',
+  '家長們的真實心聲',
+  '一份屬於你與孩子的愛之地圖',
+];
+
+const expectedSectionText = {
+  hero: [
+    '《親子成長指南》',
+    '看見孩子獨特的宇宙',
+    '每個父母都想給孩子最好，只是不知道什麼才是最好。',
+    '《親子成長指南》是什麼？',
+    '加入官方 Line',
+  ],
+  concerns: [
+    '你是否也有這些困惑？',
+    '情緒爆發',
+    '孩子動不動就失控，我怎麼講都沒用？',
+    '潛力未發揮',
+    '明明很聰明卻拖拖拉拉、沒動力？',
+    '教養方式不適用',
+    '我的方式對別人小孩有效，對他完全無效？',
+    '內心想法成謎',
+    '為什麼總是跟我反著來？他到底在想什麼？',
+    '不是你沒耐心，只是你沒拿到他的專屬說明書。',
+  ],
+  'unique-child': [
+    '每個孩子都是獨特的',
+    '專為3–12歲孩子設計的《親子成長指南》，是一份讓你「懂孩子」的教養工具書。',
+    '父母與孩子的個性橋接',
+    '翻譯彼此的差異，創造和諧親子關係',
+    '個別化解讀孩子的氣質與天賦',
+    '專屬你孩子的性格分析，而非套用模板',
+    '情緒管理與互動衝突策略',
+    '具體實用的應對方法，幫助親子溝通更順暢',
+  ],
+  method: [
+    '我們怎麼做的？',
+    '🔍 每一份《親子成長指南》，都是從一組出生資料開始',
+    '✍️ 經過占星分析，解讀徵象語言',
+    '🎯 應用兒童心理學，結合生活實境',
+    '逐步轉化為可讀、可感、可用的內容',
+    '📎 每份《親子成長指南》都由專業團隊投入數小時反覆琢磨，為每一位孩子，量身定製出能被家長真正「讀懂與使用」的指南。',
+  ],
+  'required-data': [
+    '❌做測驗，❌填問卷，✅只要：',
+    '出生時間',
+    '建議誤差不超過30分鐘，以確保分析準確性',
+    '出生地點',
+    '提供城市即可，用於建立完整的節奏分析',
+    '孩子姓名',
+    '可使用暱稱，完成個人化內容',
+    '父母資料',
+    '選填，用於更完整的關係互動分析',
+    '資料僅用於本次內容客製化。應用範圍不涉及個人識別，敬請安心。',
+  ],
+  pricing: [
+    '方案價格？',
+    'NT$3980',
+    '包含1位孩子的完整分析報告，以及家長與孩子的節奏互動解讀',
+    '完成付款後回報',
+  ],
+  deliverables: [
+    '你將得到什麼？',
+    '這份指南不只是理論，更是實用的親子溝通工具書。每一頁都經過精心設計，讓你能輕鬆理解並立即應用於日常中。',
+    '📄 精心打造超過8仟字的PDF電子指南',
+    '個人分析解讀',
+    '詳細剖析孩子的氣質、節奏、互動偏好等特質，幫助你真正看見孩子的內在世界。',
+    '情緒節點解析',
+    '解讀情緒反應與家庭互動的關鍵節點，讓你能預見並妥善回應可能的衝突。',
+    '實用情境範例',
+    '針對常見教養場景提供具體溝通建議與策略示範，豐富你應對方式。',
+    '關係節奏圖像',
+    '呈現父母與孩子之間的互動模式，幫助你找到最佳的連結方式。',
+    'ℹ️這份指南設計為可長期使用的成長資源，隨著孩子的發展，你可以反覆閱讀，它會是你最珍藏實用的寶典。',
+  ],
+  'value-comparison': [
+    '我們的指南為什麼值這個價？',
+    '一眼看懂差異',
+    '你買的是一套真正幫你解決親子衝突的實用導航系統。',
+    '產品類型',
+    '價格區間',
+    '通常內容',
+    '我們提供',
+    '一般星盤解讀（純命盤）',
+    'NT$600～1200',
+    '解釋行星與星座配置，無生活指導',
+    '✅ 客製化分析 + 親子情境應用',
+    '教養顧問線上諮詢（60分鐘）',
+    'NT$1800～2500',
+    '口頭建議，無書面紀錄、無後續參考',
+    '✅ 可反覆閱讀 + 親子互動劇本',
+    '星座親子書籍（通用版）',
+    'NT$380～680',
+    '通則講解，無法應用於個別孩子',
+    '✅ 100%針對你的孩子與家庭配置',
+    '客製化占星PDF報告',
+    'NT$1800～6000',
+    '偶有模版、缺少教育建議',
+    '✅ 整合心理學 + 星座 + 教育策略',
+    '本指南',
+    'NT$3980',
+    '✅ 全客製｜育兒建議',
+    '❤️ 是你與孩子的理解橋梁',
+  ],
+  transformation: [
+    '指南帶來的轉變',
+    '理解行為背後原因',
+    '知道孩子「為什麼那樣反應」，不再感到困惑',
+    '掌握互動平衡點',
+    '懂得「什麼時候放手，什麼時候給安全感」',
+    '有效溝通模式',
+    '擁有親子互動的具體劇本，說對話、做對事',
+    '很多爸媽看完說：「我終於理解他不是故意頂嘴，而是用他的方式呼救。」',
+  ],
+  testimonials: [
+    '家長們的真實心聲',
+    '「特質的部份確實是這樣，我的月摩羯也是。」',
+    '7歲娃的媽媽',
+    '「看完後想每年都看一次，提醒自己多一點包容。」',
+    '5歲娃的媽媽',
+    '「寫得太準了，根本就是我家小孩的個性寫照。」',
+    '4歲娃的爸爸',
+  ],
+  closing: [
+    '開始你的親子理解之旅',
+    '一份屬於你與孩子的愛之地圖',
+    '懂，是比愛更深刻的慈悲。',
+    '孩子從來不是「不懂事」，只是用另一種節奏生活。這份指南，讓你能用他的節奏靠近、理解、擁抱。理解之後，行動自然發生。這就是親子之間的真正靠近。',
+    '《親子成長指南》，獻給願意陪孩子一起成長的大人。',
+    '加入官方 Line',
+    '完成付款後回報',
+  ],
+};
+
+const section = (html, id) => html.match(new RegExp(`<section\\b[^>]*id="${id}"[\\s\\S]*?<\\/section>`, 'i'))?.[0] ?? '';
+
+function visibleText(fragment) {
+  return fragment
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<br\s*\/?\s*>/gi, ' ')
+    .replace(/<\/(?:a|p|h[1-6]|li|th|td|strong|blockquote|cite)>/gi, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 test('reproduces the original Gamma story in order', async () => {
   const html = await read('index.html');
@@ -73,14 +226,15 @@ test('reproduces the original Gamma story in order', async () => {
     assert.ok(next > cursor, `${marker} should appear in source order`);
     cursor = next;
   }
-  for (const phrase of ['銝雿???嚗?臭?瘝?唬???撅祈牧???', '蝎曉?????隞??DF?餃???', '???舀??瘛勗???脯?']) assert.ok(html.includes(phrase), `${phrase} must be retained`);
+  for (const phrase of ['不是你沒耐心，只是你沒拿到他的專屬說明書。', '精心打造超過8仟字的PDF電子指南', '懂，是比愛更深刻的慈悲。']) assert.ok(html.includes(phrase), `${phrase} must be retained`);
 });
 
 test('presents only the approved original offer and semantic outline', async () => {
   const html = await read('index.html');
   assert.equal((html.match(/NT\$3980/g) ?? []).length >= 2, true);
-  assert.equal(html.includes('?芰?寞?'), false);
-  assert.equal(html.includes('憟賢??澈?'), false);
+  assert.equal(html.includes('自用方案'), false);
+  assert.equal(html.includes('好友分享包'), false);
+  assert.equal(html.includes('團購祝福組'), false);
   assert.doesNotMatch(html, /<section[^>]+id="faq"/);
   assert.doesNotMatch(html, /<nav\b|mobile-purchase|plan-card|<details\b/i);
   const ids = ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'pricing', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'closing'];
@@ -89,17 +243,23 @@ test('presents only the approved original offer and semantic outline', async () 
   assert.ok((html.match(new RegExp(paymentReportUrl, 'g')) ?? []).length >= 2);
 });
 
-test('retains every original Gamma section structure and long-form copy', async () => {
+test('retains the complete exact visible copy in every Gamma section', async () => {
   const html = await read('index.html');
-  const section = (id) => html.match(new RegExp(`<section\\b[^>]*id="${id}"[\\s\\S]*?<\\/section>`, 'i'))?.[0] ?? '';
-  const uniqueChild = section('unique-child');
-  const requiredData = section('required-data');
-  const deliverables = section('deliverables');
-  const comparison = section('value-comparison');
-  const transformation = section('transformation');
-  const testimonials = section('testimonials');
-  const method = section('method');
-  const closing = section('closing');
+  for (const [id, expectedText] of Object.entries(expectedSectionText)) {
+    assert.equal(visibleText(section(html, id)), expectedText.join(' '), `${id} visible copy must exactly match the approved source`);
+  }
+});
+
+test('retains every original Gamma section structure', async () => {
+  const html = await read('index.html');
+  const uniqueChild = section(html, 'unique-child');
+  const requiredData = section(html, 'required-data');
+  const deliverables = section(html, 'deliverables');
+  const comparison = section(html, 'value-comparison');
+  const transformation = section(html, 'transformation');
+  const testimonials = section(html, 'testimonials');
+  const method = section(html, 'method');
+  const closing = section(html, 'closing');
   assert.equal((uniqueChild.match(/<article\b/gi) ?? []).length, 3);
   assert.equal((requiredData.match(/<article\b/gi) ?? []).length, 4);
   assert.equal((deliverables.match(/<article\b/gi) ?? []).length, 4);
@@ -109,16 +269,21 @@ test('retains every original Gamma section structure and long-form copy', async 
   assert.equal((comparisonBody.match(/<tr\b/gi) ?? []).length, 5);
   assert.equal((transformation.match(/<article\b/gi) ?? []).length, 3);
   assert.equal((testimonials.match(/<blockquote\b/gi) ?? []).length, 3);
-  for (const phrase of [
-    '??蝞∠?????蝒???',
-    '摮拙?憪?', '?嗆?鞈?', '蝎曉?????隞??DF?餃???',
-    '??蝭憟???', '?郊頧??箏霈???函??批捆',
-    '瘥遢?扛摮??瑟???勗?璆剖????交撠????Ｙㄗ',
-    '??皞芋撘?', '敺??詨直??隤迎???蝯?圾隞??',
-    '4甇脣????', '摮拙?敺?銝???????芣?典',
-    '?扛摮??瑟????餌策憿??芸酋摮?韏瑟??瑞?憭找犖??',
-  ]) assert.ok(html.includes(phrase), `missing approved copy: ${phrase}`);
   assert.equal((method.match(/<li\b/gi) ?? []).length, 4);
   assert.equal((closing.match(new RegExp(lineUrl, 'g')) ?? []).length, 1);
   assert.equal((closing.match(new RegExp(paymentReportUrl, 'g')) ?? []).length, 1);
+});
+
+test('retains the complete exact comparison-table cell copy', async () => {
+  const html = await read('index.html');
+  const comparison = section(html, 'value-comparison');
+  const cells = [...comparison.matchAll(/<(?:th|td)\b[^>]*>([\s\S]*?)<\/(?:th|td)>/gi)].map((match) => visibleText(match[1]));
+  assert.deepEqual(cells, expectedSectionText['value-comparison'].slice(3));
+});
+
+test('retains the exact visible site chrome copy', async () => {
+  const html = await read('index.html');
+  assert.equal(visibleText(html.match(/<a\b[^>]*class="skip-link"[\s\S]*?<\/a>/i)?.[0] ?? ''), '跳到主要內容');
+  assert.equal(visibleText(html.match(/<header\b[\s\S]*?<\/header>/i)?.[0] ?? ''), '赫爾墨斯的小宇宙 加入官方 Line');
+  assert.equal(visibleText(html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? ''), '© 2026 赫爾墨斯的小宇宙');
 });
