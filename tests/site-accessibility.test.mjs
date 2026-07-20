@@ -21,6 +21,7 @@ test('preserves the Task 1 semantic landmarks and Gamma section flow', async () 
   const ids = ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'pricing', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'closing'];
   assert.deepEqual([...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]), ids);
   assert.match(css, /:focus-visible\s*\{[^}]*outline:\s*3px/i);
+  assert.match(css, /\.skip-link:focus-visible\s*\{[^}]*top:\s*0/i);
   assert.match(css, /\.skip-link:focus(?:-visible)?\s*\{[^}]*top:\s*0/i);
 });
 
@@ -49,6 +50,10 @@ test('adds trustworthy metadata and original accessible brand assets', async () 
   const { html } = await siteFiles();
   assert.match(html, /<meta\s+name=["']description["']\s+content=["'][^"']+["']/i);
   assert.match(html, /<meta\s+name=["']theme-color["']\s+content=["']#101329["']/i);
+  assert.match(html, /<meta\s+property=["']og:type["']\s+content=["']website["']/i);
+  assert.match(html, /<meta\s+property=["']og:title["']\s+content=["'][^"']+["']/i);
+  assert.match(html, /<meta\s+property=["']og:description["']\s+content=["'][^"']+["']/i);
+  assert.match(html, /<meta\s+property=["']og:image["']\s+content=["']assets\/images\/hero-parent-child\.webp["']/i);
   assert.match(html, /<link\s+rel=["']icon["']\s+href=["']assets\/favicon\.svg["']/i);
   for (const asset of ['assets/brand-mark.svg', 'assets/favicon.svg']) {
     assert.ok(existsSync(new URL(asset, root)));

@@ -55,7 +55,7 @@ a {
   padding: 10px 14px;
 }
 
-.skip-link:focus {
+.skip-link:focus-visible {
   top: 0;
   transform: translateY(0);
 }

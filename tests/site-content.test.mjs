@@ -83,6 +83,7 @@ test('defines the Traditional Chinese HTML page contract', async () => {
   assert.match(html, /<meta\s+name=["']viewport["']\s+content=["']width=device-width, initial-scale=1["']\s*\/?>/i);
   assert.match(html, /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css["']\s*\/?>/i);
   assert.match(html, /<title>[^<]+<\/title>/i);
+  assert.match(html, /<meta\s+property=["']og:image["']\s+content=["']assets\/images\/hero-parent-child\.webp["']/i);
   assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
   assert.ok(css.trim());
 });
