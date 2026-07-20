@@ -322,6 +322,10 @@ a {
   gap: clamp(1rem, 2.5vw, 1.75rem);
 }
 
+.concern-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .card-grid article,
 .plan-card,
 .quote-card,
@@ -529,11 +533,18 @@ a {
   gap: 2rem;
 }
 
+.final-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.8rem;
+}
+
 .final-cta .section-heading {
   margin-bottom: 0;
 }
 
-.final-cta > .button {
+.final-cta-actions > .button {
   min-width: 11rem;
 }
 
@@ -579,6 +590,10 @@ a {
   }
 
   .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .concern-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -644,7 +659,8 @@ a {
   .plan-grid,
   .steps,
   .deliverable-list,
-  .final-cta {
+  .final-cta,
+  .concern-grid {
     grid-template-columns: 1fr;
   }
 
@@ -656,7 +672,11 @@ a {
     transform: none;
   }
 
-  .final-cta > .button {
+  .final-cta-actions {
+    justify-content: flex-start;
+  }
+
+  .final-cta-actions > .button {
     width: 100%;
   }
 
