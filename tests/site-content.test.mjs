@@ -1,12 +1,23 @@
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import { test } from 'node:test';
 
 const root = new URL('../', import.meta.url);
 const lineUrl = 'https://lin.ee/gMMpzNy';
 const paymentReportUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSffcXc1FyJsZwo8qBXpAna4_lMZ_n04s4t9wWYlo5NSD1qxUQ/viewform';
 const read = (path) => readFile(new URL(path, root), 'utf8');
+
+const approvedImages = [
+  'hero-parent-child.webp',
+  'concerns-family.webp',
+  'guide-parent-child.webp',
+  'process-wonder.webp',
+  'required-data-family.webp',
+  'deliverables-reading.webp',
+  'closing-cosmos-family.webp',
+  'guide-preview.webp',
+];
 
 async function publishedTextFiles(directory) {
   const files = [];
@@ -24,6 +35,19 @@ async function publishedTextFiles(directory) {
 test('defines the zero-install static site package contract', async () => {
   assert.ok(existsSync(new URL('package.json', root)));
   assert.deepEqual(JSON.parse(await read('package.json')), { name: 'parent-star-guide', version: '1.0.0', private: true, scripts: { test: 'node --test' } });
+});
+
+test('ships approved original imagery locally with stable metadata', async () => {
+  const html = await read('index.html');
+  for (const filename of approvedImages) {
+    const asset = new URL(`assets/images/${filename}`, root);
+    const assetStat = await stat(asset);
+    assert.ok(assetStat.size > 5_000, `${filename} should be a real local image`);
+    assert.match(html, new RegExp(`src="assets/images/${filename}"`));
+  }
+  assert.doesNotMatch(html, /(?:imgproxy\.)?gamma\.app/i);
+  assert.match(html, /loading="eager"[^>]+fetchpriority="high"/);
+  assert.equal((html.match(/loading="lazy"/g) ?? []).length >= 6, true);
 });
 
 test('includes the GitHub Pages publishing package', async () => {
