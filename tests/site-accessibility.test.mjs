@@ -39,6 +39,19 @@ test('respects reduced motion and protects external navigation', async () => {
   }
 });
 
+test('keeps small text and keyboard focus legible on light and dark surfaces', async () => {
+  const { css } = await siteFiles();
+
+  assert.match(css, /\.steps span\s*\{[^}]*color:\s*var\(--ink\)/i);
+  assert.match(css, /\.deliverable-list li\s*\{[^}]*color:\s*var\(--ink\)/i);
+  assert.match(css, /\.eyebrow\s*\{[^}]*color:\s*var\(--night-soft\)/i);
+  assert.match(css, /\.hero \.eyebrow,\s*\.section:nth-of-type\(3n \+ 2\) \.eyebrow\s*\{[^}]*color:\s*var\(--starlight\)/i);
+  assert.match(
+    css,
+    /:focus-visible\s*\{[^}]*outline:\s*3px solid var\(--night-soft\)[^}]*box-shadow:\s*0 0 0 6px var\(--cream\),\s*0 0 0 9px var\(--starlight\)/i,
+  );
+});
+
 test('adds trustworthy metadata and original accessible brand assets', async () => {
   const { html } = await siteFiles();
 

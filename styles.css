@@ -46,8 +46,9 @@ a {
 }
 
 :focus-visible {
-  outline: 3px solid var(--starlight);
-  outline-offset: 4px;
+  outline: 3px solid var(--night-soft);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--cream), 0 0 0 9px var(--starlight);
 }
 
 .skip-link {
@@ -206,7 +207,7 @@ a {
 
 .eyebrow {
   margin: 0 0 0.8rem;
-  color: var(--starlight);
+  color: var(--night-soft);
   font-size: 0.87rem;
   font-weight: 700;
   letter-spacing: 0.11em;
@@ -289,7 +290,11 @@ a {
   color: var(--cream);
 }
 
-.section:nth-of-type(3n + 2) .eyebrow,
+.hero .eyebrow,
+.section:nth-of-type(3n + 2) .eyebrow {
+  color: var(--starlight);
+}
+
 .section:nth-of-type(3n + 2) .payment-report-link {
   color: var(--starlight);
 }
@@ -388,7 +393,7 @@ a {
 }
 
 .steps span {
-  color: rgba(251, 244, 230, 0.88);
+  color: var(--ink);
   font-size: 0.93rem;
   line-height: 1.75;
 }
@@ -408,6 +413,7 @@ a {
   padding: 1.35rem 1.35rem 1.35rem 3.4rem;
   border-radius: 18px;
   background: rgba(251, 244, 230, 0.76);
+  color: var(--ink);
   box-shadow: 0 8px 22px rgba(35, 31, 72, 0.08);
 }
 
