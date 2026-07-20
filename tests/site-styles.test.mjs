@@ -26,3 +26,14 @@ test('frames local images without the old glass-card treatment', async () => {
   assert.match(css, /border-radius:\s*2[02468]px/);
   assert.doesNotMatch(css, /backdrop-filter/);
 });
+
+test('preserves the closing image aspect ratio at mobile widths', async () => {
+  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+  const closingImageRule = css.match(/\.closing-media img\s*\{([^}]*)\}/s)?.[1] ?? '';
+
+  assert.match(closingImageRule, /width:\s*100%/);
+  assert.match(closingImageRule, /height:\s*auto/);
+  assert.match(closingImageRule, /max-height:\s*620px/);
+  assert.match(closingImageRule, /object-fit:\s*cover/);
+  assert.match(closingImageRule, /border-radius:\s*28px/);
+});
