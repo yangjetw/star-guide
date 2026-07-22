@@ -69,3 +69,21 @@ test('preserves the closing image aspect ratio at mobile widths', async () => {
   assert.match(closingImageRule, /object-fit:\s*cover/);
   assert.match(closingImageRule, /border-radius:\s*28px/);
 });
+
+test('connects the seven chapters inside one restrained reading column', async () => {
+  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+  assert.match(css, /\.story-section\[data-chapter\]\s*\{[^}]*width:\s*min\(calc\(100% - 64px\),\s*var\(--reading-width\)\)[^}]*border-top:/s);
+  assert.match(css, /\[data-chapter\]::before\s*\{[^}]*content:\s*attr\(data-chapter\)[^}]*color:\s*var\(--color-gold\)/s);
+  assert.match(css, /\.story-section\s*\{[^}]*gap:\s*clamp\(28px,\s*5vw,\s*64px\)/s);
+  assert.match(css, /\.story-media\s*\{[^}]*box-shadow:\s*var\(--shadow-card\)/s);
+});
+
+test('turns pricing, comparison, testimonials, and closing into clear anchors', async () => {
+  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+  assert.match(css, /\.price-section\s*\{[^}]*width:\s*min\(calc\(100% - 64px\),\s*var\(--reading-width\)/s);
+  assert.match(css, /\.price-card\s*\{[^}]*background:\s*linear-gradient\([^}]*var\(--color-night\)/s);
+  assert.match(css, /\.price-card \.price\s*\{[^}]*color:\s*#fff/s);
+  assert.match(css, /\.comparison-section\s*\{[^}]*background:\s*#fff/s);
+  assert.match(css, /\.testimonial-list\s*\{[^}]*background:\s*#f6eee7/s);
+  assert.match(css, /\.closing-section\s*\{[^}]*background:\s*var\(--color-night\)/s);
+});

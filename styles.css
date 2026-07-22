@@ -159,13 +159,31 @@ h3 {
 }
 
 .story-section {
-  width: min(calc(100% - 48px), var(--content-width));
-  margin-inline: auto;
-  padding-block: clamp(72px, 9vw, 132px);
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-  gap: clamp(40px, 7vw, 96px);
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr);
+  gap: clamp(28px, 5vw, 64px);
   align-items: center;
+}
+
+.story-section[data-chapter] {
+  width: min(calc(100% - 64px), var(--reading-width));
+  margin: 0 auto;
+  padding: clamp(64px, 8vw, 96px) 0;
+  border-top: 1px solid var(--color-border);
+}
+
+[data-chapter]::before {
+  content: attr(data-chapter);
+  position: absolute;
+  top: 30px;
+  left: 0;
+  color: var(--color-gold);
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.75;
 }
 
 .story-section-reverse .story-copy {
@@ -187,6 +205,10 @@ h3 {
 .story-media {
   margin: 0;
   overflow: hidden;
+  border: 1px solid rgb(215 190 171 / 42%);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: var(--shadow-card);
 }
 
 .story-media img {
@@ -194,8 +216,6 @@ h3 {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 24px;
-  box-shadow: var(--shadow-card);
 }
 
 .story-media-portrait {
@@ -312,24 +332,27 @@ blockquote,
   object-fit: cover;
 }
 
-.price-section,
-.comparison-section,
-.testimonial-section,
-.closing-section {
-  width: min(calc(100% - 48px), var(--content-width));
-  margin-inline: auto;
-  padding-block: clamp(72px, 9vw, 132px);
+.price-section {
+  width: min(calc(100% - 64px), var(--reading-width));
+  margin: 0 auto;
+  padding: 36px 0 76px;
 }
 
 .price-card {
   max-width: 720px;
   margin-inline: auto;
-  padding: clamp(32px, 6vw, 64px);
+  padding: clamp(36px, 6vw, 68px);
   text-align: center;
-  border: 1px solid var(--color-border);
+  border: 0;
   border-radius: 28px;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-card);
+  background: linear-gradient(135deg, var(--color-night), #353861);
+  color: rgb(255 255 255 / 84%);
+  box-shadow: 0 24px 60px rgb(24 32 57 / 25%);
+}
+
+.price-card h2,
+.price-card .price {
+  color: #fff;
 }
 
 .price {
@@ -342,6 +365,16 @@ blockquote,
 
 .comparison-lead {
   margin-bottom: 32px;
+}
+
+.comparison-section {
+  width: min(calc(100% - 64px), var(--reading-width));
+  margin: 0 auto;
+  padding: clamp(48px, 7vw, 76px);
+  border: 1px solid var(--color-border);
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: var(--shadow-card);
 }
 
 .table-wrap {
@@ -378,6 +411,16 @@ thead {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 22px;
+  padding: clamp(24px, 4vw, 40px);
+  border-radius: 28px;
+  background: #f6eee7;
+}
+
+.testimonial-section {
+  position: relative;
+  width: min(calc(100% - 64px), var(--reading-width));
+  margin: 0 auto;
+  padding: clamp(64px, 8vw, 92px) 0;
 }
 
 .testimonial-list blockquote {
@@ -395,6 +438,21 @@ thead {
 
 .closing-media {
   margin: 0;
+}
+
+.closing-section {
+  width: min(calc(100% - 64px), var(--reading-width));
+  margin: 0 auto 32px;
+  padding: clamp(24px, 5vw, 48px);
+  border-radius: 32px;
+  background: var(--color-night);
+  color: rgb(255 255 255 / 84%);
+}
+
+.closing-section h2,
+.closing-section .eyebrow,
+.closing-section .closing-quote {
+  color: #fff;
 }
 
 .closing-media img {
