@@ -42,7 +42,7 @@ test('keeps current story components and keyboard focus legible', async () => {
   assert.match(css, /\.process-list li\s*\{[^}]*color:\s*var\(--ink\)/i);
   assert.match(css, /\.deliverable-list article\s*\{[^}]*color:\s*var\(--ink\)/i);
   assert.match(css, /\.eyebrow\s*\{[^}]*color:\s*var\(--night-soft\)/i);
-  assert.match(css, /\.hero-section \.eyebrow\s*\{[^}]*color:\s*var\(--starlight\)/i);
+  assert.match(css, /\.hero-section \.eyebrow\s*\{[^}]*color:\s*#ffc0a9/i);
   assert.doesNotMatch(css, /\.steps\b|\.deliverable-list li\b|\.hero\s+\.eyebrow|\.section:nth-of-type/i);
   assert.match(css, /:focus-visible\s*\{[^}]*outline:\s*3px solid var\(--night-soft\)[^}]*box-shadow:\s*0 0 0 6px var\(--cream\),\s*0 0 0 9px var\(--starlight\)/i);
 });

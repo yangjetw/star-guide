@@ -2,13 +2,28 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 
-test('uses the approved bright Gamma-faithful palette and soft Chinese typography', async () => {
+test('defines the premium book palette and soft Chinese type system', async () => {
   const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  assert.match(css, /--color-bg:\s*#fff(?:fff)?;/i);
+  assert.match(css, /--color-canvas:\s*#f3ede7;/i);
+  assert.match(css, /--color-paper:\s*#fffaf6;/i);
+  assert.match(css, /--color-night:\s*#182039;/i);
   assert.match(css, /--color-accent:\s*#ff6b4a;/i);
   assert.match(css, /--color-line:\s*#55c982;/i);
-  assert.match(css, /Noto Sans TC|PingFang TC|Microsoft JhengHei/);
+  assert.match(css, /--font-display:[^;]*Noto Serif TC[^;]*Songti TC[^;]*PMingLiU[^;]*serif;/i);
+  assert.match(css, /--font-sans:[^;]*Noto Sans TC[^;]*PingFang TC[^;]*Microsoft JhengHei[^;]*sans-serif;/i);
+  assert.match(css, /h1,\s*h2,\s*h3\s*\{[^}]*font-family:\s*var\(--font-display\)/s);
   assert.match(css, /font-size:\s*clamp\(18px,/);
+  assert.doesNotMatch(css, /@import\s+url|fonts\.googleapis\.com/i);
+});
+
+test('renders one centered paper and a cohesive cover hero', async () => {
+  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+  assert.match(css, /body\s*\{[^}]*background:\s*var\(--color-canvas\)/s);
+  assert.match(css, /\.book-page\s*\{[^}]*width:\s*min\(calc\(100% - 40px\),\s*1080px\)[^}]*margin:\s*0 auto[^}]*background:\s*var\(--color-paper\)[^}]*border-radius:\s*36px[^}]*box-shadow:/s);
+  assert.match(css, /\.hero-section\s*\{[^}]*background:[^;}]*var\(--color-night\)[^}]*border-radius:\s*32px/s);
+  assert.match(css, /\.hero-section \.story-copy\s*\{[^}]*color:\s*#fff/s);
+  assert.match(css, /\.hero-section \.eyebrow\s*\{[^}]*color:\s*#ffc0a9/s);
+  assert.match(css, /\.hero-section \.story-media\s*\{[^}]*align-self:\s*stretch/s);
 });
 
 test('alternates desktop stories and stacks them below 768px', async () => {
