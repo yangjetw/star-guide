@@ -168,6 +168,7 @@ test('renders one centered paper and a cohesive cover hero', async () => {
   assert.match(css, /\.book-page\s*\{[^}]*width:\s*min\(calc\(100% - 40px\),\s*1080px\)[^}]*margin:\s*0 auto[^}]*background:\s*var\(--color-paper\)[^}]*border-radius:\s*36px[^}]*box-shadow:/s);
   assert.match(css, /\.hero-section\s*\{[^}]*background:[^;}]*var\(--color-night\)[^}]*border-radius:\s*32px/s);
   assert.match(css, /\.hero-section \.story-copy\s*\{[^}]*color:\s*#fff/s);
+  assert.match(css, /\.hero-section \.eyebrow\s*\{[^}]*color:\s*#ffc0a9/s);
   assert.match(css, /\.hero-section \.story-media\s*\{[^}]*align-self:\s*stretch/s);
 });
 ```
@@ -269,9 +270,12 @@ Replace the existing hero-specific layout with:
   color: #fff;
 }
 
-.hero-section h1,
-.hero-section .eyebrow {
+.hero-section h1 {
   color: #fff;
+}
+
+.hero-section .eyebrow {
+  color: #ffc0a9;
 }
 
 .hero-section .accent {
