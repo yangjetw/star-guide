@@ -95,7 +95,7 @@ h3 {
 
 .book-page {
   width: min(calc(100% - 40px), 1080px);
-  margin: 0 auto 56px;
+  margin: 28px auto 56px;
   overflow: clip;
   background: var(--color-paper);
   border: 1px solid rgb(215 190 171 / 45%);
@@ -447,6 +447,10 @@ thead {
 }
 
 @media (max-width: 768px) {
+  .book-page {
+    margin: 0;
+  }
+
   .site-header,
   .story-section,
   .price-section,
