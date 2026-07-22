@@ -87,3 +87,17 @@ test('turns pricing, comparison, testimonials, and closing into clear anchors', 
   assert.match(css, /\.testimonial-list\s*\{[^}]*background:\s*#f6eee7/s);
   assert.match(css, /\.closing-section\s*\{[^}]*background:\s*var\(--color-night\)/s);
 });
+
+test('keeps the premium book focused and touch friendly at mobile widths', async () => {
+  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+  assert.match(css, /@media\s*\(max-width:\s*1024px\)/);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)/);
+  assert.match(css, /@media\s*\(max-width:\s*420px\)/);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.book-page\s*\{[^}]*width:\s*100%[^}]*border-radius:\s*0/s);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.story-section\s*\{[^}]*grid-template-columns:\s*1fr/s);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.story-section-reverse \.story-copy\s*\{[^}]*order:\s*1/s);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.story-section-reverse \.story-media\s*\{[^}]*order:\s*2/s);
+  assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/s);
+  assert.match(css, /\.table-wrap\s*\{[^}]*overflow-x:\s*auto/s);
+  assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/s);
+});

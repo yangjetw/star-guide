@@ -131,7 +131,7 @@ h3 {
 }
 
 .button {
-  min-height: 48px;
+  min-height: 52px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -504,22 +504,52 @@ thead {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .book-page {
-    margin: 0;
+    width: min(calc(100% - 28px), 960px);
   }
 
-  .site-header,
-  .story-section,
+  .hero-section,
+  .story-section[data-chapter],
   .price-section,
   .comparison-section,
   .testimonial-section,
   .closing-section {
-    width: min(calc(100% - 32px), var(--content-width));
+    width: min(calc(100% - 48px), var(--reading-width));
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    background: var(--color-paper);
+  }
+
+  .book-page {
+    width: 100%;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .hero-section {
+    min-height: 0;
+    margin: 12px;
+    padding: 28px 22px;
+    border-radius: 24px;
   }
 
   .site-header {
+    width: min(calc(100% - 32px), var(--content-width));
     min-height: 68px;
+  }
+
+  .story-section[data-chapter],
+  .price-section,
+  .comparison-section,
+  .testimonial-section,
+  .closing-section {
+    width: calc(100% - 32px);
   }
 
   .brand {
@@ -543,6 +573,10 @@ thead {
 
   .story-section-reverse .story-media {
     order: 2;
+  }
+
+  .comparison-section {
+    padding: 32px 20px;
   }
 
   .concern-list,
@@ -581,7 +615,12 @@ thead {
     font-size: 16px;
   }
 
-  .button-row .button {
+  .button-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .button {
     width: 100%;
   }
 }
