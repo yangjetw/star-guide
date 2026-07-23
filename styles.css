@@ -512,7 +512,6 @@ thead {
     width: min(calc(100% - 28px), 960px);
   }
 
-  .hero-section,
   .story-section[data-chapter],
   .price-section,
   .comparison-section,

@@ -103,3 +103,12 @@ test('keeps the premium book focused and touch friendly at mobile widths', async
   assert.match(css, /\.table-wrap\s*\{[^}]*overflow-x:\s*auto/s);
   assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/s);
 });
+
+test('keeps the inset hero centered through tablet and mobile widths', async () => {
+  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+  const tabletRules = css.match(/@media\s*\(max-width:\s*1024px\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
+  const mobileHeroRule = css.match(/@media\s*\(max-width:\s*768px\)[\s\S]*?\.hero-section\s*\{([^}]*)\}/)?.[1] ?? '';
+
+  assert.doesNotMatch(tabletRules, /\.hero-section\s*,/);
+  assert.match(mobileHeroRule, /margin:\s*12px/);
+});
