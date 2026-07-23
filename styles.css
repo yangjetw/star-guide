@@ -623,7 +623,7 @@ thead {
     flex-direction: column;
   }
 
-  .button {
+  .button-row .button {
     flex: 0 0 auto;
     width: 100%;
   }
