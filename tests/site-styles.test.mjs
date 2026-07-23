@@ -99,6 +99,7 @@ test('keeps the premium book focused and touch friendly at mobile widths', async
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.story-section-reverse \.story-copy\s*\{[^}]*order:\s*1/s);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.story-section-reverse \.story-media\s*\{[^}]*order:\s*2/s);
   assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/s);
+  assert.match(css, /@media\s*\(max-width:\s*420px\)\s*\{[\s\S]*?\.button\s*\{[^}]*flex:\s*0\s+0\s+auto/s);
   assert.match(css, /\.table-wrap\s*\{[^}]*overflow-x:\s*auto/s);
   assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/s);
 });
