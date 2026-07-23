@@ -90,6 +90,7 @@ test('turns pricing, comparison, testimonials, and closing into clear anchors', 
 
 test('keeps the premium book focused and touch friendly at mobile widths', async () => {
   const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+  assert.match(css, /\.brand\s*\{[^}]*display:\s*inline-flex[^}]*align-items:\s*center[^}]*min-height:\s*48px/s);
   assert.match(css, /@media\s*\(max-width:\s*1024px\)/);
   assert.match(css, /@media\s*\(max-width:\s*768px\)/);
   assert.match(css, /@media\s*\(max-width:\s*420px\)/);
