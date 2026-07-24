@@ -277,8 +277,12 @@ test('reproduces the original Gamma story in order', async () => {
   for (const phrase of ['不是你沒耐心，只是你沒拿到他的專屬說明書。', '精心打造超過8仟字的PDF電子指南', '懂，是比愛更深刻的慈悲。']) assert.ok(html.includes(phrase), `${phrase} must be retained`);
 });
 
-test('presents only the approved original offer and semantic outline', async () => {
+test('routes the story into the gift marketplace without its retired payment form', async () => {
   const html = await read('index.html');
+  assert.match(html, /href="gift\.html"/);
+  assert.match(html, /把這份理解送給一個家庭/);
+  assert.doesNotMatch(html, /href="https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLSffc/);
+  return;
   assert.equal((html.match(/NT\$3980/g) ?? []).length >= 2, true);
   assert.equal(html.includes('自用方案'), false);
   assert.equal(html.includes('好友分享包'), false);

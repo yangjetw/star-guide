@@ -4,6 +4,11 @@ import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 
 const root = new URL('../', import.meta.url);
+const pages = ['index.html', 'gift.html', 'navigator.html', 'refund.html'];
+
+const readPage = (name) => readFile(new URL(name, root), 'utf8');
+const externalAnchors = (html) => (html.match(/<a\b[^>]*>/gi) ?? [])
+  .filter((anchor) => /href=["']https?:\/\//i.test(anchor));
 
 async function siteFiles() {
   const [html, css] = await Promise.all([
@@ -27,13 +32,24 @@ test('preserves the Task 1 semantic landmarks and Gamma section flow', async () 
 
 test('respects reduced motion and protects external navigation', async () => {
   const { html, css } = await siteFiles();
-  const externalAnchors = (html.match(/<a\b[^>]*>/gi) ?? []).filter((anchor) => /href=["']https?:\/\//i.test(anchor));
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/i);
   assert.match(css, /scroll-behavior:\s*auto/i);
   assert.match(css, /(?:animation|transition)-duration:\s*0\.01ms/i);
-  for (const anchor of externalAnchors) {
-    assert.match(anchor, /target=["']_blank["']/i);
-    assert.match(anchor, /rel=["']noopener noreferrer["']/i);
+});
+
+test('keeps each public page keyboard-accessible and secures every external link', async () => {
+  for (const page of pages) {
+    const html = await readPage(page);
+    assert.equal((html.match(/<h1\b/gi) ?? []).length, 1, `${page} needs one h1`);
+    assert.match(html, /<main\b[^>]*id=["']main-content["']/i);
+    assert.match(html, /<a[^>]+class=["'][^"']*skip-link[^"']*["'][^>]*href=["']#main-content["']/i);
+    for (const anchor of externalAnchors(html)) {
+      assert.match(anchor, /target=["']_blank["']/i);
+      assert.match(anchor, /rel=["']noopener noreferrer["']/i);
+    }
+    for (const image of html.match(/<img\b[^>]*>/gi) ?? []) {
+      assert.match(image, /\balt=["'][^"']+[^"']["']/i, `${page} content images need descriptive alt text`);
+    }
   }
 });
 
