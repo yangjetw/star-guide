@@ -74,10 +74,20 @@ test('uses three local testimonial screenshots with approved trust copy', async 
 
 test('removes retired automation and code labels from every public page', async () => {
   const corpus = (await Promise.all(pages.map(readPage))).join('\n');
+  const gift = await readPage('gift.html');
   assert.doesNotMatch(corpus, /n8n|TEST-|PGG-|https:\/\/lin\.ee\/UDM1hMc|https:\/\/docs[.]google[.]com\/forms|匯款|立即付款|LINE Bank|街口付款|銀行|帳號|收款|QR\s*(?:code)?/i);
   assert.doesNotMatch(corpus, /<form\b|<iframe\b|<script\b/i);
-  for (const code of corpus.match(/\b(?:[A-Z0-9]{4}-){2}[A-Z0-9]{4}\b/g) ?? []) {
-    assert.match(code, /^STAR-[A-Z0-9]{4}-[A-Z0-9]{4}$/);
+  assert.match(gift, /STAR-2026-[A-HJ-NP-Z2-9]{4}/);
+  assert.match(gift, /GIFT-2026-[A-HJ-NP-Z2-9]{4}/);
+  assert.doesNotMatch(corpus, /\b(?:TEST|PGG)-/);
+  assert.doesNotMatch(corpus, /\bSTAR-[A-Z0-9]{4}-[A-Z0-9]{4}\b/);
+  for (const text of [
+    '顧客購買後自行轉送',
+    '同時主動贈送',
+    '使用同一份兌換流程',
+    '取得有效兌換碼後，另可連兌封屬申請流程',
+  ]) {
+    assert.match(corpus, new RegExp(text));
   }
 });
 
