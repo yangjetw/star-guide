@@ -49,6 +49,7 @@ test('uses three local testimonial screenshots and STAR gift language', async ()
 test('removes retired automation and code labels from every public page', async () => {
   const corpus = (await Promise.all(pages.map(readPage))).join('\n');
   assert.doesNotMatch(corpus, /n8n|TEST-|PGG-|https:\/\/lin\.ee\/UDM1hMc|https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLSffc|匯款|立即付款|LINE Bank|街口付款|銀行|帳號|收款|QR\s*(?:code)?/i);
+  assert.doesNotMatch(corpus, /<form\b|<iframe\b|<script\b/i);
   for (const code of corpus.match(/\b(?:[A-Z0-9]{4}-){2}[A-Z0-9]{4}\b/g) ?? []) {
     assert.match(code, /^STAR-[A-Z0-9]{4}-[A-Z0-9]{4}$/);
   }
