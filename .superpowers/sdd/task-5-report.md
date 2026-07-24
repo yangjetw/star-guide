@@ -34,4 +34,5 @@ rg -n -i -e 'n8n|TEST-|PGG-|https://docs\\.google\\.com/forms|LINE Bank|街口�
 
 ## Commit
 
-`PENDING`（提交後以實際 SHA 更新）
+- README 文件提交：`520d4c368678b0eb7e67852e92d461c54e1aa6b6`（`docs: finalize gift market pilot site`）。
+- 本報告初版提交：`896944d2141cbbf16076f2a6a4965606860bad1b`（`docs: add Task 5 verification report`）。
