@@ -10,8 +10,10 @@ const sellerFacts = ['星學會有限公司', '69708677', 'astrokidsguide@gmail.
 
 const readPage = (name) => readFile(new URL(name, root), 'utf8');
 const anchors = (html) => html.match(/<a\b[^>]*>[\s\S]*?<\/a>/gi) ?? [];
-const redemptionCodeCandidates = (text) => (
-  text.match(/(?<![A-Za-z0-9-])[A-Za-z]+-[A-Za-z0-9]{2,4}-[A-Za-z0-9]{4}(?![A-Za-z0-9-])/g) ?? []
+const redemptionCodeCandidates = (html) => (
+  html
+    .replace(/<[^>]*>/g, ' ')
+    .match(/\b[A-Za-z]+-[A-Za-z0-9]{1,8}-[A-Za-z0-9]{1,8}\b/g) ?? []
 );
 const approvedRedemptionCode = /^(?:STAR|GIFT)-\d{4}-[A-HJ-NP-Z2-9]{4}$/;
 
@@ -101,6 +103,10 @@ test('removes retired automation and code labels from every public page', async 
 
 test('rejects malformed ASCII redemption-code candidates without flagging format templates', () => {
   for (const mutation of [
+    'STAR-2-A7K9',
+    'STAR-20266-A7K9',
+    'STAR-2026-A7K',
+    'STAR-2026-A7K99',
     'STAR-26-A7K9',
     'PROMO-YYYY-A7K9',
     'gift-2026-A7K9',
