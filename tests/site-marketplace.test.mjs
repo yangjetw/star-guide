@@ -26,6 +26,7 @@ test('publishes four semantic pages with consistent seller disclosure', async ()
 test('publishes the approved gift prices and approval-safe calls to action', async () => {
   const html = await readPage('gift.html');
   for (const price of ['NT$3,980', 'NT$7,600', 'NT$17,900']) assert.ok(html.includes(price));
+  for (const quantity of ['1 份', '2 份', '5 份']) assert.ok(html.includes(quantity), `${quantity} must be disclosed`);
   assert.ok(html.includes('10 份以上'));
   assert.ok(html.includes('正式線上販售將於票券服務審核完成後開放'));
   const inquiryCtas = anchors(html)
@@ -33,6 +34,31 @@ test('publishes the approved gift prices and approval-safe calls to action', asy
   assert.equal(inquiryCtas.length >= 3, true);
   for (const anchor of inquiryCtas) assert.match(anchor, /href=["']https:\/\/lin\.ee\/gMMpzNy["']/i);
   assert.doesNotMatch(html, /匯款|立即付款|LINE Bank|街口付款/i);
+});
+
+test('presents the public gift-card brand and complete delivery contents', async () => {
+  const html = await readPage('gift.html');
+  assert.match(html, /<title>赫爾墨斯的小宇宙禮物卡[^<]*<\/title>/);
+  assert.match(html, /<h1\b[^>]*>赫爾墨斯的小宇宙禮物卡<\/h1>/);
+  for (const item of ['單次使用的 STAR 兌換碼', '由購買者透過 LINE 轉送的電子禮物卡', '客製 PDF 指南', 'Email 協助']) {
+    assert.ok(html.includes(item), `${item} must be disclosed`);
+  }
+  assert.ok(html.includes('星學會有限公司'), 'the legal seller must remain disclosed');
+});
+
+test('explains code security, recipient data use, support, and paper invoice handling', async () => {
+  const html = await readPage('refund.html');
+  for (const phrase of [
+    '兌換碼不可公開',
+    '不可重複使用',
+    '客製 PDF 指南製作與交付',
+    '姓名、Email、孩子出生資料',
+    'astrokidsguide@gmail.com',
+    '目前開立紙本統一發票',
+    '票券服務審核完成後，將依核准內容調整',
+  ]) {
+    assert.ok(html.includes(phrase), `${phrase} must be disclosed`);
+  }
 });
 
 test('uses three local testimonial screenshots with approved trust copy', async () => {
@@ -48,7 +74,7 @@ test('uses three local testimonial screenshots with approved trust copy', async 
 
 test('removes retired automation and code labels from every public page', async () => {
   const corpus = (await Promise.all(pages.map(readPage))).join('\n');
-  assert.doesNotMatch(corpus, /n8n|TEST-|PGG-|https:\/\/lin\.ee\/UDM1hMc|https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLSffc|匯款|立即付款|LINE Bank|街口付款|銀行|帳號|收款|QR\s*(?:code)?/i);
+  assert.doesNotMatch(corpus, /n8n|TEST-|PGG-|https:\/\/lin\.ee\/UDM1hMc|https:\/\/docs[.]google[.]com\/forms|匯款|立即付款|LINE Bank|街口付款|銀行|帳號|收款|QR\s*(?:code)?/i);
   assert.doesNotMatch(corpus, /<form\b|<iframe\b|<script\b/i);
   for (const code of corpus.match(/\b(?:[A-Z0-9]{4}-){2}[A-Z0-9]{4}\b/g) ?? []) {
     assert.match(code, /^STAR-[A-Z0-9]{4}-[A-Z0-9]{4}$/);

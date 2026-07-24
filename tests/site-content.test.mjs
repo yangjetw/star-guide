@@ -5,7 +5,6 @@ import { test } from 'node:test';
 
 const root = new URL('../', import.meta.url);
 const lineUrl = 'https://lin.ee/gMMpzNy';
-const paymentReportUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSffcXc1FyJsZwo8qBXpAna4_lMZ_n04s4t9wWYlo5NSD1qxUQ/viewform';
 const read = (path) => readFile(new URL(path, root), 'utf8');
 
 const approvedImages = [
@@ -270,7 +269,7 @@ test('routes the story into the gift marketplace without its retired payment for
   const html = await read('index.html');
   assert.match(html, /href="gift\.html"/);
   assert.match(html, /把這份理解，送給一個你在乎的家庭/);
-  assert.doesNotMatch(html, /href="https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLSffc/);
+  assert.doesNotMatch(html, /href="https:\/\/docs[.]google[.]com\/forms/i);
 });
 
 test('retains the complete exact visible copy in every Gamma section', async () => {

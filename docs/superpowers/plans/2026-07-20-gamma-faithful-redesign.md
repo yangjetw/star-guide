@@ -14,8 +14,8 @@
 - Production HTML and CSS must not reference `gamma.app` or `imgproxy.gamma.app`.
 - Runtime files remain `index.html`, `styles.css`, and local assets; add no framework or runtime JavaScript.
 - Official LINE URL is exactly `https://lin.ee/gMMpzNy`.
-- Public payment-report URL is exactly `https://docs.google.com/forms/d/e/1FAIpQLSffcXc1FyJsZwo8qBXpAna4_lMZ_n04s4t9wWYlo5NSD1qxUQ/viewform`.
-- Private redemption-form ID `1FAIpQLSevM95Op1gL8g8iZqnEKVR5u9s_NSyIo7mgHKp5KTxtpRFABA` must not appear in production files.
+- Payment-report destination is recorded as `[私人付款回報表單]`.
+- `[私人兌換表單]` must not appear as a public link in production files.
 - The public offer is one `NT$3980` guide for one child; remove the current three-plan presentation.
 - Body copy is at least 18px; touch targets are at least 44px high; layouts must work at 360, 390, 768, 1024, and 1440px.
 - Preserve semantic landmarks, skip link, visible keyboard focus, safe external-link attributes, and `prefers-reduced-motion` behavior.
@@ -176,7 +176,7 @@ The implementation must use this structure and copy contract:
       <h2 id="pricing-title">方案價格？</h2>
       <p class="price">NT$3980</p>
       <p>包含1位孩子的完整分析報告，以及家長與孩子的節奏互動解讀</p>
-      <a class="button button-primary payment-report-link" href="https://docs.google.com/forms/d/e/1FAIpQLSffcXc1FyJsZwo8qBXpAna4_lMZ_n04s4t9wWYlo5NSD1qxUQ/viewform" target="_blank" rel="noopener noreferrer">完成付款後回報</a>
+      <a class="button button-primary payment-report-link" href="[私人付款回報表單]" target="_blank" rel="noopener noreferrer">完成付款後回報</a>
     </div>
   </section>
 
@@ -228,7 +228,7 @@ The implementation must use this structure and copy contract:
 
   <section id="closing" class="closing-section" aria-labelledby="closing-title">
     <figure class="closing-media" data-image="closing"></figure>
-    <div class="closing-copy"><p class="eyebrow">開始你的親子理解之旅</p><h2 id="closing-title">一份屬於你與孩子的愛之地圖</h2><p class="closing-quote">懂，是比愛更深刻的慈悲。</p><p>孩子從來不是「不懂事」，只是用另一種節奏生活。這份指南，讓你能用他的節奏靠近、理解、擁抱。理解之後，行動自然發生。這就是親子之間的真正靠近。</p><p>《親子成長指南》，獻給願意陪孩子一起成長的大人。</p><div class="button-row"><a class="button button-line" href="https://lin.ee/gMMpzNy" target="_blank" rel="noopener noreferrer">加入官方 Line</a><a class="button button-primary payment-report-link" href="https://docs.google.com/forms/d/e/1FAIpQLSffcXc1FyJsZwo8qBXpAna4_lMZ_n04s4t9wWYlo5NSD1qxUQ/viewform" target="_blank" rel="noopener noreferrer">完成付款後回報</a></div></div>
+    <div class="closing-copy"><p class="eyebrow">開始你的親子理解之旅</p><h2 id="closing-title">一份屬於你與孩子的愛之地圖</h2><p class="closing-quote">懂，是比愛更深刻的慈悲。</p><p>孩子從來不是「不懂事」，只是用另一種節奏生活。這份指南，讓你能用他的節奏靠近、理解、擁抱。理解之後，行動自然發生。這就是親子之間的真正靠近。</p><p>《親子成長指南》，獻給願意陪孩子一起成長的大人。</p><div class="button-row"><a class="button button-line" href="https://lin.ee/gMMpzNy" target="_blank" rel="noopener noreferrer">加入官方 Line</a><a class="button button-primary payment-report-link" href="[私人付款回報表單]" target="_blank" rel="noopener noreferrer">完成付款後回報</a></div></div>
   </section>
 </main>
 <footer class="site-footer"><p>© 2026 赫爾墨斯的小宇宙</p></footer>
@@ -586,8 +586,8 @@ git commit -m "feat: recreate bright Gamma visual system"
 test('keeps the approved public actions and private redemption form separate', async () => {
   const { html } = await siteFiles();
   assert.equal((html.match(/https:\/\/lin\.ee\/gMMpzNy/g) ?? []).length >= 3, true);
-  assert.equal((html.match(/1FAIpQLSffcXc1FyJsZwo8qBXpAna4_lMZ_n04s4t9wWYlo5NSD1qxUQ/g) ?? []).length >= 2, true);
-  assert.doesNotMatch(html, /1FAIpQLSevM95Op1gL8g8iZqnEKVR5u9s_NSyIo7mgHKp5KTxtpRFABA/);
+  assert.equal((html.match(/\[私人付款回報表單\]/g) ?? []).length >= 2, true);
+  assert.doesNotMatch(html, /\[私人兌換表單\]/);
   for (const tag of html.matchAll(/<a[^>]+target="_blank"[^>]*>/g)) {
     assert.match(tag[0], /rel="noopener noreferrer"/);
   }

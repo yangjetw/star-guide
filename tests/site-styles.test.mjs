@@ -126,6 +126,19 @@ test('extends the premium book language across shared marketplace pages', async 
   assert.match(css, /\.policy-section\s*\{[^}]*border-top:\s*1px solid var\(--color-border\)/s);
 });
 
+test('lets a text-only story section and its pricing grid use both desktop columns', async () => {
+  const [html, css] = await Promise.all([
+    readFile(new URL('../gift.html', import.meta.url), 'utf8'),
+    readFile(new URL('../styles.css', import.meta.url), 'utf8'),
+  ]);
+  const pricingSection = html.match(/<section\b[^>]*aria-labelledby="plans-title"[\s\S]*?<\/section>/i)?.[0] ?? '';
+  assert.match(pricingSection, /^\s*<section\b[^>]*>\s*<div\b[^>]*class="story-copy"/i);
+  assert.equal((pricingSection.match(/class="[^"]*\bstory-copy\b[^"]*"/gi) ?? []).length, 1);
+  assert.doesNotMatch(pricingSection, /class="[^"]*\bstory-media\b/);
+  assert.match(pricingSection, /class="[^"]*\bpricing-grid\b/);
+  assert.match(css, /\.story-section\s*>\s*\.story-copy:only-child\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
+});
+
 test('keeps shared marketplace pages responsive without fixed purchase controls', async () => {
   const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
 

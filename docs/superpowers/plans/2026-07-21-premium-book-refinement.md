@@ -14,7 +14,7 @@
 - Preserve both visible `NT$3980` occurrences and the single-offer positioning.
 - Preserve all eight local WebP assets, their accessible alternative text, intrinsic dimensions, and no-unreasonable-cropping behavior.
 - The public LINE URL remains exactly `https://lin.ee/gMMpzNy`.
-- The public payment-report URL remains exactly `https://docs.google.com/forms/d/e/1FAIpQLSffcXc1FyJsZwo8qBXpAna4_lMZ_n04s4t9wWYlo5NSD1qxUQ/viewform`.
+- The payment-report destination is recorded as `[私人付款回報表單]`.
 - The private redemption-form identifier must not appear in `index.html`, `styles.css`, or deployed assets.
 - Remain a static GitHub Pages site with no runtime JavaScript, backend, authentication, cart, timer, or external font request.
 - Mobile body copy remains at least `18px`; interactive targets remain at least `48px` high.
@@ -670,7 +670,7 @@ Expected: every test passes, diff check is silent, and the task branch has no un
 Run a literal search that must return zero production matches for the private form ID:
 
 ```powershell
-$privateId = '1FAIpQLSevM95Op1gL8g8iZqnEKVR5u9s_NSyIo7mgHKp5KTxtpRFABA'
+$privateId = '[私人兌換表單]'
 Select-String -LiteralPath 'index.html','styles.css' -SimpleMatch $privateId
 ```
 

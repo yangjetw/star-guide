@@ -74,10 +74,10 @@
 ## 6. 連結與購買流程
 
 - 官方 LINE：`https://lin.ee/gMMpzNy`。
-- 公開付款／購買回報表單：`https://docs.google.com/forms/d/e/1FAIpQLSffcXc1FyJsZwo8qBXpAna4_lMZ_n04s4t9wWYlo5NSD1qxUQ/viewform`。
+- 付款／購買回報表單：`[私人付款回報表單]`。
 - 橘色首屏按鈕是站內錨點，不開啟 Gamma。
 - 付款回報入口放在價格區與結尾附近，按鈕文字清楚標示用途。
-- 兌換申請表 `1FAIpQLSevM95Op1gL8g8iZqnEKVR5u9s_NSyIo7mgHKp5KTxtpRFABA` 不直接公開在銷售頁；購買者仍經既有兌換碼流程取得申請入口。
+- `[私人兌換表單]` 不直接公開在銷售頁；購買者仍經既有兌換碼流程取得申請入口。
 - 所有外部連結使用安全的新分頁屬性；電子郵件、出生資料或兌換碼不寫入靜態頁面。
 
 ## 7. 響應式與無障礙

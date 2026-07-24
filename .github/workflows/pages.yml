@@ -28,7 +28,7 @@ jobs:
           staging_dir="${{ runner.temp }}/pages-staging"
           rm -rf "$staging_dir"
           mkdir -p "$staging_dir"
-          cp index.html styles.css .nojekyll "$staging_dir/"
+          cp index.html gift.html navigator.html refund.html styles.css .nojekyll "$staging_dir/"
           cp -R assets/ "$staging_dir/assets/"
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

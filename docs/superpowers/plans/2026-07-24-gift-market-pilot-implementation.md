@@ -95,7 +95,7 @@ In `tests/site-content.test.mjs`, keep the existing image, section-order, table 
 ```js
 assert.match(html, /href="gift\.html"/);
 assert.match(html, /把這份理解送給一個家庭/);
-assert.doesNotMatch(html, /href="https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLSffc/);
+assert.doesNotMatch(html, /href="https:\/\/docs[.]google[.]com\/forms/i);
 ```
 
 Remove assertions that require the former one-price card or the former plain-text testimonial quotes.

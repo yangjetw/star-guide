@@ -203,6 +203,10 @@ h3 {
   align-items: center;
 }
 
+.story-section > .story-copy:only-child {
+  grid-column: 1 / -1;
+}
+
 .story-section[data-chapter] {
   width: min(calc(100% - 64px), var(--reading-width));
   margin: 0 auto;
