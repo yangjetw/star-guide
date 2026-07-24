@@ -81,11 +81,14 @@ test('removes retired automation and code labels from every public page', async 
   assert.match(gift, /GIFT-2026-[A-HJ-NP-Z2-9]{4}/);
   assert.doesNotMatch(corpus, /\b(?:TEST|PGG)-/);
   assert.doesNotMatch(corpus, /\bSTAR-[A-Z0-9]{4}-[A-Z0-9]{4}\b/);
+  for (const code of corpus.match(/\b[A-Z]+-\d{4}-[A-Z0-9]{4}\b/g) ?? []) {
+    assert.match(code, /^(?:STAR|GIFT)-\d{4}-[A-HJ-NP-Z2-9]{4}$/);
+  }
   for (const text of [
-    '顧客購買後自行轉送',
-    '同時主動贈送',
+    '顧客購買後自用或轉送',
+    '品牌主動贈送',
     '使用同一份兌換流程',
-    '取得有效兌換碼後，另可連兌封屬申請流程',
+    '取得有效兌換碼後，即可進入專屬申請流程',
   ]) {
     assert.match(corpus, new RegExp(text));
   }
