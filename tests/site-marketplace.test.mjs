@@ -54,14 +54,10 @@ test('removes retired automation and code labels from every public page', async 
   }
 });
 
-test('routes every purchase-related link to the approved LINE consultation', async () => {
+test('allows only the approved LINE destination for every public external link', async () => {
   const htmlPages = await Promise.all(pages.map(readPage));
-  const purchaseTerms = /購買|付款|結帳|下單|立即購買|立即付款/;
-  const paymentDestination = /href=["'][^"']*(?:checkout|payment|pay|order|cart|forms)[^"']*["']/i;
   for (const anchor of htmlPages.flatMap(anchors)) {
-    const visibleText = anchor.replace(/<[^>]+>/g, '');
-    if (purchaseTerms.test(visibleText) || paymentDestination.test(anchor)) {
-      assert.match(anchor, /href=["']https:\/\/lin\.ee\/gMMpzNy["']/i);
-    }
+    const href = anchor.match(/\bhref=["']((?:https?:)?\/\/[^"']+)["']/i)?.[1];
+    if (href) assert.equal(href, lineUrl, `${href} is not an approved public-link destination`);
   }
 });
