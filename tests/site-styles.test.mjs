@@ -137,7 +137,36 @@ test('keeps shared marketplace pages responsive without fixed purchase controls'
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.testimonial-gallery\s*\{[^}]*grid-template-columns:\s*1fr/s);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.page-shell\s*\{[^}]*padding:\s*20px/s);
   assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?\.subpage-hero h1\s*\{[^}]*font-size:/s);
-  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?\.subpage-hero\s+\.button\s*\{[^}]*width:\s*100%/s);
+  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?\.subpage-hero\s+\.button,\s*\.pricing-grid\s+\.button-primary,\s*\.gift-bridge\s+\.button\s*\{[^}]*width:\s*100%/s);
   assert.match(css, /@media\s*\(max-width:\s*320px\)[\s\S]*?\.subpage-hero\s*\{[^}]*padding-inline:\s*20px/s);
   assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/s);
+});
+
+test('binds shared responsive styles to the hooks used by all four pages', async () => {
+  const [css, index, gift, navigator, refund] = await Promise.all([
+    readFile(new URL('../styles.css', import.meta.url), 'utf8'),
+    readFile(new URL('../index.html', import.meta.url), 'utf8'),
+    readFile(new URL('../gift.html', import.meta.url), 'utf8'),
+    readFile(new URL('../navigator.html', import.meta.url), 'utf8'),
+    readFile(new URL('../refund.html', import.meta.url), 'utf8'),
+  ]);
+
+  for (const page of [gift, navigator, refund]) {
+    assert.match(page, /<div\b[^>]*class="[^"]*\bpage-shell\b[^"]*"/i);
+    assert.match(page, /<section\b[^>]*class="[^"]*\bsubpage-hero\b[^"]*"/i);
+  }
+
+  assert.match(gift, /<div\b[^>]*class="[^"]*\bpricing-grid\b[^"]*"/i);
+  assert.match(gift, /class="[^"]*\bgift-card-preview\b[^"]*"[\s\S]*?STAR-7K4P-9Q2D/i);
+  assert.match(refund, /<section\b[^>]*class="[^"]*\bpolicy-section\b[^"]*"/i);
+  assert.match(index, /<p\b[^>]*class="[^"]*\bsection-note\b[^"]*"/i);
+  assert.match(index, /<div\b[^>]*class="[^"]*\btestimonial-gallery\b[^"]*"[\s\S]*?<figure\b[\s\S]*?<figure\b[\s\S]*?<figure\b/i);
+
+  for (const page of [index, gift, navigator, refund]) {
+    assert.match(page, /<section\b[^>]*class="[^"]*\bgift-bridge\b[^"]*"/i);
+  }
+
+  assert.match(css, /\.gift-bridge\s*\{[^}]*border:\s*1px solid var\(--color-border\)[^}]*border-radius:\s*28px/s);
+  assert.match(css, /\.section-note\s*\{[^}]*color:\s*var\(--color-muted\)/s);
+  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?\.subpage-hero\s+\.button,\s*\.pricing-grid\s+\.button-primary,\s*\.gift-bridge\s+\.button\s*\{[^}]*width:\s*100%/s);
 });

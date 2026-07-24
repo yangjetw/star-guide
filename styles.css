@@ -448,6 +448,20 @@ blockquote,
   border-top: 0;
 }
 
+.gift-bridge {
+  width: min(calc(100% - 64px), var(--reading-width));
+  margin: 0 auto 48px;
+  padding: clamp(32px, 5vw, 52px);
+  border: 1px solid var(--color-border);
+  border-radius: 28px;
+  background: #fff3ec;
+  box-shadow: var(--shadow-card);
+}
+
+.gift-bridge > :last-child {
+  margin-bottom: 0;
+}
+
 .price-section {
   width: min(calc(100% - 64px), var(--reading-width));
   margin: 0 auto;
@@ -537,6 +551,11 @@ thead {
   width: min(calc(100% - 64px), var(--reading-width));
   margin: 0 auto;
   padding: clamp(64px, 8vw, 92px) 0;
+}
+
+.section-note {
+  margin: -12px 0 28px;
+  color: var(--color-muted);
 }
 
 .testimonial-list blockquote {
@@ -633,7 +652,8 @@ thead {
   .price-section,
   .comparison-section,
   .testimonial-section,
-  .closing-section {
+  .closing-section,
+  .gift-bridge {
     width: min(calc(100% - 48px), var(--reading-width));
   }
 }
@@ -680,11 +700,17 @@ thead {
     border-radius: 24px;
   }
 
+  .gift-bridge {
+    padding: 28px 20px;
+    border-radius: 24px;
+  }
+
   .story-section[data-chapter],
   .price-section,
   .comparison-section,
   .testimonial-section,
-  .closing-section {
+  .closing-section,
+  .gift-bridge {
     width: calc(100% - 32px);
   }
 
@@ -773,7 +799,9 @@ thead {
     font-size: clamp(34px, 11vw, 40px);
   }
 
-  .subpage-hero .button {
+  .subpage-hero .button,
+  .pricing-grid .button-primary,
+  .gift-bridge .button {
     width: 100%;
   }
 }
