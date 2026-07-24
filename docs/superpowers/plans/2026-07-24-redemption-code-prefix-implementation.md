@@ -48,7 +48,7 @@ Add assertions equivalent to:
 assert.match(gift, /STAR-2026-[A-HJ-NP-Z2-9]{4}/);
 assert.match(gift, /GIFT-2026-[A-HJ-NP-Z2-9]{4}/);
 assert.doesNotMatch(corpus, /\b(?:TEST|PGG)-/);
-assert.doesNotMatch(corpus, /\bSTAR-[A-Z0-9]{4}-[A-Z0-9]{4}\b/);
+assert.doesNotMatch(corpus, /\bSTAR-(?=[A-Z0-9]{0,3}[A-Z])[A-Z0-9]{4}-[A-Z0-9]{4}\b/);
 ```
 
 - [ ] **Step 2: Add source and shared-flow assertions**
@@ -152,7 +152,7 @@ Run:
 ```powershell
 node --test
 git diff --check
-rg -n "\b(?:TEST|PGG)-|STAR-[A-Z0-9]{4}-[A-Z0-9]{4}" index.html gift.html navigator.html refund.html README.md
+rg -n "\b(?:TEST|PGG)-|STAR-[A-Z0-9]*[A-Z][A-Z0-9]*-[A-Z0-9]{4}\b" index.html gift.html navigator.html refund.html README.md
 ```
 
 Expected: all tests PASS, `git diff --check` returns no errors, and the retired/forbidden-code scan returns no matches.
