@@ -282,17 +282,6 @@ test('routes the story into the gift marketplace without its retired payment for
   assert.match(html, /href="gift\.html"/);
   assert.match(html, /把這份理解送給一個家庭/);
   assert.doesNotMatch(html, /href="https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLSffc/);
-  return;
-  assert.equal((html.match(/NT\$3980/g) ?? []).length >= 2, true);
-  assert.equal(html.includes('自用方案'), false);
-  assert.equal(html.includes('好友分享包'), false);
-  assert.equal(html.includes('團購祝福組'), false);
-  assert.doesNotMatch(html, /<section[^>]+id="faq"/);
-  assert.doesNotMatch(html, /<nav\b|mobile-purchase|plan-card|<details\b/i);
-  const ids = ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'pricing', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'closing'];
-  assert.deepEqual([...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]), ids);
-  assert.ok((html.match(new RegExp(lineUrl, 'g')) ?? []).length >= 2);
-  assert.ok((html.match(new RegExp(paymentReportUrl, 'g')) ?? []).length >= 2);
 });
 
 test('retains the complete exact visible copy in every Gamma section', async () => {

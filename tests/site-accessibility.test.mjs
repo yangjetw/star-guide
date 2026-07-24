@@ -44,6 +44,7 @@ test('keeps each public page keyboard-accessible and secures every external link
     assert.match(html, /<main\b[^>]*id=["']main-content["']/i);
     assert.match(html, /<a[^>]+class=["'][^"']*skip-link[^"']*["'][^>]*href=["']#main-content["']/i);
     for (const anchor of externalAnchors(html)) {
+      assert.doesNotMatch(anchor, /href=["']http:\/\//i);
       assert.match(anchor, /target=["']_blank["']/i);
       assert.match(anchor, /rel=["']noopener noreferrer["']/i);
     }
