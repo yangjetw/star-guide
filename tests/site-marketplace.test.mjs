@@ -35,7 +35,7 @@ test('publishes the approved gift prices and approval-safe calls to action', asy
   assert.doesNotMatch(html, /匯款|立即付款|LINE Bank|街口付款/i);
 });
 
-test('uses three local testimonial screenshots and STAR gift language', async () => {
+test('uses three local testimonial screenshots with approved trust copy', async () => {
   const html = await readPage('index.html');
   for (const asset of ['testimonial-1.jpg', 'testimonial-2.jpg', 'testimonial-3.jpg']) {
     assert.ok(existsSync(new URL(`assets/images/${asset}`, root)));
@@ -43,7 +43,7 @@ test('uses three local testimonial screenshots and STAR gift language', async ()
   }
   assert.ok(html.includes('家長們的真實心聲'));
   assert.ok(html.includes('經同意分享'));
-  assert.match(html, /STAR-[A-Z0-9]{4}-[A-Z0-9]{4}/);
+  assert.match(html, /<figure\b[^>]*>\s*<img\b[^>]*loading=["']lazy["'][^>]*width=["']\d+["'][^>]*height=["']\d+["']/i);
 });
 
 test('removes retired automation and code labels from every public page', async () => {

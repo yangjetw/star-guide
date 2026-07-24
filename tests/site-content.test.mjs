@@ -94,7 +94,7 @@ const orderedMarkers = [
   '每個孩子都是獨特的',
   '我們怎麼做的？',
   '❌做測驗，❌填問卷，✅只要：',
-  '方案價格？',
+  '一份能被慢慢打開的祝福',
   '你將得到什麼？',
   '我們的指南為什麼值這個價？',
   '指南帶來的轉變',
@@ -152,12 +152,6 @@ const expectedSectionText = {
     '選填，用於更完整的關係互動分析',
     '資料僅用於本次內容客製化。應用範圍不涉及個人識別，敬請安心。',
   ],
-  pricing: [
-    '方案價格？',
-    'NT$3980',
-    '包含1位孩子的完整分析報告，以及家長與孩子的節奏互動解讀',
-    '完成付款後回報',
-  ],
   deliverables: [
     '你將得到什麼？',
     '這份指南不只是理論，更是實用的親子溝通工具書。每一頁都經過精心設計，讓你能輕鬆理解並立即應用於日常中。',
@@ -213,12 +207,7 @@ const expectedSectionText = {
   ],
   testimonials: [
     '家長們的真實心聲',
-    '「特質的部份確實是這樣，我的月摩羯也是。」',
-    '7歲娃的媽媽',
-    '「看完後想每年都看一次，提醒自己多一點包容。」',
-    '5歲娃的媽媽',
-    '「寫得太準了，根本就是我家小孩的個性寫照。」',
-    '4歲娃的爸爸',
+    '來自實際使用《親子成長指南》的家庭，經同意分享。',
   ],
   closing: [
     '開始你的親子理解之旅',
@@ -227,7 +216,7 @@ const expectedSectionText = {
     '孩子從來不是「不懂事」，只是用另一種節奏生活。這份指南，讓你能用他的節奏靠近、理解、擁抱。理解之後，行動自然發生。這就是親子之間的真正靠近。',
     '《親子成長指南》，獻給願意陪孩子一起成長的大人。',
     '加入官方 Line',
-    '完成付款後回報',
+    '看看送禮方式',
   ],
 };
 
@@ -280,7 +269,7 @@ test('reproduces the original Gamma story in order', async () => {
 test('routes the story into the gift marketplace without its retired payment form', async () => {
   const html = await read('index.html');
   assert.match(html, /href="gift\.html"/);
-  assert.match(html, /把這份理解送給一個家庭/);
+  assert.match(html, /把這份理解，送給一個你在乎的家庭/);
   assert.doesNotMatch(html, /href="https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLSffc/);
 });
 
@@ -309,10 +298,10 @@ test('retains every original Gamma section structure', async () => {
   const comparisonBody = comparison.match(/<tbody[\s\S]*?<\/tbody>/i)?.[0] ?? '';
   assert.equal((comparisonBody.match(/<tr\b/gi) ?? []).length, 5);
   assert.equal((transformation.match(/<article\b/gi) ?? []).length, 3);
-  assert.equal((testimonials.match(/<blockquote\b/gi) ?? []).length, 3);
+  assert.equal((testimonials.match(/<figure\b/gi) ?? []).length, 3);
   assert.equal((method.match(/<li\b/gi) ?? []).length, 4);
   assert.equal((closing.match(new RegExp(lineUrl, 'g')) ?? []).length, 1);
-  assert.equal((closing.match(new RegExp(paymentReportUrl, 'g')) ?? []).length, 1);
+  assert.equal((closing.match(/href="gift\.html"/g) ?? []).length, 1);
 });
 
 test('retains the complete exact comparison-table cell copy', async () => {
@@ -337,6 +326,6 @@ test('identifies comparison table column and row headers for assistive technolog
 test('retains the exact visible site chrome copy', async () => {
   const html = await read('index.html');
   assert.equal(visibleText(html.match(/<a\b[^>]*class="skip-link"[\s\S]*?<\/a>/i)?.[0] ?? ''), '跳到主要內容');
-  assert.equal(visibleText(html.match(/<header\b[\s\S]*?<\/header>/i)?.[0] ?? ''), '赫爾墨斯的小宇宙 加入官方 Line');
-  assert.equal(visibleText(html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? ''), '© 2026 赫爾墨斯的小宇宙');
+  assert.equal(visibleText(html.match(/<header\b[\s\S]*?<\/header>/i)?.[0] ?? ''), '指南介紹 送一份祝福 導航者 購買與退款 官方 LINE');
+  assert.equal(visibleText(html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? ''), '赫爾墨斯的小宇宙 ｜星學會有限公司｜統一編號 69708677 astrokidsguide@gmail.com ｜官方 LINE ｜購買與退款政策');
 });
