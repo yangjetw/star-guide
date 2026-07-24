@@ -80,6 +80,7 @@ test('removes retired automation and code labels from every public page', async 
   assert.match(gift, /STAR-2026-[A-HJ-NP-Z2-9]{4}/);
   assert.match(gift, /GIFT-2026-[A-HJ-NP-Z2-9]{4}/);
   assert.doesNotMatch(corpus, /\b(?:TEST|PGG)-/);
+  assert.doesNotMatch(corpus, /\bSTAR-(?=[A-Z0-9]{0,3}[A-Z])[A-Z0-9]{4}-[A-Z0-9]{4}\b/);
   for (const code of corpus.match(/\b[A-Z]+-\d{4}-[A-Z0-9]{4}\b/g) ?? []) {
     assert.match(code, /^(?:STAR|GIFT)-\d{4}-[A-HJ-NP-Z2-9]{4}$/);
   }
