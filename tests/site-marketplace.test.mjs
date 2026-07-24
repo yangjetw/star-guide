@@ -10,6 +10,10 @@ const sellerFacts = ['星學會有限公司', '69708677', 'astrokidsguide@gmail.
 
 const readPage = (name) => readFile(new URL(name, root), 'utf8');
 const anchors = (html) => html.match(/<a\b[^>]*>[\s\S]*?<\/a>/gi) ?? [];
+const redemptionCodeCandidates = (text) => (
+  text.match(/(?<![A-Za-z0-9-])[A-Za-z]+-[A-Za-z0-9]{2,4}-[A-Za-z0-9]{4}(?![A-Za-z0-9-])/g) ?? []
+);
+const approvedRedemptionCode = /^(?:STAR|GIFT)-\d{4}-[A-HJ-NP-Z2-9]{4}$/;
 
 test('publishes four semantic pages with consistent seller disclosure', async () => {
   for (const page of pages) {
@@ -49,6 +53,7 @@ test('presents the public gift-card brand and complete delivery contents', async
 test('explains code security, recipient data use, support, and paper invoice handling', async () => {
   const html = await readPage('refund.html');
   for (const phrase of [
+    '兌換碼沒有使用期限',
     '兌換碼不可公開',
     '不可重複使用',
     '客製 PDF 指南製作與交付',
@@ -81,8 +86,8 @@ test('removes retired automation and code labels from every public page', async 
   assert.match(gift, /GIFT-2026-[A-HJ-NP-Z2-9]{4}/);
   assert.doesNotMatch(corpus, /\b(?:TEST|PGG)-/);
   assert.doesNotMatch(corpus, /\bSTAR-(?=[A-Z0-9]{0,3}[A-Z])[A-Z0-9]{4}-[A-Z0-9]{4}\b/);
-  for (const code of corpus.match(/\b[A-Z]+-\d{4}-[A-Z0-9]{4}\b/g) ?? []) {
-    assert.match(code, /^(?:STAR|GIFT)-\d{4}-[A-HJ-NP-Z2-9]{4}$/);
+  for (const code of redemptionCodeCandidates(corpus)) {
+    assert.match(code, approvedRedemptionCode);
   }
   for (const text of [
     '顧客購買後自用或轉送',
@@ -92,6 +97,20 @@ test('removes retired automation and code labels from every public page', async 
   ]) {
     assert.match(corpus, new RegExp(text));
   }
+});
+
+test('rejects malformed ASCII redemption-code candidates without flagging format templates', () => {
+  for (const mutation of [
+    'STAR-26-A7K9',
+    'PROMO-YYYY-A7K9',
+    'gift-2026-A7K9',
+    'STAR-2026-A7I9',
+  ]) {
+    assert.deepEqual(redemptionCodeCandidates(mutation), [mutation]);
+    assert.doesNotMatch(mutation, approvedRedemptionCode);
+  }
+
+  assert.deepEqual(redemptionCodeCandidates('STAR-年份-XXXX／GIFT-年份-XXXX'), []);
 });
 
 test('allows only the approved LINE destination for every public external link', async () => {

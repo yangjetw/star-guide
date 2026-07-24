@@ -170,8 +170,12 @@ test('binds shared responsive styles to the hooks used by all four pages', async
   }
 
   assert.match(gift, /<div\b[^>]*class="[^"]*\bpricing-grid\b[^"]*"/i);
-  assert.match(gift, /class="[^"]*\bgift-card-preview\b[^"]*"[\s\S]*?STAR-2026-[A-HJ-NP-Z2-9]{4}/i);
-  assert.match(gift, /class="[^"]*\bgift-card-preview\b[^"]*"[\s\S]*?GIFT-2026-[A-HJ-NP-Z2-9]{4}/i);
+  const giftCardPreview = gift.match(
+    /<p\b[^>]*class=["'][^"']*\bgift-card-preview\b[^"']*["'][^>]*>[\s\S]*?<\/p>/i,
+  )?.[0] ?? '';
+  assert.match(giftCardPreview, /STAR-2026-[A-HJ-NP-Z2-9]{4}/);
+  assert.match(giftCardPreview, /GIFT-2026-[A-HJ-NP-Z2-9]{4}/);
+  assert.doesNotMatch(giftCardPreview, /(?:STAR|GIFT)-XXXX-XXXX/i);
   assert.match(refund, /<section\b[^>]*class="[^"]*\bpolicy-section\b[^"]*"/i);
   assert.match(index, /<p\b[^>]*class="[^"]*\bsection-note\b[^"]*"/i);
   assert.match(index, /<div\b[^>]*class="[^"]*\btestimonial-gallery\b[^"]*"[\s\S]*?<figure\b[\s\S]*?<figure\b[\s\S]*?<figure\b/i);
