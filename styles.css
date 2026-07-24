@@ -76,6 +76,30 @@ a {
   gap: 24px;
 }
 
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px 18px;
+}
+
+.site-nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.site-nav .nav-line {
+  padding-inline: 16px;
+  border-radius: 999px;
+  background: var(--color-line);
+  color: #102b1c;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -100,6 +124,16 @@ h3 {
   width: min(calc(100% - 40px), 1080px);
   margin: 28px auto 56px;
   overflow: clip;
+  background: var(--color-paper);
+  border: 1px solid rgb(215 190 171 / 45%);
+  border-radius: 36px;
+  box-shadow: var(--shadow-paper);
+}
+
+.page-shell {
+  width: min(calc(100% - 40px), 1080px);
+  margin: 28px auto 56px;
+  padding: clamp(32px, 5vw, 64px);
   background: var(--color-paper);
   border: 1px solid rgb(215 190 171 / 45%);
   border-radius: 36px;
@@ -335,6 +369,85 @@ blockquote,
   object-fit: cover;
 }
 
+.subpage-hero {
+  margin-bottom: clamp(48px, 7vw, 76px);
+  padding: clamp(32px, 6vw, 72px);
+  background: linear-gradient(135deg, var(--color-night), #30345d);
+  border-radius: 32px;
+  color: rgb(255 255 255 / 84%);
+}
+
+.subpage-hero h1,
+.subpage-hero h2,
+.subpage-hero .eyebrow {
+  color: #fff;
+}
+
+.subpage-hero .eyebrow,
+.subpage-hero .accent {
+  color: #ffc0a9;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.pricing-grid > article {
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.pricing-grid > article .button {
+  margin-top: auto;
+}
+
+.gift-card-preview {
+  padding: clamp(24px, 4vw, 40px);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: linear-gradient(145deg, #fff, #fff3ec);
+  box-shadow: var(--shadow-card);
+}
+
+.testimonial-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.testimonial-gallery figure {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.testimonial-gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.policy-section {
+  padding: clamp(36px, 6vw, 64px) 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.policy-section:first-of-type {
+  padding-top: 0;
+  border-top: 0;
+}
+
 .price-section {
   width: min(calc(100% - 64px), var(--reading-width));
   margin: 0 auto;
@@ -512,6 +625,10 @@ thead {
     width: min(calc(100% - 28px), 960px);
   }
 
+  .page-shell {
+    width: min(calc(100% - 28px), 960px);
+  }
+
   .story-section[data-chapter],
   .price-section,
   .comparison-section,
@@ -544,6 +661,23 @@ thead {
   .site-header {
     width: min(calc(100% - 32px), var(--content-width));
     min-height: 68px;
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .page-shell {
+    width: calc(100% - 32px);
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  .subpage-hero {
+    margin-bottom: 40px;
+    padding: 28px 22px;
+    border-radius: 24px;
   }
 
   .story-section[data-chapter],
@@ -590,6 +724,14 @@ thead {
     grid-template-columns: 1fr;
   }
 
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .testimonial-gallery {
+    grid-template-columns: 1fr;
+  }
+
   .story-media-portrait {
     aspect-ratio: 4 / 5;
   }
@@ -625,6 +767,33 @@ thead {
   .button-row .button {
     flex: 0 0 auto;
     width: 100%;
+  }
+
+  .subpage-hero h1 {
+    font-size: clamp(34px, 11vw, 40px);
+  }
+
+  .subpage-hero .button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 320px) {
+  .site-nav {
+    gap: 6px 12px;
+  }
+
+  .site-nav a {
+    font-size: 0.82rem;
+  }
+
+  .subpage-hero {
+    padding-inline: 20px;
+  }
+
+  .subpage-hero h1 {
+    font-size: 32px;
+    overflow-wrap: anywhere;
   }
 }
 

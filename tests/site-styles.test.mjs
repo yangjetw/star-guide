@@ -112,3 +112,32 @@ test('keeps the inset hero centered through tablet and mobile widths', async () 
   assert.doesNotMatch(tabletRules, /\.hero-section\s*,/);
   assert.match(mobileHeroRule, /margin:\s*12px/);
 });
+
+test('extends the premium book language across shared marketplace pages', async () => {
+  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+
+  assert.match(css, /\.site-nav\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*wrap/s);
+  assert.match(css, /\.page-shell\s*\{[^}]*background:\s*var\(--color-paper\)[^}]*border-radius:\s*36px[^}]*box-shadow:\s*var\(--shadow-paper\)/s);
+  assert.match(css, /\.subpage-hero\s*\{[^}]*background:[^;}]*var\(--color-night\)[^}]*border-radius:\s*32px/s);
+  assert.match(css, /\.pricing-grid\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+  assert.match(css, /\.gift-card-preview\s*\{[^}]*border:\s*1px solid var\(--color-border\)[^}]*border-radius:\s*24px/s);
+  assert.match(css, /\.testimonial-gallery\s*\{[^}]*display:\s*grid/s);
+  assert.match(css, /\.testimonial-gallery img\s*\{[^}]*object-fit:\s*contain/s);
+  assert.match(css, /\.policy-section\s*\{[^}]*border-top:\s*1px solid var\(--color-border\)/s);
+});
+
+test('keeps shared marketplace pages responsive without fixed purchase controls', async () => {
+  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+
+  assert.match(css, /body\s*\{[^}]*font-size:\s*clamp\(18px,/s);
+  assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/s);
+  assert.match(css, /@media\s*\(max-width:\s*1024px\)[\s\S]*?\.page-shell\s*\{[^}]*width:/s);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav\s*\{[^}]*flex-wrap:\s*wrap/s);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.pricing-grid\s*\{[^}]*grid-template-columns:\s*1fr/s);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.testimonial-gallery\s*\{[^}]*grid-template-columns:\s*1fr/s);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.page-shell\s*\{[^}]*padding:\s*20px/s);
+  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?\.subpage-hero h1\s*\{[^}]*font-size:/s);
+  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?\.subpage-hero\s+\.button\s*\{[^}]*width:\s*100%/s);
+  assert.match(css, /@media\s*\(max-width:\s*320px\)[\s\S]*?\.subpage-hero\s*\{[^}]*padding-inline:\s*20px/s);
+  assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/s);
+});
