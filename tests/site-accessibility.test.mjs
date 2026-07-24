@@ -8,7 +8,7 @@ const pages = ['index.html', 'gift.html', 'navigator.html', 'refund.html'];
 
 const readPage = (name) => readFile(new URL(name, root), 'utf8');
 const externalAnchors = (html) => (html.match(/<a\b[^>]*>/gi) ?? [])
-  .filter((anchor) => /href=["']https?:\/\//i.test(anchor));
+  .filter((anchor) => /href=["'](?:https?:)?\/\//i.test(anchor));
 
 async function siteFiles() {
   const [html, css] = await Promise.all([
@@ -45,6 +45,7 @@ test('keeps each public page keyboard-accessible and secures every external link
     assert.match(html, /<a[^>]+class=["'][^"']*skip-link[^"']*["'][^>]*href=["']#main-content["']/i);
     for (const anchor of externalAnchors(html)) {
       assert.doesNotMatch(anchor, /href=["']http:\/\//i);
+      assert.doesNotMatch(anchor, /href=["']\/\//i);
       assert.match(anchor, /target=["']_blank["']/i);
       assert.match(anchor, /rel=["']noopener noreferrer["']/i);
     }

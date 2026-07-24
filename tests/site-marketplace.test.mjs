@@ -9,6 +9,7 @@ const lineUrl = 'https://lin.ee/gMMpzNy';
 const sellerFacts = ['星學會有限公司', '69708677', 'astrokidsguide@gmail.com'];
 
 const readPage = (name) => readFile(new URL(name, root), 'utf8');
+const anchors = (html) => html.match(/<a\b[^>]*>[\s\S]*?<\/a>/gi) ?? [];
 
 test('publishes four semantic pages with consistent seller disclosure', async () => {
   for (const page of pages) {
@@ -27,7 +28,7 @@ test('publishes the approved gift prices and approval-safe calls to action', asy
   for (const price of ['NT$3,980', 'NT$7,600', 'NT$17,900']) assert.ok(html.includes(price));
   assert.ok(html.includes('10 份以上'));
   assert.ok(html.includes('正式線上販售將於票券服務審核完成後開放'));
-  const inquiryCtas = (html.match(/<a\b[^>]*>[\s\S]*?<\/a>/gi) ?? [])
+  const inquiryCtas = anchors(html)
     .filter((anchor) => anchor.replace(/<[^>]+>/g, '').includes('洽詢購買'));
   assert.equal(inquiryCtas.length >= 3, true);
   for (const anchor of inquiryCtas) assert.match(anchor, /href=["']https:\/\/lin\.ee\/gMMpzNy["']/i);
@@ -47,8 +48,20 @@ test('uses three local testimonial screenshots and STAR gift language', async ()
 
 test('removes retired automation and code labels from every public page', async () => {
   const corpus = (await Promise.all(pages.map(readPage))).join('\n');
-  assert.doesNotMatch(corpus, /n8n|TEST-|PGG-|https:\/\/lin\.ee\/UDM1hMc|https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLSffc|匯款|立即付款|LINE Bank|街口付款/i);
+  assert.doesNotMatch(corpus, /n8n|TEST-|PGG-|https:\/\/lin\.ee\/UDM1hMc|https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLSffc|匯款|立即付款|LINE Bank|街口付款|銀行|帳號|收款|QR\s*(?:code)?/i);
   for (const code of corpus.match(/\b(?:[A-Z0-9]{4}-){2}[A-Z0-9]{4}\b/g) ?? []) {
     assert.match(code, /^STAR-[A-Z0-9]{4}-[A-Z0-9]{4}$/);
+  }
+});
+
+test('routes every purchase-related link to the approved LINE consultation', async () => {
+  const htmlPages = await Promise.all(pages.map(readPage));
+  const purchaseTerms = /購買|付款|結帳|下單|立即購買|立即付款/;
+  const paymentDestination = /href=["'][^"']*(?:checkout|payment|pay|order|cart|forms)[^"']*["']/i;
+  for (const anchor of htmlPages.flatMap(anchors)) {
+    const visibleText = anchor.replace(/<[^>]+>/g, '');
+    if (purchaseTerms.test(visibleText) || paymentDestination.test(anchor)) {
+      assert.match(anchor, /href=["']https:\/\/lin\.ee\/gMMpzNy["']/i);
+    }
   }
 });
