@@ -10,9 +10,9 @@
 
 ## Global Constraints
 
-- 使用現有申請表 ID `1pqR21isBFSTI6CabhXmYtONU43SDJTUzGeHygSWZEjo` 與公開表單網址。
-- 使用現有回覆試算表 ID `1S8pRutqtrLYWt7_eC7y5jG7OC9iJiOpivclApSMrgpo`。
-- 保留既有「兌換碼」問題本身及 `entry.1403771939`；不得刪除後重建。
+- 使用現有正式申請表及公開網址；識別碼只存於 Apps Script Properties 的 `APPLICATION_FORM_ID`，不得寫入 Git。
+- 使用現有正式回覆試算表；識別碼只存於 Apps Script Properties 的 `RESPONSE_SPREADSHEET_ID`，不得寫入 Git。
+- 保留既有「兌換碼」問題本身及預填欄位識別；識別只存於 `REDEMPTION_ENTRY_ID`，不得刪除後重建或寫入 Git。
 - `STAR-年份-XXXX` 與 `GIFT-年份-XXXX` 是對外格式簡稱；實際系統延續目前驗證規則，使用 `STAR-YYYY-XXXXXX` 與 `GIFT-YYYY-XXXXXX` 六碼英數亂數，不使用 `TEST` 前綴。
 - 不使用 n8n；排程只使用 Google Apps Script installable triggers。
 - 孩子出生日期、時間、城市、性別及時間可靠確認全部必填。
@@ -49,8 +49,8 @@
 ### Mirror and modify
 
 - `apps-script/star-guide/Code.gs` — 從目前綁定試算表的 Apps Script 匯出；保留既有發碼、兌換、地理編碼、時區與寄信流程，將表單回覆讀取改成欄名查找。
-- Live Google Form `1pqR21isBFSTI6CabhXmYtONU43SDJTUzGeHygSWZEjo` — 依合約重整五個區段。
-- Live Google Sheet `1S8pRutqtrLYWt7_eC7y5jG7OC9iJiOpivclApSMrgpo` — 新增研究工作表，不刪除歷史回覆。
+- Live Google Form（由 `APPLICATION_FORM_ID` 指定）— 依合約重整五個區段。
+- Live Google Sheet（由 `RESPONSE_SPREADSHEET_ID` 指定）— 新增研究工作表，不刪除歷史回覆。
 - Live bound Apps Script project — 與 `apps-script/star-guide/*.gs` 同步。
 
 ---
@@ -73,10 +73,10 @@
 ```markdown
 ## 正式資源
 
-- 申請表 ID：1pqR21isBFSTI6CabhXmYtONU43SDJTUzGeHygSWZEjo
-- 公開表單：1FAIpQLSevM95Op1gL8g8iZqnEKVR5u9s_NSyIo7mgHKp5KTxtpRFABA
-- 回覆試算表：1S8pRutqtrLYWt7_eC7y5jG7OC9iJiOpivclApSMrgpo
-- 兌換碼預填欄位：entry.1403771939
+- 申請表：由 Apps Script Property `APPLICATION_FORM_ID` 指定
+- 公開表單網址：只記錄於星學會的私人營運文件，不提交 Git
+- 回覆試算表：由 Apps Script Property `RESPONSE_SPREADSHEET_ID` 指定
+- 兌換碼預填欄位：由 Apps Script Property `REDEMPTION_ENTRY_ID` 指定
 ```
 
 - [ ] **Step 2: 在 Google Drive 建立兩份備份**
@@ -100,7 +100,7 @@
 ## 變更前基準
 
 - 申請表區段數：2
-- 兌換碼題目 ID：1403771939
+- 兌換碼題目 ID：核對後只存於 `REDEMPTION_ENTRY_ID`
 - 表單回覆目的地：表單回應 2
 - Apps Script 觸發器：逐項記錄名稱、事件來源與執行函式
 - Script Properties：只記錄 key 名稱，不記錄 API 金鑰值
@@ -143,9 +143,9 @@ git commit -m "chore: mirror live guide workflow"
 
 ```javascript
 var STAR_GUIDE_CONFIG = Object.freeze({
-  applicationFormId: '1pqR21isBFSTI6CabhXmYtONU43SDJTUzGeHygSWZEjo',
-  responseSpreadsheetId: '1S8pRutqtrLYWt7_eC7y5jG7OC9iJiOpivclApSMrgpo',
-  redemptionEntryId: '1403771939',
+  applicationFormIdProperty: 'APPLICATION_FORM_ID',
+  responseSpreadsheetIdProperty: 'RESPONSE_SPREADSHEET_ID',
+  redemptionEntryIdProperty: 'REDEMPTION_ENTRY_ID',
   applicationSections: 5,
   studyPrefix: 'SGR',
   operationalRetentionDays: 90,
@@ -185,7 +185,7 @@ import { loadAppsScriptFiles } from './apps-script-loader.mjs';
 const context = loadAppsScriptFiles(['apps-script/star-guide/Config.gs']);
 
 test('application form preserves the redemption question', () => {
-  assert.equal(context.STAR_GUIDE_CONFIG.redemptionEntryId, '1403771939');
+  assert.equal(context.STAR_GUIDE_CONFIG.redemptionEntryIdProperty, 'REDEMPTION_ENTRY_ID');
   assert.ok(context.APPLICATION_FORM_SPEC.some(
     item => item.title === '兌換碼' && item.preserveExisting === true && item.required === true
   ));
@@ -486,7 +486,7 @@ function findUniqueItemByTitle_(form, title) {
 3. 刪除所有不在新規格且不需保留的舊題目；不得刪除兌換碼 item。
 4. 依 `APPLICATION_FORM_SPEC` 新增／移動五個區段與題目。
 5. 設定表單標題、說明、進度列、成功訊息與回覆收集設定。
-6. 以現有兌換碼 item 產生測試預填 URL，確認包含 `entry.1403771939`。
+6. 以現有兌換碼 item 產生測試預填 URL，確認包含 Script Property `REDEMPTION_ENTRY_ID` 對應的欄位識別。
 7. 若兌換碼 ID 改變，立即丟出錯誤並停止，不得發布。
 
 - [ ] **Step 3: 在備份表單先演練**
