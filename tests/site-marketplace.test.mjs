@@ -82,6 +82,9 @@ test('uses three local testimonial screenshots with approved trust copy', async 
 
 test('routes navigator applications directly to the approved public form', async () => {
   const html = await readPage('navigator.html');
+  const formAnchor = anchors(html).find((anchor) => anchor.includes(navigatorFormUrl)) ?? '';
+  assert.match(formAnchor, /\btarget=["']_blank["']/i);
+  assert.match(formAnchor, /\brel=["'][^"']*\bnoopener\b[^"']*\bnoreferrer\b[^"']*["']/i);
   assert.match(html, new RegExp(`<a\\b[^>]*class=["'][^"']*button-primary[^"']*["'][^>]*href=["']${navigatorFormUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["'][^>]*>填寫導航者申請表<\\/a>`, 'i'));
   assert.match(html, /填寫前有疑問？[\s\S]*?官方 LINE/i);
 });
