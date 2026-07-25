@@ -6,6 +6,7 @@ import { test } from 'node:test';
 const root = new URL('../', import.meta.url);
 const pages = ['index.html', 'gift.html', 'navigator.html', 'refund.html'];
 const lineUrl = 'https://lin.ee/gMMpzNy';
+const navigatorFormUrl = 'https://forms.gle/GsUYYrCTFfHkA6RE8';
 const sellerFacts = ['星學會有限公司', '69708677', 'astrokidsguide@gmail.com'];
 
 const readPage = (name) => readFile(new URL(name, root), 'utf8');
@@ -79,6 +80,15 @@ test('uses three local testimonial screenshots with approved trust copy', async 
   assert.match(html, /<figure\b[^>]*>\s*<img\b[^>]*loading=["']lazy["'][^>]*width=["']\d+["'][^>]*height=["']\d+["']/i);
 });
 
+test('routes navigator applications directly to the approved public form', async () => {
+  const html = await readPage('navigator.html');
+  const formAnchor = anchors(html).find((anchor) => anchor.includes(navigatorFormUrl)) ?? '';
+  assert.match(formAnchor, /\btarget=["']_blank["']/i);
+  assert.match(formAnchor, /\brel=["'][^"']*\bnoopener\b[^"']*\bnoreferrer\b[^"']*["']/i);
+  assert.match(html, new RegExp(`<a\\b[^>]*class=["'][^"']*button-primary[^"']*["'][^>]*href=["']${navigatorFormUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["'][^>]*>填寫導航者申請表<\\/a>`, 'i'));
+  assert.match(html, /填寫前有疑問？[\s\S]*?官方 LINE/i);
+});
+
 test('removes retired automation and code labels from every public page', async () => {
   const corpus = (await Promise.all(pages.map(readPage))).join('\n');
   const gift = await readPage('gift.html');
@@ -119,10 +129,16 @@ test('rejects malformed ASCII redemption-code candidates without flagging format
   assert.deepEqual(redemptionCodeCandidates('STAR-年份-XXXX／GIFT-年份-XXXX'), []);
 });
 
-test('allows only the approved LINE destination for every public external link', async () => {
+test('allows only approved destinations for every public external link', async () => {
+  const approvedPublicDestinations = new Set([lineUrl, navigatorFormUrl]);
   const htmlPages = await Promise.all(pages.map(readPage));
+  const pagesByName = new Map(pages.map((page, index) => [page, htmlPages[index]]));
+  assert.ok(pagesByName.get('navigator.html').includes(navigatorFormUrl));
+  for (const page of pages.filter((page) => page !== 'navigator.html')) {
+    assert.equal(pagesByName.get(page).includes(navigatorFormUrl), false, `${page} must not link to the navigator form`);
+  }
   for (const anchor of htmlPages.flatMap(anchors)) {
     const href = anchor.match(/\bhref=["']((?:https?:)?\/\/[^"']+)["']/i)?.[1];
-    if (href) assert.equal(href, lineUrl, `${href} is not an approved public-link destination`);
+    if (href) assert.ok(approvedPublicDestinations.has(href), `${href} is not an approved public-link destination`);
   }
 });

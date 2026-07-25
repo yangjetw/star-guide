@@ -80,7 +80,7 @@ test('defines the Traditional Chinese HTML page contract', async () => {
   assert.match(html, /<html\s+lang=["']zh-Hant["']>/i);
   assert.match(html, /<meta\s+charset=["']UTF-8["']\s*\/?>/i);
   assert.match(html, /<meta\s+name=["']viewport["']\s+content=["']width=device-width, initial-scale=1["']\s*\/?>/i);
-  assert.match(html, /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-9["']\s*\/?>/i);
+  assert.match(html, /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-10["']\s*\/?>/i);
   assert.match(html, /<title>[^<]+<\/title>/i);
   assert.match(html, /<meta\s+property=["']og:image["']\s+content=["']assets\/images\/hero-parent-child\.webp["']/i);
   assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
@@ -89,7 +89,7 @@ test('defines the Traditional Chinese HTML page contract', async () => {
 
 test('loads the warm stylesheet cache key on every public page', async () => {
   for (const page of ['index.html', 'gift.html', 'navigator.html', 'refund.html']) {
-    assert.match(await read(page), /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-9["']\s*\/?>/i, `${page} should load the warm stylesheet cache key`);
+    assert.match(await read(page), /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-10["']\s*\/?>/i, `${page} should load the warm stylesheet cache key`);
   }
 });
 
@@ -208,6 +208,7 @@ const expectedSectionText = {
     '懂得「什麼時候放手，什麼時候給安全感」',
     '有效溝通模式',
     '擁有親子互動的具體劇本，說對話、做對事',
+    '家長閱讀後的感受',
     '很多爸媽看完說：「我終於理解他不是故意頂嘴，而是用他的方式呼救。」',
   ],
   testimonials: [
@@ -331,6 +332,7 @@ test('retains every original Gamma section structure', async () => {
   const testimonials = section(html, 'testimonials');
   const method = section(html, 'method');
   const closing = topicSection(html, 'closing');
+  assert.match(transformation, /<figure\b[^>]*class="reader-quote"[\s\S]*?<figcaption\b[^>]*class="reader-quote__label">家長閱讀後的感受<\/figcaption>[\s\S]*?<blockquote\b[^>]*class="reader-quote__text">/i);
   assert.equal((uniqueChild.match(/<li\b/gi) ?? []).length, 3);
   assert.equal((requiredData.match(/<li\b/gi) ?? []).length, 4);
   assert.equal((deliverables.match(/<li\b/gi) ?? []).length, 4);
