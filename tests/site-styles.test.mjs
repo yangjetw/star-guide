@@ -44,6 +44,15 @@ test('caps wide-screen typography and keeps short facts content-driven', async (
   assert.match(css, /@media\s*\(min-width:\s*1600px\)/i);
 });
 
+test('defines the readable type and prominent navigation contract', async () => {
+  const css = await read('styles.css');
+  assert.match(css, /--body-size:\s*clamp\(18px,[^;]+20px\)/);
+  assert.match(css, /--nav-height:\s*76px/);
+  assert.match(css, /--nav-link-size:\s*clamp\(17px,[^;]+18px\)/);
+  assert.match(css, /\.site-header\s*\{[^}]*background:\s*var\(--nav-surface\)/s);
+  assert.match(css, /\.site-nav a\s*\{[^}]*min-height:\s*44px/s);
+});
+
 test('builds a cinematic starry hero with a readable overlay', async () => {
   const css = await read('styles.css');
   assert.match(css, /\.hero-section\s*\{[^}]*min-height:\s*min\(860px,\s*calc\(100svh/is);
