@@ -889,6 +889,21 @@ tbody tr:last-child td {
   text-align: center;
 }
 
+.navigator-apply .button {
+  min-width: min(100%, 320px);
+}
+
+.navigator-help {
+  margin: 16px 0 0;
+  color: var(--color-muted);
+  font-size: 17px;
+}
+
+.navigator-help a {
+  color: var(--color-jade-dark);
+  font-weight: 800;
+}
+
 .pricing-grid {
   margin: 28px 0;
   display: grid;
