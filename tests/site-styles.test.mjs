@@ -98,6 +98,16 @@ test('builds a cinematic starry hero with a readable overlay', async () => {
   assert.match(css, /\.hero-section \.story-copy\s*\{[^}]*position:\s*relative[^}]*z-index:\s*2/is);
 });
 
+test('keeps the complete hero artwork visible at every responsive ratio', async () => {
+  const css = await read('styles.css');
+  assert.match(css, /\.hero-section \.story-media img\s*\{[^}]*object-fit:\s*contain/is);
+  assert.doesNotMatch(css, /\.hero-section \.story-media\s*\{[^}]*min-height:\s*660px/is);
+  assert.match(
+    css,
+    /@media\s*\(max-width:\s*768px\)[\s\S]*?\.hero-section \.story-media\s*\{[^}]*aspect-ratio:\s*1\s*\/\s*1/is,
+  );
+});
+
 test('creates editorial light and dark chapters with focused conversion actions', async () => {
   const css = await read('styles.css');
   assert.match(css, /\.gift-bridge\s*\{[^}]*background:\s*var\(--color-ivory\)/is);

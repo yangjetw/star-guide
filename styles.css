@@ -330,7 +330,12 @@ h3 {
   position: absolute;
   inset: 0 0 0 auto;
   width: 64%;
-  min-height: 660px;
+  min-height: 100%;
+}
+
+.hero-section .story-media img {
+  object-fit: contain;
+  object-position: center;
 }
 
 .hero-section .story-media::after {
@@ -1014,7 +1019,7 @@ tbody tr:last-child td {
     width: calc(100% + 36px);
     margin: 28px -18px 0;
     min-height: 0;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
   }
 
   .hero-section .story-media::after {
