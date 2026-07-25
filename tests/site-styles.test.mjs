@@ -48,8 +48,20 @@ test('defines the readable type and prominent navigation contract', async () => 
   assert.match(css, /--body-size:\s*clamp\(18px,[^;]+20px\)/);
   assert.match(css, /--nav-height:\s*76px/);
   assert.match(css, /--nav-link-size:\s*clamp\(17px,[^;]+18px\)/);
-  assert.match(css, /\.site-header\s*\{[^}]*background:\s*var\(--nav-surface\)/s);
-  assert.match(css, /\.site-nav a\s*\{[^}]*min-height:\s*44px/s);
+  assert.match(css, /body\s*\{[^}]*font-size:\s*var\(--body-size\)/s);
+  assert.match(css, /\.site-header\s*\{[^}]*min-height:\s*var\(--nav-height\)[^}]*border-bottom:\s*1px solid var\(--nav-border\)[^}]*background:\s*var\(--nav-surface\)[^}]*box-shadow:/s);
+  assert.match(css, /\.site-nav a\s*\{[^}]*min-height:\s*44px[^}]*font-size:\s*var\(--nav-link-size\)/s);
+
+  for (const [selector, fontSize] of [
+    ['\\.eyebrow', 'clamp\\(16px,'],
+    ['\\.fact-list p', 'clamp\\(17px,'],
+    ['\\.process-steps li::before', '16px'],
+    ['\\.privacy-note,\\s*\\.chapter-note', 'clamp\\(16px,'],
+    ['table', 'clamp\\(16px,'],
+    ['\\.site-footer', 'clamp\\(16px,'],
+  ]) {
+    assert.match(css, new RegExp(`${selector}\\s*\\{[^}]*font-size:\\s*${fontSize}`, 's'), `${selector} should keep supporting text at 16px or larger`);
+  }
 });
 
 test('builds a cinematic starry hero with a readable overlay', async () => {
@@ -95,7 +107,10 @@ test('keeps illustrations natural and testimonial screenshots credible', async (
 });
 
 test('supports tablet and phone layouts without clipped copy or fixed controls', async () => {
-  const css = await read('styles.css');
+  const [css, ...pages] = await Promise.all([
+    read('styles.css'),
+    ...['index.html', 'gift.html', 'navigator.html', 'refund.html'].map(read),
+  ]);
   for (const width of ['1024px', '768px', '420px']) {
     assert.match(css, new RegExp(`@media\\s*\\(max-width:\\s*${width}\\)`, 'i'));
   }
@@ -103,6 +118,9 @@ test('supports tablet and phone layouts without clipped copy or fixed controls',
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.fact-list\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.pricing-grid\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav a:first-child\s*\{[^}]*font-size:\s*clamp\(16px,[^;]+17px\)/is);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav a:not\(:first-child\):not\(\.nav-line\)\s*\{[^}]*display:\s*none/is);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav \.nav-line\s*\{[^}]*padding-inline:\s*12px/is);
+  for (const page of pages) assert.match(page, /<a\b[^>]*class="nav-line"[^>]*>官方 LINE<\/a>/i);
   assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/is);
   assert.match(css, /\.table-wrap\s*\{[^}]*overflow-x:\s*auto/is);
   assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/is);
