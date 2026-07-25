@@ -65,7 +65,7 @@ test('preserves the closing image aspect ratio at mobile widths', async () => {
 
   assert.match(closingImageRule, /width:\s*100%/);
   assert.match(closingImageRule, /height:\s*auto/);
-  assert.match(closingImageRule, /max-height:\s*280px/);
+  assert.match(closingImageRule, /max-height:\s*620px/);
   assert.match(closingImageRule, /object-fit:\s*cover/);
   assert.match(closingImageRule, /border-radius:\s*28px/);
 });
@@ -76,6 +76,14 @@ test('turns every homepage section into one viewport-contained handbook page', a
   assert.match(css, /\.book-page\s*>\s*section\s*\{[^}]*width:\s*var\(--handbook-page-width\)[^}]*margin:/s);
   assert.match(css, /@media\s*\(max-width:\s*900px\)[\s\S]*?\.book-page\s*>\s*section\s*\{[^}]*aspect-ratio:\s*auto[^}]*height:\s*auto[^}]*max-height:\s*none[^}]*overflow:\s*visible/s);
   assert.match(css, /\.story-media\s*\{[^}]*box-shadow:\s*var\(--shadow-card\)/s);
+});
+
+test('keeps the three densest handbook pages inside their desktop canvas', async () => {
+  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+  assert.match(css, /\.hero-section \.story-media\s*\{[^}]*aspect-ratio:\s*auto[^}]*min-height:\s*0/s);
+  assert.match(css, /#deliverables \.story-copy\s*\{[^}]*line-height:\s*1\.7/s);
+  assert.match(css, /\.closing-section\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*minmax\(0,\s*42fr\)\s+minmax\(0,\s*58fr\)/s);
+  assert.match(css, /@media\s*\(max-width:\s*900px\)[\s\S]*?\.closing-section\s*\{[^}]*grid-template-columns:\s*1fr/s);
 });
 
 test('turns pricing, comparison, testimonials, and closing into clear anchors', async () => {
