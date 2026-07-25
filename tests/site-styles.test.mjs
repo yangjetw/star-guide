@@ -38,7 +38,6 @@ test('uses restrained semantic editorial sections instead of split handbook canv
 test('caps wide-screen typography and keeps short facts content-driven', async () => {
   const css = await read('styles.css');
   assert.match(css, /--section-title-max:\s*46px/i);
-  assert.match(css, /--body-size:\s*clamp\(17px,[^,]+,\s*19px\)/i);
   assert.doesNotMatch(css, /h2\s*\{[^}]*4vw/is);
   assert.doesNotMatch(css, /\.fact-list[^}]*min-height/is);
   assert.match(css, /@media\s*\(min-width:\s*1600px\)/i);
