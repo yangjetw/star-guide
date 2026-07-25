@@ -35,6 +35,20 @@ test('defines the warm comparison emphasis contract', async () => {
   assert.match(css, /\.our-guide td:nth-child\(2\)\s*\{[^}]*font-size:\s*24px[^}]*color:\s*var\(--color-coral-dark\)/s);
 });
 
+test('keeps coral separators on every guide cell despite the last-row reset', async () => {
+  const css = await read('styles.css');
+  assert.match(
+    css,
+    /\.our-guide th,\s*\.our-guide td\s*\{(?=[^}]*border-top:\s*2px solid var\(--color-coral\))(?=[^}]*border-bottom:\s*2px solid var\(--color-coral\))[^}]*\}/s,
+    'the shared guide-cell rule should provide both coral separators',
+  );
+  assert.match(
+    css,
+    /\.our-guide:last-child th,\s*\.our-guide:last-child td\s*\{[^}]*border-bottom:\s*2px solid var\(--color-coral\)/s,
+    'the more-specific last-row rule should restore the coral bottom separator',
+  );
+});
+
 test('uses restrained semantic editorial sections instead of split handbook canvases', async () => {
   const [html, css] = await Promise.all([read('index.html'), read('styles.css')]);
   assert.match(html, /class="brand-story"/i);
