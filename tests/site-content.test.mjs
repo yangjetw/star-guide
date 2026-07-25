@@ -80,7 +80,7 @@ test('defines the Traditional Chinese HTML page contract', async () => {
   assert.match(html, /<html\s+lang=["']zh-Hant["']>/i);
   assert.match(html, /<meta\s+charset=["']UTF-8["']\s*\/?>/i);
   assert.match(html, /<meta\s+name=["']viewport["']\s+content=["']width=device-width, initial-scale=1["']\s*\/?>/i);
-  assert.match(html, /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-4["']\s*\/?>/i);
+  assert.match(html, /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-5["']\s*\/?>/i);
   assert.match(html, /<title>[^<]+<\/title>/i);
   assert.match(html, /<meta\s+property=["']og:image["']\s+content=["']assets\/images\/hero-parent-child\.webp["']/i);
   assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
@@ -89,7 +89,7 @@ test('defines the Traditional Chinese HTML page contract', async () => {
 
 test('cache-busts the shared stylesheet on every public page', async () => {
   for (const page of ['index.html', 'gift.html', 'navigator.html', 'refund.html']) {
-    assert.match(await read(page), /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-4["']/i, `${page} should load the current immersive styles`);
+    assert.match(await read(page), /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-5["']/i, `${page} should load the current editorial styles`);
   }
 });
 
@@ -228,12 +228,12 @@ const expectedSectionText = {
 const section = (html, id) => html.match(new RegExp(`<section\\b[^>]*id="${id}"[\\s\\S]*?<\\/section>`, 'i'))?.[0] ?? '';
 
 const topicPages = {
-  concerns: ['concerns', 'concerns-details'],
-  'unique-child': ['unique-child', 'unique-child-details'],
-  'required-data': ['required-data', 'required-data-details'],
-  deliverables: ['deliverables', 'deliverables-details'],
-  transformation: ['transformation', 'transformation-details'],
-  closing: ['closing-vision', 'closing'],
+  concerns: ['concerns'],
+  'unique-child': ['unique-child'],
+  'required-data': ['required-data'],
+  deliverables: ['deliverables'],
+  transformation: ['transformation'],
+  closing: ['closing'],
 };
 
 const topicSection = (html, id) => (topicPages[id] ?? [id]).map((pageId) => section(html, pageId)).join(' ');
@@ -254,8 +254,12 @@ test('groups the story into one fluid gift journey without decorative chapter-nu
   assert.match(main, /^<main\b[^>]*id="main-content"[^>]*>\s*<div\b[^>]*class="site-story"/i);
   assert.match(main, /<\/div>\s*<\/main>$/i);
 
-  for (const id of ['hero', 'concerns', 'concerns-details', 'unique-child', 'unique-child-details', 'method', 'required-data', 'required-data-details', 'gift-bridge', 'deliverables', 'deliverables-details', 'value-comparison', 'transformation', 'transformation-details', 'testimonials', 'closing-vision', 'closing']) {
+  for (const id of ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'gift-bridge', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'closing']) {
     assert.ok(section(main, id), `${id} should remain in the gift journey`);
+  }
+
+  for (const retiredId of ['concerns-details', 'unique-child-details', 'required-data-details', 'deliverables-details', 'transformation-details', 'closing-vision']) {
+    assert.equal(section(main, retiredId), '', `${retiredId} should be merged into its topic chapter`);
   }
 
   assert.doesNotMatch(html, /\bdata-chapter=/i);

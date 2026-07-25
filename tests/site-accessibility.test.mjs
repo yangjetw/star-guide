@@ -26,20 +26,14 @@ test('preserves the Task 1 semantic landmarks and Gamma section flow', async () 
   const ids = [
     'hero',
     'concerns',
-    'concerns-details',
     'unique-child',
-    'unique-child-details',
     'method',
     'required-data',
-    'required-data-details',
     'gift-bridge',
     'deliverables',
-    'deliverables-details',
     'value-comparison',
     'transformation',
-    'transformation-details',
     'testimonials',
-    'closing-vision',
     'closing',
   ];
   assert.deepEqual([...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]), ids);
@@ -76,9 +70,9 @@ test('keeps each public page keyboard-accessible and secures every external link
 test('keeps current story components and keyboard focus legible', async () => {
   const { css } = await siteFiles();
   assert.match(css, /\.site-story\s*\{/);
-  assert.match(css, /\.story-section\s*\{/);
+  assert.match(css, /\.chapter-layout\s*\{/);
   assert.doesNotMatch(css, /\[data-chapter\]/);
-  assert.match(css, /\.closing-section h2\s*,/);
+  assert.match(css, /\.chapter-closing h2\s*,/);
   assert.match(css, /\.process-list li\s*\{[^}]*color:\s*var\(--ink\)/i);
   assert.match(css, /\.deliverable-list article\s*\{[^}]*color:\s*var\(--ink\)/i);
   assert.match(css, /\.eyebrow\s*\{[^}]*color:\s*var\(--night-soft\)/i);
