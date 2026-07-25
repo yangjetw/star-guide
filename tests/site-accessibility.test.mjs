@@ -58,7 +58,8 @@ test('keeps each public page keyboard-accessible and secures every external link
 test('keeps current story components and keyboard focus legible', async () => {
   const { css } = await siteFiles();
   assert.match(css, /\.book-page\s*\{/);
-  assert.match(css, /\.story-section\[data-chapter\]\s*\{/);
+  assert.match(css, /\.book-page\s*>\s*section\s*\{/);
+  assert.doesNotMatch(css, /\[data-chapter\]/);
   assert.match(css, /\.closing-section h2\s*,/);
   assert.match(css, /\.process-list li\s*\{[^}]*color:\s*var\(--ink\)/i);
   assert.match(css, /\.deliverable-list article\s*\{[^}]*color:\s*var\(--ink\)/i);

@@ -231,27 +231,18 @@ function visibleText(fragment) {
     .trim();
 }
 
-test('groups the story into one book page with seven non-copy chapter hooks', async () => {
-  const html = await read('index.html');
+test('groups the story into one book without decorative chapter-number hooks', async () => {
+  const [html, css] = await Promise.all([read('index.html'), read('styles.css')]);
   const main = html.match(/<main\b[^>]*id="main-content"[\s\S]*?<\/main>/i)?.[0] ?? '';
   assert.match(main, /^<main\b[^>]*id="main-content"[^>]*>\s*<div\b[^>]*class="book-page"/i);
   assert.match(main, /<\/div>\s*<\/main>$/i);
 
-  const chapters = {
-    concerns: '01',
-    'unique-child': '02',
-    method: '03',
-    'required-data': '04',
-    deliverables: '05',
-    transformation: '06',
-    testimonials: '07',
-  };
-
-  for (const [id, chapter] of Object.entries(chapters)) {
-    assert.match(section(html, id), new RegExp(`data-chapter="${chapter}"`, 'i'));
+  for (const id of ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'gift-bridge', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'closing']) {
+    assert.ok(section(main, id), `${id} should remain a handbook page`);
   }
 
-  assert.equal((html.match(/\bdata-chapter="\d{2}"/g) ?? []).length, 7);
+  assert.doesNotMatch(html, /\bdata-chapter=/i);
+  assert.doesNotMatch(css, /\[data-chapter\]::before/i);
 });
 
 test('reproduces the original Gamma story in order', async () => {

@@ -19,7 +19,7 @@ test('defines the premium book palette and soft Chinese type system', async () =
 test('renders one centered paper and a cohesive cover hero', async () => {
   const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
   assert.match(css, /body\s*\{[^}]*background:\s*var\(--color-canvas\)/s);
-  assert.match(css, /\.book-page\s*\{[^}]*width:\s*min\(calc\(100% - 40px\),\s*1080px\)[^}]*margin:\s*28px auto 56px[^}]*background:\s*var\(--color-paper\)[^}]*border-radius:\s*36px[^}]*box-shadow:/s);
+  assert.match(css, /\.book-page\s*\{[^}]*display:\s*grid[^}]*gap:/s);
   assert.match(css, /@media\s*\(max-width:\s*768px\)\s*\{[\s\S]*?\.book-page\s*\{[^}]*margin:\s*0/s);
   assert.match(css, /\.hero-section\s*\{[^}]*background:[^;}]*var\(--color-night\)[^}]*border-radius:\s*32px/s);
   assert.match(css, /\.hero-section \.story-copy\s*\{[^}]*color:\s*#fff/s);
@@ -65,16 +65,16 @@ test('preserves the closing image aspect ratio at mobile widths', async () => {
 
   assert.match(closingImageRule, /width:\s*100%/);
   assert.match(closingImageRule, /height:\s*auto/);
-  assert.match(closingImageRule, /max-height:\s*620px/);
+  assert.match(closingImageRule, /max-height:\s*280px/);
   assert.match(closingImageRule, /object-fit:\s*cover/);
   assert.match(closingImageRule, /border-radius:\s*28px/);
 });
 
-test('connects the seven chapters inside one restrained reading column', async () => {
+test('turns every homepage section into one viewport-contained handbook page', async () => {
   const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  assert.match(css, /\.story-section\[data-chapter\]\s*\{[^}]*width:\s*min\(calc\(100% - 64px\),\s*var\(--reading-width\)\)[^}]*border-top:/s);
-  assert.match(css, /\[data-chapter\]::before\s*\{[^}]*content:\s*attr\(data-chapter\)[^}]*color:\s*var\(--color-gold\)/s);
-  assert.match(css, /\.story-section\s*\{[^}]*gap:\s*clamp\(28px,\s*5vw,\s*64px\)/s);
+  assert.match(css, /\.book-page\s*>\s*section\s*\{[^}]*aspect-ratio:\s*4\s*\/\s*3[^}]*max-height:\s*calc\(100svh\s*-\s*var\(--handbook-viewport-offset\)\)[^}]*overflow:\s*clip/s);
+  assert.match(css, /\.book-page\s*>\s*section\s*\{[^}]*width:\s*var\(--handbook-page-width\)[^}]*margin:/s);
+  assert.match(css, /@media\s*\(max-width:\s*900px\)[\s\S]*?\.book-page\s*>\s*section\s*\{[^}]*aspect-ratio:\s*auto[^}]*height:\s*auto[^}]*max-height:\s*none[^}]*overflow:\s*visible/s);
   assert.match(css, /\.story-media\s*\{[^}]*box-shadow:\s*var\(--shadow-card\)/s);
 });
 
