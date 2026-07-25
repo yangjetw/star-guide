@@ -7,6 +7,8 @@
   --color-muted: #6c6467;
   --color-coral: #ff7859;
   --color-coral-dark: #d95339;
+  --color-peach: #fff0e8;
+  --color-peach-deep: #ffd8c8;
   --color-jade: #5dcc88;
   --color-jade-dark: #226944;
   --color-gold: #e7bf77;
@@ -32,6 +34,7 @@
   --starlight: var(--color-gold);
   --shadow-image: 0 24px 64px rgb(13 20 44 / 16%);
   --shadow-card: 0 16px 44px rgb(38 30 31 / 8%);
+  --shadow-warm: 0 18px 44px rgb(217 83 57 / 12%);
 }
 
 *,
@@ -648,17 +651,39 @@ tbody tr:last-child td {
 
 .our-guide th,
 .our-guide td {
-  background: rgb(93 204 136 / 13%);
+  border-top: 2px solid var(--color-coral);
+  border-bottom: 2px solid var(--color-coral);
+  background: linear-gradient(135deg, var(--color-peach), var(--color-peach-deep));
   font-weight: 800;
+}
+
+.our-guide:last-child th,
+.our-guide:last-child td {
+  border-bottom: 2px solid var(--color-coral);
+}
+
+.our-guide th {
+  font-size: 22px;
+}
+
+.our-guide td {
+  font-size: 18px;
+}
+
+.our-guide td:nth-child(2) {
+  font-size: 24px;
+  color: var(--color-coral-dark);
 }
 
 .editorial-layout--transformation blockquote {
   margin: 24px 0 0;
   padding: 20px 24px;
   border: 0;
-  border-radius: 0 16px 16px 0;
-  background: var(--color-night);
-  color: var(--color-white);
+  border-left: 5px solid var(--color-coral);
+  background: linear-gradient(135deg, var(--color-peach), var(--color-peach-deep));
+  color: var(--color-ink);
+  border-radius: 16px;
+  box-shadow: var(--shadow-warm);
   font-family: var(--font-display);
   line-height: 1.65;
 }
