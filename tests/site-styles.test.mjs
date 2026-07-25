@@ -102,6 +102,7 @@ test('supports tablet and phone layouts without clipped copy or fixed controls',
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.editorial-layout\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.fact-list\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.pricing-grid\s*\{[^}]*grid-template-columns:\s*1fr/is);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav a:first-child\s*\{[^}]*font-size:\s*clamp\(16px,[^;]+17px\)/is);
   assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/is);
   assert.match(css, /\.table-wrap\s*\{[^}]*overflow-x:\s*auto/is);
   assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/is);

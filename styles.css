@@ -954,6 +954,10 @@ tbody tr:last-child td {
     font-size: clamp(16px, 3.8vw, 17px);
   }
 
+  .site-nav a:first-child {
+    font-size: clamp(16px, 3.8vw, 17px);
+  }
+
   .site-nav a:not(:first-child):not(.nav-line) {
     display: none;
   }
