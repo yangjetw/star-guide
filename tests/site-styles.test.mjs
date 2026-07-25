@@ -27,9 +27,11 @@ test('defines the warm comparison emphasis contract', async () => {
   const css = await read('styles.css');
   assert.match(css, /--color-peach:\s*#fff0e8/);
   assert.match(css, /--color-peach-deep:\s*#ffd8c8/);
-  assert.match(css, /\.editorial-layout--transformation blockquote\s*\{[^}]*border-left:\s*5px solid var\(--color-coral\)[^}]*background:\s*linear-gradient\([^}]*var\(--color-peach\)[^}]*color:\s*var\(--color-ink\)/s);
+  assert.match(css, /--shadow-warm:\s*0 18px 44px rgb\(217 83 57 \/ 12%\)/);
+  assert.match(css, /\.editorial-layout--transformation blockquote\s*\{[^}]*border-left:\s*5px solid var\(--color-coral\)[^}]*background:\s*linear-gradient\([^}]*var\(--color-peach\)[^}]*color:\s*var\(--color-ink\)[^}]*border-radius:\s*16px[^}]*box-shadow:\s*var\(--shadow-warm\)/s);
   assert.match(css, /\.our-guide th,\s*\.our-guide td\s*\{[^}]*background:\s*linear-gradient\([^}]*var\(--color-peach\)/s);
   assert.match(css, /\.our-guide th\s*\{[^}]*font-size:\s*22px/s);
+  assert.match(css, /\.our-guide td\s*\{[^}]*font-size:\s*18px/s);
   assert.match(css, /\.our-guide td:nth-child\(2\)\s*\{[^}]*font-size:\s*24px[^}]*color:\s*var\(--color-coral-dark\)/s);
 });
 
