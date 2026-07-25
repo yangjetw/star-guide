@@ -67,17 +67,17 @@ test('keeps each public page keyboard-accessible and secures every external link
   }
 });
 
-test('keeps current story components and keyboard focus legible', async () => {
+test('keeps semantic brand components and keyboard focus legible', async () => {
   const { css } = await siteFiles();
-  assert.match(css, /\.site-story\s*\{/);
-  assert.match(css, /\.chapter-layout\s*\{/);
+  assert.match(css, /\.brand-story\s*\{/);
+  assert.match(css, /\.editorial-layout\s*\{/);
   assert.doesNotMatch(css, /\[data-chapter\]/);
   assert.match(css, /\.chapter-closing h2\s*,/);
-  assert.match(css, /\.process-list li\s*\{[^}]*color:\s*var\(--ink\)/i);
-  assert.match(css, /\.deliverable-list article\s*\{[^}]*color:\s*var\(--ink\)/i);
+  assert.match(css, /\.process-steps li\s*\{[^}]*color:\s*var\(--ink\)/i);
+  assert.match(css, /\.fact-list li\s*\{[^}]*color:\s*var\(--ink\)/i);
   assert.match(css, /\.eyebrow\s*\{[^}]*color:\s*var\(--night-soft\)/i);
   assert.match(css, /\.hero-section \.eyebrow\s*\{[^}]*color:\s*var\(--color-gold\)/i);
-  assert.doesNotMatch(css, /\.steps\b|\.deliverable-list li\b|\.hero\s+\.eyebrow|\.section:nth-of-type/i);
+  assert.doesNotMatch(css, /\.process-list\b|\.chapter-grid\b|\.hero\s+\.eyebrow|\.section:nth-of-type/i);
   assert.match(css, /:focus-visible\s*\{[^}]*outline:\s*3px solid var\(--color-jade\)/i);
 });
 

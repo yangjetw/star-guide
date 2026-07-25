@@ -23,16 +23,25 @@ test('defines the approved immersive gift palette and typography', async () => {
   assert.doesNotMatch(css, /@import\s+url|fonts\.googleapis\.com/i);
 });
 
-test('uses unified editorial chapters instead of split handbook canvases', async () => {
+test('uses restrained semantic editorial sections instead of split handbook canvases', async () => {
   const [html, css] = await Promise.all([read('index.html'), read('styles.css')]);
-  assert.match(html, /class="site-story"/i);
+  assert.match(html, /class="brand-story"/i);
   assert.doesNotMatch(html, /\bbook-page\b/i);
   assert.doesNotMatch(css, /aspect-ratio:\s*4\s*\/\s*3/i);
   assert.doesNotMatch(css, /--handbook-|max-height:\s*calc\(100svh/i);
-  assert.match(css, /\.site-story\s*\{[^}]*overflow:\s*clip/is);
-  assert.match(css, /\.chapter-layout\s*\{[^}]*display:\s*grid/is);
+  assert.match(css, /\.brand-story\s*\{[^}]*overflow:\s*clip/is);
+  assert.match(css, /\.editorial-layout\s*\{[^}]*display:\s*grid/is);
   assert.doesNotMatch(css, /\.story-section-focus/);
   assert.doesNotMatch(css, /min-height:\s*520px/i);
+});
+
+test('caps wide-screen typography and keeps short facts content-driven', async () => {
+  const css = await read('styles.css');
+  assert.match(css, /--section-title-max:\s*46px/i);
+  assert.match(css, /--body-size:\s*clamp\(17px,[^,]+,\s*19px\)/i);
+  assert.doesNotMatch(css, /h2\s*\{[^}]*4vw/is);
+  assert.doesNotMatch(css, /\.fact-list[^}]*min-height/is);
+  assert.match(css, /@media\s*\(min-width:\s*1600px\)/i);
 });
 
 test('builds a cinematic starry hero with a readable overlay', async () => {
@@ -48,7 +57,7 @@ test('creates editorial light and dark chapters with focused conversion actions'
   assert.match(css, /\.gift-bridge\s*\{[^}]*background:\s*var\(--color-ivory\)/is);
   assert.match(css, /\.button-primary\s*\{[^}]*background:\s*var\(--color-coral\)/is);
   assert.match(css, /\.button-line\s*\{[^}]*background:\s*var\(--color-jade\)/is);
-  assert.match(css, /\.testimonial-gallery\s*\{[^}]*display:\s*grid/is);
+  assert.match(css, /\.proof-gallery\s*\{[^}]*display:\s*grid/is);
   assert.match(css, /\.comparison-section\s*\{[^}]*background:\s*var\(--color-paper\)/is);
   assert.match(css, /\.chapter-closing\s*\{[^}]*background:\s*var\(--color-night\)/is);
 });
@@ -56,12 +65,12 @@ test('creates editorial light and dark chapters with focused conversion actions'
 test('assigns intentional image and text ratios to each complete topic', async () => {
   const css = await read('styles.css');
   for (const hook of [
-    'chapter-concerns',
-    'chapter-unique',
-    'chapter-method',
-    'chapter-data',
-    'chapter-deliverables',
-    'chapter-transformation',
+    'editorial-layout--concerns',
+    'editorial-layout--unique',
+    'editorial-layout--method',
+    'editorial-layout--data',
+    'editorial-layout--deliverables',
+    'editorial-layout--transformation',
   ]) {
     assert.match(css, new RegExp(`\\.${hook}\\s*\\{[^}]*grid-template-columns:`, 'is'), `${hook} needs a deliberate desktop ratio`);
   }
@@ -72,7 +81,7 @@ test('keeps illustrations natural and testimonial screenshots credible', async (
   const css = await read('styles.css');
   assert.match(css, /\.story-media img\s*\{[^}]*object-fit:\s*cover/is);
   assert.match(css, /\.process-media img\s*\{[^}]*object-fit:\s*contain/is);
-  assert.match(css, /\.testimonial-gallery img\s*\{[^}]*object-fit:\s*contain/is);
+  assert.match(css, /\.proof-gallery img\s*\{[^}]*object-fit:\s*contain/is);
   assert.match(css, /\.chapter-closing \.closing-media img\s*\{[^}]*object-fit:\s*cover/is);
   assert.doesNotMatch(css, /backdrop-filter/i);
 });
@@ -82,8 +91,8 @@ test('supports tablet and phone layouts without clipped copy or fixed controls',
   for (const width of ['1024px', '768px', '420px']) {
     assert.match(css, new RegExp(`@media\\s*\\(max-width:\\s*${width}\\)`, 'i'));
   }
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.chapter-layout\s*\{[^}]*grid-template-columns:\s*1fr/is);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.chapter-grid\s*\{[^}]*grid-template-columns:\s*1fr/is);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.editorial-layout\s*\{[^}]*grid-template-columns:\s*1fr/is);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.fact-list\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.pricing-grid\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/is);
   assert.match(css, /\.table-wrap\s*\{[^}]*overflow-x:\s*auto/is);
@@ -98,13 +107,13 @@ test('extends the same premium language across all supporting pages', async () =
     read('refund.html'),
   ]);
   for (const page of [gift, navigator, refund]) {
-    assert.match(page, /class="[^"]*\bpage-shell\b/i);
-    assert.match(page, /class="[^"]*\bsubpage-hero\b/i);
+    assert.match(page, /class="[^"]*\bbrand-page\b/i);
+    assert.match(page, /class="[^"]*\bpage-hero\b/i);
   }
-  assert.match(css, /\.page-shell\s*\{[^}]*background:\s*var\(--color-paper\)/is);
-  assert.match(css, /\.subpage-hero\s*\{[^}]*background:\s*var\(--color-night\)/is);
+  assert.match(css, /\.brand-page\s*\{[^}]*background:\s*var\(--color-paper\)/is);
+  assert.match(css, /\.page-hero\s*\{[^}]*background:\s*var\(--color-night\)/is);
   assert.match(css, /\.pricing-grid\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/is);
-  assert.match(css, /\.policy-section\s*\{[^}]*border-top:/is);
+  assert.match(css, /\.brand-page--policy \.content-section\s*\{[^}]*border-top:/is);
 });
 
 test('provides visible focus and reduced-motion fallbacks', async () => {

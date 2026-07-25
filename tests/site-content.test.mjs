@@ -80,7 +80,7 @@ test('defines the Traditional Chinese HTML page contract', async () => {
   assert.match(html, /<html\s+lang=["']zh-Hant["']>/i);
   assert.match(html, /<meta\s+charset=["']UTF-8["']\s*\/?>/i);
   assert.match(html, /<meta\s+name=["']viewport["']\s+content=["']width=device-width, initial-scale=1["']\s*\/?>/i);
-  assert.match(html, /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-5["']\s*\/?>/i);
+  assert.match(html, /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-6["']\s*\/?>/i);
   assert.match(html, /<title>[^<]+<\/title>/i);
   assert.match(html, /<meta\s+property=["']og:image["']\s+content=["']assets\/images\/hero-parent-child\.webp["']/i);
   assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
@@ -88,9 +88,15 @@ test('defines the Traditional Chinese HTML page contract', async () => {
 });
 
 test('cache-busts the shared stylesheet on every public page', async () => {
+  const versions = [];
   for (const page of ['index.html', 'gift.html', 'navigator.html', 'refund.html']) {
-    assert.match(await read(page), /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-5["']/i, `${page} should load the current editorial styles`);
+    const version = (await read(page)).match(/styles\.css\?v=([0-9-]+)/i)?.[1];
+    assert.ok(version, `${page} should load a versioned stylesheet`);
+    versions.push(version);
   }
+  assert.equal(new Set(versions).size, 1);
+  assert.equal(versions[0], '20260725-6');
+  assert.notEqual(versions[0], '20260725-5');
 });
 
 const orderedMarkers = [
@@ -248,11 +254,11 @@ function visibleText(fragment) {
     .trim();
 }
 
-test('groups the story into one fluid gift journey without decorative chapter-number hooks', async () => {
+test('groups the story into one semantic brand journey without decorative chapter-number hooks', async () => {
   const [html, css] = await Promise.all([read('index.html'), read('styles.css')]);
   const main = html.match(/<main\b[^>]*id="main-content"[\s\S]*?<\/main>/i)?.[0] ?? '';
-  assert.match(main, /^<main\b[^>]*id="main-content"[^>]*>\s*<div\b[^>]*class="site-story"/i);
-  assert.match(main, /<\/div>\s*<\/main>$/i);
+  assert.match(main, /^<main\b[^>]*id="main-content"[^>]*>\s*<article\b[^>]*class="brand-story"/i);
+  assert.match(main, /<\/article>\s*<\/main>$/i);
 
   for (const id of ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'gift-bridge', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'closing']) {
     assert.ok(section(main, id), `${id} should remain in the gift journey`);
@@ -266,6 +272,34 @@ test('groups the story into one fluid gift journey without decorative chapter-nu
   assert.doesNotMatch(css, /\[data-chapter\]::before/i);
   assert.doesNotMatch(html, /\bbook-page\b/i);
   assert.doesNotMatch(css, /aspect-ratio:\s*4\s*\/\s*3/i);
+});
+
+test('uses professional semantic content patterns and consistent static chrome', async () => {
+  const publicPages = await Promise.all(['index.html', 'gift.html', 'navigator.html', 'refund.html'].map(read));
+  const homepage = publicPages[0];
+  for (const marker of [
+    'class="brand-story"',
+    'section-shell editorial-layout',
+    'class="fact-list',
+    'class="process-steps"',
+    'class="proof-gallery"',
+    'class="action-group"',
+  ]) assert.match(homepage, new RegExp(marker, 'i'));
+
+  for (const retired of [
+    'story-section-focus',
+    'chapter-feature-list',
+    'chapter-grid',
+    'process-list',
+    'testimonial-gallery',
+  ]) assert.doesNotMatch(homepage, new RegExp(`\\b${retired}\\b`, 'i'));
+
+  const extract = (html, tag) => html
+    .match(new RegExp(`<${tag}\\b[\\s\\S]*?<\\/${tag}>`, 'i'))?.[0]
+    .replace(/\s+/g, ' ')
+    .trim();
+  assert.equal(new Set(publicPages.map((html) => extract(html, 'nav'))).size, 1);
+  assert.equal(new Set(publicPages.map((html) => extract(html, 'footer'))).size, 1);
 });
 
 test('reproduces the original Gamma story in order', async () => {
@@ -303,14 +337,14 @@ test('retains every original Gamma section structure', async () => {
   const testimonials = section(html, 'testimonials');
   const method = section(html, 'method');
   const closing = topicSection(html, 'closing');
-  assert.equal((uniqueChild.match(/<article\b/gi) ?? []).length, 3);
-  assert.equal((requiredData.match(/<article\b/gi) ?? []).length, 4);
-  assert.equal((deliverables.match(/<article\b/gi) ?? []).length, 4);
+  assert.equal((uniqueChild.match(/<li\b/gi) ?? []).length, 3);
+  assert.equal((requiredData.match(/<li\b/gi) ?? []).length, 4);
+  assert.equal((deliverables.match(/<li\b/gi) ?? []).length, 4);
   const comparisonHeader = comparison.match(/<thead[\s\S]*?<\/thead>/i)?.[0] ?? '';
   assert.equal((comparisonHeader.match(/<th\b/gi) ?? []).length, 4);
   const comparisonBody = comparison.match(/<tbody[\s\S]*?<\/tbody>/i)?.[0] ?? '';
   assert.equal((comparisonBody.match(/<tr\b/gi) ?? []).length, 5);
-  assert.equal((transformation.match(/<article\b/gi) ?? []).length, 3);
+  assert.equal((transformation.match(/<li\b/gi) ?? []).length, 3);
   assert.equal((testimonials.match(/<figure\b/gi) ?? []).length, 3);
   assert.equal((method.match(/<li\b/gi) ?? []).length, 4);
   assert.equal((closing.match(new RegExp(lineUrl, 'g')) ?? []).length, 1);
