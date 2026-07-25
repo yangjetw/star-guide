@@ -36,9 +36,14 @@ test('defines the warm comparison emphasis contract', async () => {
 
 test('presents the parent insight as a readable editorial quote card', async () => {
   const css = await read('styles.css');
-  assert.match(css, /\.reader-quote\s*\{[^}]*max-width:\s*46rem[^}]*background:\s*var\(--color-white\)[^}]*border:\s*1px solid[^}]*var\(--color-coral\)/s);
-  assert.match(css, /\.reader-quote__label\s*\{[^}]*font-family:\s*var\(--font-body\)[^}]*color:\s*var\(--color-coral-dark\)/s);
+  assert.match(css, /\.reader-quote\s*\{[^}]*max-width:\s*46rem[^}]*background:\s*var\(--color-paper\)[^}]*border:\s*1px solid[^}]*var\(--color-coral\)/s);
   assert.match(css, /\.reader-quote__text\s*\{[^}]*font-size:\s*clamp\(20px,[^}]*26px\)[^}]*line-height:\s*1\.6/s);
+});
+
+test('uses an accessible coral token for the parent insight label', async () => {
+  const css = await read('styles.css');
+  assert.match(css, /--color-coral-accessible:\s*#c4472e/);
+  assert.match(css, /\.reader-quote__label\s*\{[^}]*font-family:\s*var\(--font-body\)[^}]*color:\s*var\(--color-coral-accessible\)/s);
 });
 
 test('keeps coral separators on every guide cell despite the last-row reset', async () => {

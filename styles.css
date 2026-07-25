@@ -7,6 +7,7 @@
   --color-muted: #6c6467;
   --color-coral: #ff7859;
   --color-coral-dark: #d95339;
+  --color-coral-accessible: #c4472e;
   --color-peach: #fff0e8;
   --color-peach-deep: #ffd8c8;
   --color-jade: #5dcc88;
@@ -686,7 +687,7 @@ tbody tr:last-child td {
   max-width: 46rem;
   margin: 30px auto 0;
   padding: 26px 30px 28px;
-  background: var(--color-white);
+  background: var(--color-paper);
   border: 1px solid rgb(255 120 89 / 46%);
   border-top: 4px solid var(--color-coral);
   border-radius: 18px;
@@ -709,7 +710,7 @@ tbody tr:last-child td {
   z-index: 1;
   margin-bottom: 10px;
   font-family: var(--font-body);
-  color: var(--color-coral-dark);
+  color: var(--color-coral-accessible);
   font-size: 16px;
   font-weight: 850;
   letter-spacing: 0.08em;
