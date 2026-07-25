@@ -80,7 +80,7 @@ test('defines the Traditional Chinese HTML page contract', async () => {
   assert.match(html, /<html\s+lang=["']zh-Hant["']>/i);
   assert.match(html, /<meta\s+charset=["']UTF-8["']\s*\/?>/i);
   assert.match(html, /<meta\s+name=["']viewport["']\s+content=["']width=device-width, initial-scale=1["']\s*\/?>/i);
-  assert.match(html, /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-3["']\s*\/?>/i);
+  assert.match(html, /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-4["']\s*\/?>/i);
   assert.match(html, /<title>[^<]+<\/title>/i);
   assert.match(html, /<meta\s+property=["']og:image["']\s+content=["']assets\/images\/hero-parent-child\.webp["']/i);
   assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
@@ -89,7 +89,7 @@ test('defines the Traditional Chinese HTML page contract', async () => {
 
 test('cache-busts the shared stylesheet on every public page', async () => {
   for (const page of ['index.html', 'gift.html', 'navigator.html', 'refund.html']) {
-    assert.match(await read(page), /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-3["']/i, `${page} should load the current handbook styles`);
+    assert.match(await read(page), /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-4["']/i, `${page} should load the current immersive styles`);
   }
 });
 
@@ -248,18 +248,20 @@ function visibleText(fragment) {
     .trim();
 }
 
-test('groups the story into one book without decorative chapter-number hooks', async () => {
+test('groups the story into one fluid gift journey without decorative chapter-number hooks', async () => {
   const [html, css] = await Promise.all([read('index.html'), read('styles.css')]);
   const main = html.match(/<main\b[^>]*id="main-content"[\s\S]*?<\/main>/i)?.[0] ?? '';
-  assert.match(main, /^<main\b[^>]*id="main-content"[^>]*>\s*<div\b[^>]*class="book-page"/i);
+  assert.match(main, /^<main\b[^>]*id="main-content"[^>]*>\s*<div\b[^>]*class="site-story"/i);
   assert.match(main, /<\/div>\s*<\/main>$/i);
 
   for (const id of ['hero', 'concerns', 'concerns-details', 'unique-child', 'unique-child-details', 'method', 'required-data', 'required-data-details', 'gift-bridge', 'deliverables', 'deliverables-details', 'value-comparison', 'transformation', 'transformation-details', 'testimonials', 'closing-vision', 'closing']) {
-    assert.ok(section(main, id), `${id} should remain a handbook page`);
+    assert.ok(section(main, id), `${id} should remain in the gift journey`);
   }
 
   assert.doesNotMatch(html, /\bdata-chapter=/i);
   assert.doesNotMatch(css, /\[data-chapter\]::before/i);
+  assert.doesNotMatch(html, /\bbook-page\b/i);
+  assert.doesNotMatch(css, /aspect-ratio:\s*4\s*\/\s*3/i);
 });
 
 test('reproduces the original Gamma story in order', async () => {

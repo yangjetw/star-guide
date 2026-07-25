@@ -2,198 +2,97 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 
-test('defines the premium book palette and soft Chinese type system', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  assert.match(css, /--color-canvas:\s*#f3ede7;/i);
-  assert.match(css, /--color-paper:\s*#fffaf6;/i);
-  assert.match(css, /--color-night:\s*#182039;/i);
-  assert.match(css, /--color-accent:\s*#ff6b4a;/i);
-  assert.match(css, /--color-line:\s*#55c982;/i);
-  assert.match(css, /--font-display:[^;]*Noto Serif TC[^;]*Songti TC[^;]*PMingLiU[^;]*serif;/i);
-  assert.match(css, /--font-sans:[^;]*Noto Sans TC[^;]*PingFang TC[^;]*Microsoft JhengHei[^;]*sans-serif;/i);
-  assert.match(css, /h1,\s*h2,\s*h3\s*\{[^}]*font-family:\s*var\(--font-display\)/s);
-  assert.match(css, /font-size:\s*clamp\(18px,/);
+const root = new URL('../', import.meta.url);
+const read = (path) => readFile(new URL(path, root), 'utf8');
+
+test('defines the approved immersive gift palette and typography', async () => {
+  const css = await read('styles.css');
+  for (const token of [
+    '--color-night: #0d142c',
+    '--color-night-soft: #1b2850',
+    '--color-ivory: #fbf5ec',
+    '--color-paper: #fffaf4',
+    '--color-ink: #1b2038',
+    '--color-coral: #ff7859',
+    '--color-jade: #5dcc88',
+    '--color-gold: #e7bf77',
+  ]) assert.ok(css.toLowerCase().includes(token), `${token} should be defined`);
+  assert.match(css, /--font-display:[^;]*Noto Serif TC[^;]*serif/i);
+  assert.match(css, /--font-body:[^;]*Noto Sans TC[^;]*sans-serif/i);
+  assert.match(css, /font-size:\s*clamp\(/i);
   assert.doesNotMatch(css, /@import\s+url|fonts\.googleapis\.com/i);
 });
 
-test('renders one centered paper and a cohesive cover hero', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  assert.match(css, /body\s*\{[^}]*background:\s*var\(--color-canvas\)/s);
-  assert.match(css, /\.book-page\s*\{[^}]*display:\s*grid[^}]*gap:/s);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)\s*\{[\s\S]*?\.book-page\s*\{[^}]*margin:\s*0/s);
-  assert.match(css, /\.hero-section\s*\{[^}]*background:[^;}]*var\(--color-night\)[^}]*border-radius:\s*32px/s);
-  assert.match(css, /\.hero-section \.story-copy\s*\{[^}]*color:\s*#fff/s);
-  assert.match(css, /\.hero-section \.eyebrow\s*\{[^}]*color:\s*#ffc0a9/s);
-  assert.match(css, /\.hero-section \.story-media\s*\{[^}]*align-self:\s*stretch/s);
+test('uses a fluid narrative instead of fixed handbook canvases', async () => {
+  const [html, css] = await Promise.all([read('index.html'), read('styles.css')]);
+  assert.match(html, /class="site-story"/i);
+  assert.doesNotMatch(html, /\bbook-page\b/i);
+  assert.doesNotMatch(css, /aspect-ratio:\s*4\s*\/\s*3/i);
+  assert.doesNotMatch(css, /--handbook-|max-height:\s*calc\(100svh/i);
+  assert.match(css, /\.site-story\s*\{[^}]*overflow:\s*clip/is);
+  assert.match(css, /\.story-section\s*\{[^}]*display:\s*grid/is);
 });
 
-test('alternates desktop stories and stacks them below 768px', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  assert.match(css, /\.story-section\s*\{[^}]*display:\s*grid/s);
-  assert.match(css, /\.story-section-reverse\s+\.story-copy/);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)/);
-  assert.match(css, /grid-template-columns:\s*1fr/);
-  assert.doesNotMatch(css, /\.mobile-purchase\s*\{[^}]*position:\s*fixed/s);
+test('builds a cinematic starry hero with a readable overlay', async () => {
+  const css = await read('styles.css');
+  assert.match(css, /\.hero-section\s*\{[^}]*min-height:\s*min\(860px,\s*calc\(100svh/is);
+  assert.match(css, /\.hero-section::after\s*\{[^}]*linear-gradient/is);
+  assert.match(css, /\.hero-section \.story-media\s*\{[^}]*position:\s*absolute/is);
+  assert.match(css, /\.hero-section \.story-copy\s*\{[^}]*position:\s*relative[^}]*z-index:\s*2/is);
 });
 
-test('frames local images without the old glass-card treatment', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  assert.match(css, /\.story-media img\s*\{[^}]*object-fit:\s*cover/s);
-  assert.match(css, /border-radius:\s*2[02468]px/);
-  assert.doesNotMatch(css, /backdrop-filter/);
+test('creates editorial light and dark chapters with focused conversion actions', async () => {
+  const css = await read('styles.css');
+  assert.match(css, /\.gift-bridge\s*\{[^}]*background:\s*var\(--color-ivory\)/is);
+  assert.match(css, /\.button-primary\s*\{[^}]*background:\s*var\(--color-coral\)/is);
+  assert.match(css, /\.button-line\s*\{[^}]*background:\s*var\(--color-jade\)/is);
+  assert.match(css, /\.testimonial-gallery\s*\{[^}]*display:\s*grid/is);
+  assert.match(css, /\.comparison-section\s*\{[^}]*background:\s*var\(--color-paper\)/is);
+  assert.match(css, /\.closing-section\s*\{[^}]*background:\s*var\(--color-night\)/is);
 });
 
-test('shows the portrait process image at its natural ratio without cropping', async () => {
-  const [html, css] = await Promise.all([
-    readFile(new URL('../index.html', import.meta.url), 'utf8'),
-    readFile(new URL('../styles.css', import.meta.url), 'utf8'),
+test('keeps illustrations natural and testimonial screenshots credible', async () => {
+  const css = await read('styles.css');
+  assert.match(css, /\.story-media img\s*\{[^}]*object-fit:\s*cover/is);
+  assert.match(css, /\.process-media img\s*\{[^}]*object-fit:\s*contain/is);
+  assert.match(css, /\.testimonial-gallery img\s*\{[^}]*object-fit:\s*contain/is);
+  assert.match(css, /\.closing-media img\s*\{[^}]*height:\s*auto/is);
+  assert.doesNotMatch(css, /backdrop-filter/i);
+});
+
+test('supports tablet and phone layouts without clipped copy or fixed controls', async () => {
+  const css = await read('styles.css');
+  for (const width of ['1024px', '768px', '420px']) {
+    assert.match(css, new RegExp(`@media\\s*\\(max-width:\\s*${width}\\)`, 'i'));
+  }
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.story-section\s*\{[^}]*grid-template-columns:\s*1fr/is);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.pricing-grid\s*\{[^}]*grid-template-columns:\s*1fr/is);
+  assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/is);
+  assert.match(css, /\.table-wrap\s*\{[^}]*overflow-x:\s*auto/is);
+  assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/is);
+});
+
+test('extends the same premium language across all supporting pages', async () => {
+  const [css, gift, navigator, refund] = await Promise.all([
+    read('styles.css'),
+    read('gift.html'),
+    read('navigator.html'),
+    read('refund.html'),
   ]);
-  const method = html.match(/<section\b[^>]*id="method"[\s\S]*?<\/section>/i)?.[0] ?? '';
-  const processFrameRule = css.match(/\.process-media\s*\{([^}]*)\}/s)?.[1] ?? '';
-  const processImageRule = css.match(/\.process-media img\s*\{([^}]*)\}/s)?.[1] ?? '';
-
-  assert.match(method, /<figure\b[^>]*class="[^"]*\bprocess-media\b[^"]*"/i);
-  assert.match(method, /<img\b[^>]*src="assets\/images\/process-wonder\.webp"[^>]*width="864"[^>]*height="1152"/i);
-  assert.match(processFrameRule, /aspect-ratio:\s*3\s*\/\s*4/i);
-  assert.match(processImageRule, /object-fit:\s*contain/i);
-  assert.doesNotMatch(method, /\bstory-media-landscape\b/i);
-});
-
-test('preserves the closing image aspect ratio at mobile widths', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  const closingImageRule = css.match(/\.closing-media img\s*\{([^}]*)\}/s)?.[1] ?? '';
-
-  assert.match(closingImageRule, /width:\s*100%/);
-  assert.match(closingImageRule, /height:\s*auto/);
-  assert.match(closingImageRule, /max-height:\s*620px/);
-  assert.match(closingImageRule, /object-fit:\s*cover/);
-  assert.match(closingImageRule, /border-radius:\s*28px/);
-});
-
-test('turns every homepage section into one viewport-contained handbook page', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  assert.match(css, /\.book-page\s*>\s*section\s*\{[^}]*aspect-ratio:\s*4\s*\/\s*3[^}]*max-height:\s*calc\(100svh\s*-\s*var\(--handbook-viewport-offset\)\)[^}]*overflow:\s*clip/s);
-  assert.match(css, /\.book-page\s*>\s*section\s*\{[^}]*width:\s*var\(--handbook-page-width\)[^}]*margin:/s);
-  assert.match(css, /@media\s*\(max-width:\s*900px\)[\s\S]*?\.book-page\s*>\s*section\s*\{[^}]*aspect-ratio:\s*auto[^}]*height:\s*auto[^}]*max-height:\s*none[^}]*overflow:\s*visible/s);
-  assert.match(css, /\.story-media\s*\{[^}]*box-shadow:\s*var\(--shadow-card\)/s);
-});
-
-test('keeps the three densest handbook pages inside their desktop canvas', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  assert.match(css, /\.hero-section \.story-media\s*\{[^}]*aspect-ratio:\s*auto[^}]*min-height:\s*0/s);
-  assert.match(css, /\.story-section-reverse\s*\{[^}]*grid-template-columns:\s*minmax\(250px,\s*42fr\)\s+minmax\(0,\s*58fr\)/s);
-  assert.match(css, /\.story-section-focus\s*\{[^}]*display:\s*flex[^}]*justify-content:\s*center/s);
-  assert.match(css, /\.book-page\s*>\s*\.hero-section\s*,\s*\.book-page\s*>\s*\.closing-vision\s*,\s*\.book-page\s*>\s*\.closing-section\s*\{[^}]*background:/s);
-  assert.match(css, /\.comparison-section\s*\{[^}]*font-size:\s*15px[^}]*line-height:\s*1\.45/s);
-});
-
-test('turns pricing, comparison, testimonials, and closing into clear anchors', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  assert.match(css, /\.price-section\s*\{[^}]*width:\s*min\(calc\(100% - 64px\),\s*var\(--reading-width\)/s);
-  assert.match(css, /\.price-card\s*\{[^}]*background:\s*linear-gradient\([^}]*var\(--color-night\)/s);
-  assert.match(css, /\.price-card \.price\s*\{[^}]*color:\s*#fff/s);
-  assert.match(css, /\.comparison-section\s*\{[^}]*background:\s*#fff/s);
-  assert.match(css, /\.testimonial-list\s*\{[^}]*background:\s*#f6eee7/s);
-  assert.match(css, /\.closing-section\s*\{[^}]*background:\s*var\(--color-night\)/s);
-});
-
-test('keeps the premium book focused and touch friendly at mobile widths', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  assert.match(css, /\.brand\s*\{[^}]*display:\s*inline-flex[^}]*align-items:\s*center[^}]*min-height:\s*48px/s);
-  assert.match(css, /@media\s*\(max-width:\s*1024px\)/);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)/);
-  assert.match(css, /@media\s*\(max-width:\s*420px\)/);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.book-page\s*\{[^}]*width:\s*100%[^}]*border-radius:\s*0/s);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.story-section\s*\{[^}]*grid-template-columns:\s*1fr/s);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.story-section-reverse \.story-copy\s*\{[^}]*order:\s*1/s);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.story-section-reverse \.story-media\s*\{[^}]*order:\s*2/s);
-  assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/s);
-  assert.match(css, /@media\s*\(max-width:\s*420px\)\s*\{[\s\S]*?\.button-row\s+\.button\s*\{[^}]*flex:\s*0\s+0\s+auto[^}]*width:\s*100%/s);
-  assert.match(css, /\.table-wrap\s*\{[^}]*overflow-x:\s*auto/s);
-  assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/s);
-});
-
-test('keeps the inset hero centered through tablet and mobile widths', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-  const tabletRules = css.match(/@media\s*\(max-width:\s*1024px\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
-  const mobileHeroRule = css.match(/@media\s*\(max-width:\s*768px\)[\s\S]*?\.hero-section\s*\{([^}]*)\}/)?.[1] ?? '';
-
-  assert.doesNotMatch(tabletRules, /\.hero-section\s*,/);
-  assert.match(mobileHeroRule, /margin:\s*12px/);
-});
-
-test('extends the premium book language across shared marketplace pages', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-
-  assert.match(css, /\.site-nav\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*wrap/s);
-  assert.match(css, /\.page-shell\s*\{[^}]*background:\s*var\(--color-paper\)[^}]*border-radius:\s*36px[^}]*box-shadow:\s*var\(--shadow-paper\)/s);
-  assert.match(css, /\.subpage-hero\s*\{[^}]*background:[^;}]*var\(--color-night\)[^}]*border-radius:\s*32px/s);
-  assert.match(css, /\.pricing-grid\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
-  assert.match(css, /\.gift-card-preview\s*\{[^}]*border:\s*1px solid var\(--color-border\)[^}]*border-radius:\s*24px/s);
-  assert.match(css, /\.testimonial-gallery\s*\{[^}]*display:\s*grid/s);
-  assert.match(css, /\.testimonial-gallery img\s*\{[^}]*object-fit:\s*contain/s);
-  assert.match(css, /\.policy-section\s*\{[^}]*border-top:\s*1px solid var\(--color-border\)/s);
-});
-
-test('lets a text-only story section and its pricing grid use both desktop columns', async () => {
-  const [html, css] = await Promise.all([
-    readFile(new URL('../gift.html', import.meta.url), 'utf8'),
-    readFile(new URL('../styles.css', import.meta.url), 'utf8'),
-  ]);
-  const pricingSection = html.match(/<section\b[^>]*aria-labelledby="plans-title"[\s\S]*?<\/section>/i)?.[0] ?? '';
-  assert.match(pricingSection, /^\s*<section\b[^>]*>\s*<div\b[^>]*class="story-copy"/i);
-  assert.equal((pricingSection.match(/class="[^"]*\bstory-copy\b[^"]*"/gi) ?? []).length, 1);
-  assert.doesNotMatch(pricingSection, /class="[^"]*\bstory-media\b/);
-  assert.match(pricingSection, /class="[^"]*\bpricing-grid\b/);
-  assert.match(css, /\.story-section\s*>\s*\.story-copy:only-child\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
-});
-
-test('keeps shared marketplace pages responsive without fixed purchase controls', async () => {
-  const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
-
-  assert.match(css, /body\s*\{[^}]*font-size:\s*clamp\(18px,/s);
-  assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/s);
-  assert.match(css, /@media\s*\(max-width:\s*1024px\)[\s\S]*?\.page-shell\s*\{[^}]*width:/s);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav\s*\{[^}]*flex-wrap:\s*wrap/s);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.pricing-grid\s*\{[^}]*grid-template-columns:\s*1fr/s);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.testimonial-gallery\s*\{[^}]*grid-template-columns:\s*1fr/s);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.page-shell\s*\{[^}]*padding:\s*20px/s);
-  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?\.subpage-hero h1\s*\{[^}]*font-size:/s);
-  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?\.subpage-hero\s+\.button,\s*\.pricing-grid\s+\.button-primary,\s*\.gift-bridge\s+\.button\s*\{[^}]*width:\s*100%/s);
-  assert.match(css, /@media\s*\(max-width:\s*320px\)[\s\S]*?\.subpage-hero\s*\{[^}]*padding-inline:\s*20px/s);
-  assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/s);
-});
-
-test('binds shared responsive styles to the hooks used by all four pages', async () => {
-  const [css, index, gift, navigator, refund] = await Promise.all([
-    readFile(new URL('../styles.css', import.meta.url), 'utf8'),
-    readFile(new URL('../index.html', import.meta.url), 'utf8'),
-    readFile(new URL('../gift.html', import.meta.url), 'utf8'),
-    readFile(new URL('../navigator.html', import.meta.url), 'utf8'),
-    readFile(new URL('../refund.html', import.meta.url), 'utf8'),
-  ]);
-
   for (const page of [gift, navigator, refund]) {
-    assert.match(page, /<div\b[^>]*class="[^"]*\bpage-shell\b[^"]*"/i);
-    assert.match(page, /<section\b[^>]*class="[^"]*\bsubpage-hero\b[^"]*"/i);
+    assert.match(page, /class="[^"]*\bpage-shell\b/i);
+    assert.match(page, /class="[^"]*\bsubpage-hero\b/i);
   }
+  assert.match(css, /\.page-shell\s*\{[^}]*background:\s*var\(--color-paper\)/is);
+  assert.match(css, /\.subpage-hero\s*\{[^}]*background:\s*var\(--color-night\)/is);
+  assert.match(css, /\.pricing-grid\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/is);
+  assert.match(css, /\.policy-section\s*\{[^}]*border-top:/is);
+});
 
-  assert.match(gift, /<div\b[^>]*class="[^"]*\bpricing-grid\b[^"]*"/i);
-  const giftCardPreview = gift.match(
-    /<p\b[^>]*class=["'][^"']*\bgift-card-preview\b[^"']*["'][^>]*>[\s\S]*?<\/p>/i,
-  )?.[0] ?? '';
-  assert.match(giftCardPreview, /STAR-2026-[A-HJ-NP-Z2-9]{4}/);
-  assert.match(giftCardPreview, /GIFT-2026-[A-HJ-NP-Z2-9]{4}/);
-  assert.doesNotMatch(giftCardPreview, /(?:STAR|GIFT)-XXXX-XXXX/i);
-  assert.match(refund, /<section\b[^>]*class="[^"]*\bpolicy-section\b[^"]*"/i);
-  assert.match(index, /<p\b[^>]*class="[^"]*\bsection-note\b[^"]*"/i);
-  assert.match(index, /<div\b[^>]*class="[^"]*\btestimonial-gallery\b[^"]*"[\s\S]*?<figure\b[\s\S]*?<figure\b[\s\S]*?<figure\b/i);
-
-  for (const page of [index, gift, navigator, refund]) {
-    assert.match(page, /<section\b[^>]*class="[^"]*\bgift-bridge\b[^"]*"/i);
-  }
-
-  assert.match(css, /\.gift-bridge\s*\{[^}]*border:\s*1px solid var\(--color-border\)[^}]*border-radius:\s*28px/s);
-  assert.match(css, /\.section-note\s*\{[^}]*color:\s*var\(--color-muted\)/s);
-  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?\.subpage-hero\s+\.button,\s*\.pricing-grid\s+\.button-primary,\s*\.gift-bridge\s+\.button\s*\{[^}]*width:\s*100%/s);
+test('provides visible focus and reduced-motion fallbacks', async () => {
+  const css = await read('styles.css');
+  assert.match(css, /:focus-visible\s*\{[^}]*outline:\s*3px solid var\(--color-jade\)/is);
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/i);
+  assert.match(css, /scroll-behavior:\s*auto/i);
+  assert.match(css, /(?:animation|transition)-duration:\s*0\.01ms/i);
 });

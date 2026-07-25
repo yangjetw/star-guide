@@ -75,22 +75,22 @@ test('keeps each public page keyboard-accessible and secures every external link
 
 test('keeps current story components and keyboard focus legible', async () => {
   const { css } = await siteFiles();
-  assert.match(css, /\.book-page\s*\{/);
-  assert.match(css, /\.book-page\s*>\s*section\s*\{/);
+  assert.match(css, /\.site-story\s*\{/);
+  assert.match(css, /\.story-section\s*\{/);
   assert.doesNotMatch(css, /\[data-chapter\]/);
   assert.match(css, /\.closing-section h2\s*,/);
   assert.match(css, /\.process-list li\s*\{[^}]*color:\s*var\(--ink\)/i);
   assert.match(css, /\.deliverable-list article\s*\{[^}]*color:\s*var\(--ink\)/i);
   assert.match(css, /\.eyebrow\s*\{[^}]*color:\s*var\(--night-soft\)/i);
-  assert.match(css, /\.hero-section \.eyebrow\s*\{[^}]*color:\s*#ffc0a9/i);
+  assert.match(css, /\.hero-section \.eyebrow\s*\{[^}]*color:\s*var\(--color-gold\)/i);
   assert.doesNotMatch(css, /\.steps\b|\.deliverable-list li\b|\.hero\s+\.eyebrow|\.section:nth-of-type/i);
-  assert.match(css, /:focus-visible\s*\{[^}]*outline:\s*3px solid var\(--night-soft\)[^}]*box-shadow:\s*0 0 0 6px var\(--cream\),\s*0 0 0 9px var\(--starlight\)/i);
+  assert.match(css, /:focus-visible\s*\{[^}]*outline:\s*3px solid var\(--color-jade\)/i);
 });
 
 test('adds trustworthy metadata and original accessible brand assets', async () => {
   const { html } = await siteFiles();
   assert.match(html, /<meta\s+name=["']description["']\s+content=["']專為 3–12 歲孩子打造的親子成長指南，協助家長理解孩子的氣質、情緒與互動節奏。["']/i);
-  assert.match(html, /<meta\s+name=["']theme-color["']\s+content=["']#fffaf6["']/i);
+  assert.match(html, /<meta\s+name=["']theme-color["']\s+content=["']#0d142c["']/i);
   assert.match(html, /<meta\s+property=["']og:type["']\s+content=["']website["']/i);
   assert.match(html, /<meta\s+property=["']og:title["']\s+content=["']親子成長指南｜看見孩子獨特的宇宙["']/i);
   assert.match(html, /<meta\s+property=["']og:description["']\s+content=["']一份讓你真正懂孩子、可長期使用的親子溝通工具書。["']/i);
