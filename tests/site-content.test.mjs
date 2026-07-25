@@ -80,7 +80,7 @@ test('defines the Traditional Chinese HTML page contract', async () => {
   assert.match(html, /<html\s+lang=["']zh-Hant["']>/i);
   assert.match(html, /<meta\s+charset=["']UTF-8["']\s*\/?>/i);
   assert.match(html, /<meta\s+name=["']viewport["']\s+content=["']width=device-width, initial-scale=1["']\s*\/?>/i);
-  assert.match(html, /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-2["']\s*\/?>/i);
+  assert.match(html, /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-3["']\s*\/?>/i);
   assert.match(html, /<title>[^<]+<\/title>/i);
   assert.match(html, /<meta\s+property=["']og:image["']\s+content=["']assets\/images\/hero-parent-child\.webp["']/i);
   assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
@@ -89,7 +89,7 @@ test('defines the Traditional Chinese HTML page contract', async () => {
 
 test('cache-busts the shared stylesheet on every public page', async () => {
   for (const page of ['index.html', 'gift.html', 'navigator.html', 'refund.html']) {
-    assert.match(await read(page), /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-2["']/i, `${page} should load the current handbook styles`);
+    assert.match(await read(page), /<link\s+rel=["']stylesheet["']\s+href=["']styles\.css\?v=20260725-3["']/i, `${page} should load the current handbook styles`);
   }
 });
 
@@ -227,6 +227,17 @@ const expectedSectionText = {
 
 const section = (html, id) => html.match(new RegExp(`<section\\b[^>]*id="${id}"[\\s\\S]*?<\\/section>`, 'i'))?.[0] ?? '';
 
+const topicPages = {
+  concerns: ['concerns', 'concerns-details'],
+  'unique-child': ['unique-child', 'unique-child-details'],
+  'required-data': ['required-data', 'required-data-details'],
+  deliverables: ['deliverables', 'deliverables-details'],
+  transformation: ['transformation', 'transformation-details'],
+  closing: ['closing-vision', 'closing'],
+};
+
+const topicSection = (html, id) => (topicPages[id] ?? [id]).map((pageId) => section(html, pageId)).join(' ');
+
 function visibleText(fragment) {
   return fragment
     .replace(/<!--[\s\S]*?-->/g, '')
@@ -243,7 +254,7 @@ test('groups the story into one book without decorative chapter-number hooks', a
   assert.match(main, /^<main\b[^>]*id="main-content"[^>]*>\s*<div\b[^>]*class="book-page"/i);
   assert.match(main, /<\/div>\s*<\/main>$/i);
 
-  for (const id of ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'gift-bridge', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'closing']) {
+  for (const id of ['hero', 'concerns', 'concerns-details', 'unique-child', 'unique-child-details', 'method', 'required-data', 'required-data-details', 'gift-bridge', 'deliverables', 'deliverables-details', 'value-comparison', 'transformation', 'transformation-details', 'testimonials', 'closing-vision', 'closing']) {
     assert.ok(section(main, id), `${id} should remain a handbook page`);
   }
 
@@ -272,20 +283,20 @@ test('routes the story into the gift marketplace without its retired payment for
 test('retains the complete exact visible copy in every Gamma section', async () => {
   const html = await read('index.html');
   for (const [id, expectedText] of Object.entries(expectedSectionText)) {
-    assert.equal(visibleText(section(html, id)), expectedText.join(' '), `${id} visible copy must exactly match the approved source`);
+    assert.equal(visibleText(topicSection(html, id)), expectedText.join(' '), `${id} visible copy must exactly match the approved source`);
   }
 });
 
 test('retains every original Gamma section structure', async () => {
   const html = await read('index.html');
-  const uniqueChild = section(html, 'unique-child');
-  const requiredData = section(html, 'required-data');
-  const deliverables = section(html, 'deliverables');
+  const uniqueChild = topicSection(html, 'unique-child');
+  const requiredData = topicSection(html, 'required-data');
+  const deliverables = topicSection(html, 'deliverables');
   const comparison = section(html, 'value-comparison');
-  const transformation = section(html, 'transformation');
+  const transformation = topicSection(html, 'transformation');
   const testimonials = section(html, 'testimonials');
   const method = section(html, 'method');
-  const closing = section(html, 'closing');
+  const closing = topicSection(html, 'closing');
   assert.equal((uniqueChild.match(/<article\b/gi) ?? []).length, 3);
   assert.equal((requiredData.match(/<article\b/gi) ?? []).length, 4);
   assert.equal((deliverables.match(/<article\b/gi) ?? []).length, 4);

@@ -81,9 +81,10 @@ test('turns every homepage section into one viewport-contained handbook page', a
 test('keeps the three densest handbook pages inside their desktop canvas', async () => {
   const css = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
   assert.match(css, /\.hero-section \.story-media\s*\{[^}]*aspect-ratio:\s*auto[^}]*min-height:\s*0/s);
-  assert.match(css, /#deliverables \.story-copy\s*\{[^}]*line-height:\s*1\.7/s);
-  assert.match(css, /\.closing-section\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*minmax\(0,\s*42fr\)\s+minmax\(0,\s*58fr\)/s);
-  assert.match(css, /@media\s*\(max-width:\s*900px\)[\s\S]*?\.closing-section\s*\{[^}]*grid-template-columns:\s*1fr/s);
+  assert.match(css, /\.story-section-reverse\s*\{[^}]*grid-template-columns:\s*minmax\(250px,\s*42fr\)\s+minmax\(0,\s*58fr\)/s);
+  assert.match(css, /\.story-section-focus\s*\{[^}]*display:\s*flex[^}]*justify-content:\s*center/s);
+  assert.match(css, /\.book-page\s*>\s*\.hero-section\s*,\s*\.book-page\s*>\s*\.closing-vision\s*,\s*\.book-page\s*>\s*\.closing-section\s*\{[^}]*background:/s);
+  assert.match(css, /\.comparison-section\s*\{[^}]*font-size:\s*15px[^}]*line-height:\s*1\.45/s);
 });
 
 test('turns pricing, comparison, testimonials, and closing into clear anchors', async () => {
