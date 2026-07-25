@@ -680,17 +680,56 @@ tbody tr:last-child td {
   color: var(--color-coral-dark);
 }
 
-.editorial-layout--transformation blockquote {
-  margin: 24px 0 0;
-  padding: 20px 24px;
-  border: 0;
-  border-left: 5px solid var(--color-coral);
-  background: linear-gradient(135deg, var(--color-peach), var(--color-peach-deep));
-  color: var(--color-ink);
-  border-radius: 16px;
+.reader-quote {
+  position: relative;
+  width: min(100%, 46rem);
+  max-width: 46rem;
+  margin: 30px auto 0;
+  padding: 26px 30px 28px;
+  background: var(--color-white);
+  border: 1px solid rgb(255 120 89 / 46%);
+  border-top: 4px solid var(--color-coral);
+  border-radius: 18px;
   box-shadow: var(--shadow-warm);
+}
+
+.reader-quote::before {
+  content: "“";
+  position: absolute;
+  top: 8px;
+  right: 24px;
+  color: rgb(255 120 89 / 18%);
   font-family: var(--font-display);
-  line-height: 1.65;
+  font-size: 74px;
+  line-height: 1;
+}
+
+.reader-quote__label {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 10px;
+  font-family: var(--font-body);
+  color: var(--color-coral-dark);
+  font-size: 16px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.reader-quote__text {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: clamp(20px, 1.1vw + 16px, 26px);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.reader-quote__text p {
+  margin: 0;
 }
 
 .testimonial-section {
@@ -966,6 +1005,10 @@ tbody tr:last-child td {
 }
 
 @media (max-width: 768px) {
+  .reader-quote {
+    padding: 22px 20px 24px;
+  }
+
   h2 {
     font-size: clamp(30px, 9vw, 38px);
   }

@@ -208,6 +208,7 @@ const expectedSectionText = {
     '懂得「什麼時候放手，什麼時候給安全感」',
     '有效溝通模式',
     '擁有親子互動的具體劇本，說對話、做對事',
+    '家長閱讀後的感受',
     '很多爸媽看完說：「我終於理解他不是故意頂嘴，而是用他的方式呼救。」',
   ],
   testimonials: [
@@ -331,6 +332,7 @@ test('retains every original Gamma section structure', async () => {
   const testimonials = section(html, 'testimonials');
   const method = section(html, 'method');
   const closing = topicSection(html, 'closing');
+  assert.match(transformation, /<figure\b[^>]*class="reader-quote"[\s\S]*?<figcaption\b[^>]*class="reader-quote__label">家長閱讀後的感受<\/figcaption>[\s\S]*?<blockquote\b[^>]*class="reader-quote__text">/i);
   assert.equal((uniqueChild.match(/<li\b/gi) ?? []).length, 3);
   assert.equal((requiredData.match(/<li\b/gi) ?? []).length, 4);
   assert.equal((deliverables.match(/<li\b/gi) ?? []).length, 4);

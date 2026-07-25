@@ -28,11 +28,17 @@ test('defines the warm comparison emphasis contract', async () => {
   assert.match(css, /--color-peach:\s*#fff0e8/);
   assert.match(css, /--color-peach-deep:\s*#ffd8c8/);
   assert.match(css, /--shadow-warm:\s*0 18px 44px rgb\(217 83 57 \/ 12%\)/);
-  assert.match(css, /\.editorial-layout--transformation blockquote\s*\{[^}]*border-left:\s*5px solid var\(--color-coral\)[^}]*background:\s*linear-gradient\([^}]*var\(--color-peach\)[^}]*color:\s*var\(--color-ink\)[^}]*border-radius:\s*16px[^}]*box-shadow:\s*var\(--shadow-warm\)/s);
   assert.match(css, /\.our-guide th,\s*\.our-guide td\s*\{[^}]*background:\s*linear-gradient\([^}]*var\(--color-peach\)/s);
   assert.match(css, /\.our-guide th\s*\{[^}]*font-size:\s*22px/s);
   assert.match(css, /\.our-guide td\s*\{[^}]*font-size:\s*18px/s);
   assert.match(css, /\.our-guide td:nth-child\(2\)\s*\{[^}]*font-size:\s*24px[^}]*color:\s*var\(--color-coral-dark\)/s);
+});
+
+test('presents the parent insight as a readable editorial quote card', async () => {
+  const css = await read('styles.css');
+  assert.match(css, /\.reader-quote\s*\{[^}]*max-width:\s*46rem[^}]*background:\s*var\(--color-white\)[^}]*border:\s*1px solid[^}]*var\(--color-coral\)/s);
+  assert.match(css, /\.reader-quote__label\s*\{[^}]*font-family:\s*var\(--font-body\)[^}]*color:\s*var\(--color-coral-dark\)/s);
+  assert.match(css, /\.reader-quote__text\s*\{[^}]*font-size:\s*clamp\(20px,[^}]*26px\)[^}]*line-height:\s*1\.6/s);
 });
 
 test('keeps coral separators on every guide cell despite the last-row reset', async () => {
