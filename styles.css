@@ -929,6 +929,10 @@ tbody th {
     order: initial;
   }
 
+  #unique-child .story-media {
+    transform: none;
+  }
+
   .story-section-focus {
     width: min(calc(100% - 36px), 620px);
     margin-top: -28px;
