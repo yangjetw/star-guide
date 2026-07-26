@@ -1,5 +1,7 @@
 # LINE Support Reduction Implementation Plan
 
+> This plan is superseded by `2026-07-26-line-self-service-and-navigator-growth-implementation.md`. Official LINE is the self-service purchase and fulfilment channel, not merely a support escalation path.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Remove unnecessary LINE prompts while preserving LINE only for real purchases, bulk requests, and service exceptions.
