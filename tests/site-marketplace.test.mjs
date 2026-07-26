@@ -25,6 +25,12 @@ test('treats only uppercase internal code prefixes as forbidden', () => {
   assert.match('STAR-2026-001', forbiddenPublicOperations[0]);
 });
 
+test('describes the gift as a path toward understanding, reconciliation, and family leadership', async () => {
+  const html = await readPage('gift.html');
+  assert.ok(html.includes('點星者促成理解與和解；使指南陪伴父母成為自己孩子的領航者。'));
+  assert.ok(!html.includes('點星者促成理解開始；真正使用指南陪伴孩子的父母，將成為自己家庭的領航者。'));
+});
+
 test('publishes four semantic pages with consistent seller disclosure', async () => {
   for (const page of pages) {
     assert.ok(existsSync(new URL(page, root)), `${page} must exist`);
