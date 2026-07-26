@@ -101,6 +101,20 @@ test('defines the readable type and prominent navigation contract', async () => 
   }
 });
 
+test('makes the current navigation route unmistakable', async () => {
+  const css = await read('styles.css');
+  assert.match(css, /\.site-nav a\[aria-current="page"\]\s*\{[^}]*color:\s*var\(--color-gold\)[^}]*background:/s);
+  assert.match(css, /\.site-nav a\[aria-current="page"\]::after\s*\{[^}]*height:\s*3px/s);
+});
+
+test('styles role cards as a warm brand system rather than sales tiles', async () => {
+  const css = await read('styles.css');
+  assert.match(css, /\.role-journey\s*\{[^}]*background:/s);
+  assert.match(css, /\.role-cards\s*\{[^}]*display:\s*grid/s);
+  assert.match(css, /\.role-cards article\s*\{[^}]*border:\s*1px solid var\(--warm-border\)[^}]*box-shadow:/s);
+  assert.doesNotMatch(css, /\.role-cards article\s*\{[^}]*transform:\s*scale/is);
+});
+
 test('builds a cinematic starry hero with a readable overlay', async () => {
   const css = await read('styles.css');
   assert.match(css, /\.hero-section\s*\{[^}]*min-height:\s*min\(860px,\s*calc\(100svh/is);
@@ -164,6 +178,7 @@ test('supports tablet and phone layouts without clipped copy or fixed controls',
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.editorial-layout\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.fact-list\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.pricing-grid\s*\{[^}]*grid-template-columns:\s*1fr/is);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.role-cards\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav a:first-child\s*\{[^}]*font-size:\s*clamp\(16px,[^;]+17px\)/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav a:not\(:first-child\):not\(\.nav-line\)\s*\{[^}]*display:\s*none/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav \.nav-line\s*\{[^}]*padding-inline:\s*12px/is);
@@ -171,6 +186,8 @@ test('supports tablet and phone layouts without clipped copy or fixed controls',
   assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/is);
   assert.match(css, /\.table-wrap\s*\{[^}]*overflow-x:\s*auto/is);
   assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/is);
+  assert.match(css, /body\s*\{[^}]*overflow-x:\s*(?:clip|hidden)/is);
+  assert.doesNotMatch(css, /font-size:\s*(?:1[0-5]|[0-9])px/i);
 });
 
 test('extends the same premium language across all supporting pages', async () => {

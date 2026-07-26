@@ -10,14 +10,17 @@
   --color-coral-accessible: #c4472e;
   --color-peach: #fff0e8;
   --color-peach-deep: #ffd8c8;
+  --warm-border: #ead8ca;
+  --warm-shadow: 0 18px 44px rgb(76 46 32 / 10%);
   --color-jade: #5dcc88;
   --color-jade-dark: #226944;
   --color-gold: #e7bf77;
-  --color-border: #e5d9ce;
+  --color-border: var(--warm-border);
   --color-white: #ffffff;
-  --content-width: 1180px;
+  --content-max: 1200px;
+  --content-width: var(--content-max);
   --reading-width: 720px;
-  --body-size: clamp(18px, 0.35vw + 17px, 20px);
+  --body-size: clamp(18px, 0.25vw + 17px, 20px);
   --nav-height: 76px;
   --nav-link-size: clamp(17px, 0.2vw + 16px, 18px);
   --nav-surface: #10172d;
@@ -175,6 +178,23 @@ h3 {
   font-size: clamp(18px, 0.3vw + 17px, 20px);
   font-weight: 800;
   letter-spacing: 0.025em;
+}
+
+.site-nav a[aria-current="page"] {
+  position: relative;
+  color: var(--color-gold);
+  background: rgb(231 191 119 / 10%);
+}
+
+.site-nav a[aria-current="page"]::after {
+  position: absolute;
+  right: 18px;
+  bottom: -1px;
+  left: 18px;
+  height: 3px;
+  border-radius: 999px 999px 0 0;
+  background: var(--color-gold);
+  content: "";
 }
 
 .site-nav .nav-line {
@@ -775,6 +795,57 @@ tbody tr:last-child td {
   border-radius: 9px;
 }
 
+.role-journey {
+  background:
+    radial-gradient(circle at 15% 5%, rgb(255 216 200 / 60%), transparent 34rem),
+    var(--color-ivory);
+}
+
+.section-heading {
+  max-width: 48rem;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.role-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 2vw, 28px);
+}
+
+.role-cards article {
+  padding: clamp(24px, 3vw, 38px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--warm-border);
+  border-radius: 28px;
+  background: rgb(255 250 244 / 92%);
+  box-shadow: var(--warm-shadow);
+}
+
+.role-cards article > a {
+  margin-top: auto;
+  color: var(--color-coral-accessible);
+  font-weight: 800;
+}
+
+.brand-page--navigator .role-cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.role-name,
+.brand-signature {
+  color: var(--color-coral-accessible);
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.brand-signature {
+  margin-top: 36px;
+  text-align: center;
+}
+
 .chapter-closing {
   position: relative;
   min-height: 720px;
@@ -909,30 +980,38 @@ tbody tr:last-child td {
   margin: 28px 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: clamp(18px, 2vw, 28px);
 }
 
 .pricing-grid > article {
-  padding: 22px;
+  padding: clamp(24px, 3vw, 32px);
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--color-border);
-  border-radius: 18px;
-  background: var(--color-white);
-  box-shadow: var(--shadow-card);
-}
-
-.pricing-grid > article:nth-child(2) {
-  border-color: var(--color-coral);
+  border: 1px solid var(--warm-border);
+  border-radius: 24px;
+  background: var(--color-paper);
+  box-shadow: var(--warm-shadow);
 }
 
 .pricing-grid > article .button {
   margin-top: auto;
 }
 
-.pricing-grid strong,
 .plan-count {
-  color: var(--color-coral-dark);
+  color: var(--color-muted);
+  font-weight: 700;
+}
+
+.pricing-grid strong,
+.plan-price {
+  color: var(--color-coral-accessible);
+  font-weight: 850;
+}
+
+.plan-price {
+  margin: 0 0 18px;
+  font-size: clamp(24px, 1.4vw + 19px, 32px);
+  line-height: 1.25;
 }
 
 .gift-card-preview {
@@ -966,6 +1045,16 @@ tbody tr:last-child td {
 .policy-list dd {
   margin: 0;
   color: var(--color-muted);
+}
+
+.gift-journey,
+.gift-includes,
+.role-contrast,
+.capability-grid,
+.navigator-boundary,
+.policy-list,
+.service-contact {
+  border-top: 1px solid var(--warm-border);
 }
 
 .site-footer {
@@ -1176,12 +1265,26 @@ tbody tr:last-child td {
   }
 
   .content-section {
-    width: calc(100% - 36px);
+    width: 100%;
     padding-block: 48px;
+  }
+
+  .role-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .role-cards article {
+    padding: 24px;
+    border-radius: 22px;
   }
 
   .pricing-grid {
     grid-template-columns: 1fr;
+  }
+
+  .content-section,
+  .section-shell {
+    padding-inline: max(20px, env(safe-area-inset-left));
   }
 
   .policy-list div {
@@ -1192,7 +1295,7 @@ tbody tr:last-child td {
 
 @media (max-width: 420px) {
   .section-shell {
-    width: calc(100% - 28px);
+    width: 100%;
   }
 
   .editorial-layout--unique,
@@ -1208,8 +1311,7 @@ tbody tr:last-child td {
     padding-left: 48px;
   }
 
-  .chapter-closing .closing-copy,
-  .content-section {
+  .chapter-closing .closing-copy {
     width: calc(100% - 28px);
   }
 }
