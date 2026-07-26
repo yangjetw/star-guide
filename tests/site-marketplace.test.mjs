@@ -39,8 +39,30 @@ test('publishes four semantic pages with consistent seller disclosure', async ()
     assert.match(html, /<main\b[^>]*id=["']main-content["']/i);
     assert.match(html, /<footer\b/i);
     for (const fact of sellerFacts) assert.ok(html.includes(fact), `${page} must include ${fact}`);
-    assert.ok(html.includes(lineUrl));
   }
+});
+
+test('limits LINE escalation to purchases and genuine service exceptions', async () => {
+  const [home, gift, navigator, refund] = await Promise.all(pages.map(readPage));
+
+  for (const html of [home, gift, navigator, refund]) {
+    const navigation = html.match(/<nav\b[\s\S]*?<\/nav>/i)?.[0] ?? '';
+    const footer = html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? '';
+    assert.doesNotMatch(navigation, new RegExp(lineUrl));
+    assert.doesNotMatch(footer, new RegExp(lineUrl));
+  }
+
+  assert.doesNotMatch(home, new RegExp(lineUrl));
+  assert.doesNotMatch(navigator, new RegExp(lineUrl));
+
+  const assurance = gift.match(/<section\b[^>]*class=["'][^"']*\bgift-assurance\b[^"']*["'][\s\S]*?<\/section>/i)?.[0] ?? '';
+  assert.doesNotMatch(assurance, new RegExp(lineUrl));
+  assert.doesNotMatch(assurance, /\beyebrow\b/i);
+  assert.ok(assurance.includes('孩子的出生時間必須可以確認，建議誤差不超過 30 分鐘；若無法確認，請勿購買。'));
+
+  const pricing = gift.match(/<section\b[^>]*id=["']gift-plans["'][\s\S]*?<\/section>/i)?.[0] ?? '';
+  assert.match(pricing, new RegExp(lineUrl));
+  assert.match(refund, new RegExp(lineUrl));
 });
 
 test('publishes the approved gift prices and approval-safe calls to action', async () => {
@@ -110,7 +132,7 @@ test('routes navigator applications directly to the approved public form', async
   assert.match(formAnchor, /\btarget=["']_blank["']/i);
   assert.match(formAnchor, /\brel=["'][^"']*\bnoopener\b[^"']*\bnoreferrer\b[^"']*["']/i);
   assert.match(html, new RegExp(`<a\\b[^>]*class=["'][^"']*button-primary[^"']*["'][^>]*href=["']${navigatorFormUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["'][^>]*>填寫導航者申請表<\\/a>`, 'i'));
-  assert.match(html, /填寫前有疑問？[\s\S]*?官方 LINE/i);
+  assert.doesNotMatch(html, new RegExp(lineUrl));
 });
 
 test('defines 領航者 and 導航者 without unsupported professional claims', async () => {

@@ -131,7 +131,7 @@ const expectedSectionText = {
     '看見孩子獨特的宇宙',
     '每個父母都想給孩子最好，只是不知道什麼才是最好。',
     '《親子成長指南》是什麼？',
-    '加入官方 Line',
+    '送一份祝福',
   ],
   concerns: [
     '你是否也有這些困惑？',
@@ -239,7 +239,6 @@ const expectedSectionText = {
     '懂，是比愛更深刻的慈悲。',
     '孩子從來不是「不懂事」，只是用另一種節奏生活。這份指南，讓你能用他的節奏靠近、理解、擁抱。理解之後，行動自然發生。這就是親子之間的真正靠近。',
     '《親子成長指南》，獻給願意陪孩子一起成長的大人。',
-    '加入官方 Line',
     '看看送禮方式',
   ],
 };
@@ -394,7 +393,7 @@ test('retains every original Gamma section structure', async () => {
   assert.equal((transformation.match(/<li\b/gi) ?? []).length, 3);
   assert.equal((testimonials.match(/<figure\b/gi) ?? []).length, 3);
   assert.equal((method.match(/<li\b/gi) ?? []).length, 4);
-  assert.equal((closing.match(new RegExp(lineUrl, 'g')) ?? []).length, 1);
+  assert.equal((closing.match(new RegExp(lineUrl, 'g')) ?? []).length, 0);
   assert.equal((closing.match(/href="gift\.html"/g) ?? []).length, 1);
 });
 
@@ -420,6 +419,6 @@ test('identifies comparison table column and row headers for assistive technolog
 test('retains the exact visible site chrome copy', async () => {
   const html = await read('index.html');
   assert.equal(visibleText(html.match(/<a\b[^>]*class="skip-link"[\s\S]*?<\/a>/i)?.[0] ?? ''), '跳到主要內容');
-  assert.equal(visibleText(html.match(/<header\b[\s\S]*?<\/header>/i)?.[0] ?? ''), '指南介紹 送一份祝福 導航者 安心購買 官方 LINE');
-  assert.equal(visibleText(html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? ''), '赫爾墨斯的小宇宙 ，由星學會運營。 星學會有限公司｜統一編號 69708677 astrokidsguide@gmail.com ｜官方 LINE ｜安心購買與服務說明');
+  assert.equal(visibleText(html.match(/<header\b[\s\S]*?<\/header>/i)?.[0] ?? ''), '指南介紹 送一份祝福 導航者 安心購買');
+  assert.equal(visibleText(html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? ''), '赫爾墨斯的小宇宙 ，由星學會運營。 星學會有限公司｜統一編號 69708677 astrokidsguide@gmail.com ｜安心購買與服務說明');
 });
