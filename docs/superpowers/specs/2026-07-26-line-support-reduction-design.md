@@ -1,6 +1,6 @@
 # LINE 支援入口精簡設計
 
-> 本文件已由 `2026-07-26-line-self-service-and-navigator-capability-design.md` 取代。官方 LINE 是自助購買與交付流程入口，不應被定義為只處理例外的客服管道。
+> 本文件已由 `2026-07-26-line-self-service-and-navigator-growth-design.md` 取代。官方 LINE 是自助購買與交付流程入口，不應被定義為只處理例外的客服管道。
 
 ## 目標
 
