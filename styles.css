@@ -1267,9 +1267,14 @@ tbody tr:last-child td {
   .content-section {
     width: 100%;
     padding-block: 48px;
+    padding-inline: max(20px, env(safe-area-inset-left));
   }
 
   .role-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-page--navigator .role-cards {
     grid-template-columns: 1fr;
   }
 
@@ -1282,11 +1287,6 @@ tbody tr:last-child td {
     grid-template-columns: 1fr;
   }
 
-  .content-section,
-  .section-shell {
-    padding-inline: max(20px, env(safe-area-inset-left));
-  }
-
   .policy-list div {
     grid-template-columns: 1fr;
     gap: 4px;
@@ -1295,7 +1295,7 @@ tbody tr:last-child td {
 
 @media (max-width: 420px) {
   .section-shell {
-    width: 100%;
+    width: calc(100% - 28px);
   }
 
   .editorial-layout--unique,

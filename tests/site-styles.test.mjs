@@ -190,6 +190,26 @@ test('supports tablet and phone layouts without clipped copy or fixed controls',
   assert.doesNotMatch(css, /font-size:\s*(?:1[0-5]|[0-9])px/i);
 });
 
+test('stacks the navigator role comparison at the mobile breakpoint', async () => {
+  const css = await read('styles.css');
+  assert.match(
+    css,
+    /@media\s*\(max-width:\s*768px\)[\s\S]*?\.brand-page--navigator \.role-cards\s*\{[^}]*grid-template-columns:\s*1fr/is,
+  );
+});
+
+test('keeps safe-area padding from doubling the homepage section-shell gutter', async () => {
+  const css = await read('styles.css');
+  assert.doesNotMatch(
+    css,
+    /@media\s*\(max-width:\s*768px\)[\s\S]*?\.section-shell\s*\{[^}]*padding-inline:/is,
+  );
+  assert.match(
+    css,
+    /@media\s*\(max-width:\s*768px\)[\s\S]*?\.content-section\s*\{[^}]*padding-inline:\s*max\(20px,\s*env\(safe-area-inset-left\)\)/is,
+  );
+});
+
 test('extends the same premium language across all supporting pages', async () => {
   const [css, gift, navigator, refund] = await Promise.all([
     read('styles.css'),
