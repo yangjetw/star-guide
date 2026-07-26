@@ -49,6 +49,24 @@ test('ships approved original imagery locally with stable metadata', async () =>
   assert.equal((html.match(/loading="lazy"/g) ?? []).length >= 6, true);
 });
 
+test('reserves image space and supplies responsive sizing hints', async () => {
+  const html = await read('index.html');
+  for (const image of html.match(/<img\b[^>]*>/gi) ?? []) {
+    assert.match(image, /\bwidth="\d+"/i);
+    assert.match(image, /\bheight="\d+"/i);
+  }
+  for (const asset of [
+    'concerns-family.webp',
+    'guide-parent-child.webp',
+    'process-wonder.webp',
+    'required-data-family.webp',
+    'deliverables-reading.webp',
+  ]) {
+    const tag = html.match(new RegExp(`<img\\b[^>]*src="assets/images/${asset}"[^>]*>`, 'i'))?.[0] ?? '';
+    assert.match(tag, /\bsizes="/i, `${asset} needs responsive sizes`);
+  }
+});
+
 test('includes the GitHub Pages publishing package', async () => {
   assert.ok(existsSync(new URL('.nojekyll', root)));
   assert.equal(await read('.nojekyll'), '');

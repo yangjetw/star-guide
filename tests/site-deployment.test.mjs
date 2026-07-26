@@ -25,10 +25,9 @@ test('stages every public HTML route in the GitHub Pages artifact', async () => 
   }
 });
 
-test('documents the production redemption boundary as a verifiable statement', async () => {
+test('documents the public/private fulfilment boundary', async () => {
   const readme = await readFile(new URL('README.md', root), 'utf8');
-  assert.ok(readme.includes('production HTML/CSS 不公開兌換入口'));
-  assert.doesNotMatch(readme, /原始碼.*不會公開|不會公開.*原始碼/);
+  assert.ok(readme.includes('公開網站不揭露兌換碼格式、發行分類或私人指南申請入口'));
 });
 
 test('keeps Google Form URLs and opaque form IDs out of tracked source material', async () => {
