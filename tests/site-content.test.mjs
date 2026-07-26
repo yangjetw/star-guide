@@ -255,7 +255,7 @@ test('groups the story into one semantic brand journey without decorative chapte
   assert.match(main, /^<main\b[^>]*id="main-content"[^>]*>\s*<article\b[^>]*class="brand-story"/i);
   assert.match(main, /<\/article>\s*<\/main>$/i);
 
-  for (const id of ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'gift-bridge', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'closing']) {
+  for (const id of ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'gift-bridge', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'role-journey', 'closing']) {
     assert.ok(section(main, id), `${id} should remain in the gift journey`);
   }
 
@@ -293,8 +293,25 @@ test('uses professional semantic content patterns and consistent static chrome',
     .match(new RegExp(`<${tag}\\b[\\s\\S]*?<\\/${tag}>`, 'i'))?.[0]
     .replace(/\s+/g, ' ')
     .trim();
-  assert.equal(new Set(publicPages.map((html) => extract(html, 'nav'))).size, 1);
+  const normalizedNav = (html) => extract(html, 'nav').replace(/\s+aria-current=["']page["']/gi, '');
+  assert.equal(new Set(publicPages.map(normalizedNav)).size, 1);
   assert.equal(new Set(publicPages.map((html) => extract(html, 'footer'))).size, 1);
+});
+
+const brandOperatorStatement = '赫爾墨斯的小宇宙，由星學會運營。';
+
+test('keeps the guide primary and introduces the three roles only after product proof', async () => {
+  const html = await read('index.html');
+  const guideStart = html.indexOf('《親子成長指南》');
+  const testimonials = html.indexOf('家長們的真實心聲');
+  const roles = html.indexOf('三種方式，讓理解繼續發生');
+  assert.ok(guideStart >= 0 && testimonials > guideStart && roles > testimonials);
+  for (const phrase of [
+    '點星者',
+    '領航者',
+    '導航者',
+    brandOperatorStatement,
+  ]) assert.ok(html.includes(phrase), `${phrase} must appear in the role journey`);
 });
 
 test('reproduces the original Gamma story in order', async () => {
@@ -369,6 +386,6 @@ test('identifies comparison table column and row headers for assistive technolog
 test('retains the exact visible site chrome copy', async () => {
   const html = await read('index.html');
   assert.equal(visibleText(html.match(/<a\b[^>]*class="skip-link"[\s\S]*?<\/a>/i)?.[0] ?? ''), '跳到主要內容');
-  assert.equal(visibleText(html.match(/<header\b[\s\S]*?<\/header>/i)?.[0] ?? ''), '指南介紹 送一份祝福 導航者 購買與退款 官方 LINE');
-  assert.equal(visibleText(html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? ''), '赫爾墨斯的小宇宙 ｜星學會有限公司｜統一編號 69708677 astrokidsguide@gmail.com ｜官方 LINE ｜購買與退款政策');
+  assert.equal(visibleText(html.match(/<header\b[\s\S]*?<\/header>/i)?.[0] ?? ''), '指南介紹 送一份祝福 導航者 安心購買 官方 LINE');
+  assert.equal(visibleText(html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? ''), '赫爾墨斯的小宇宙 ，由星學會運營。 星學會有限公司｜統一編號 69708677 astrokidsguide@gmail.com ｜官方 LINE ｜安心購買與服務說明');
 });

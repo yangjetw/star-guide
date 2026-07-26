@@ -5,10 +5,18 @@ import { test } from 'node:test';
 
 const root = new URL('../', import.meta.url);
 const pages = ['index.html', 'gift.html', 'navigator.html', 'refund.html'];
+const brandOperatorStatement = '赫爾墨斯的小宇宙，由星學會運營。';
 
 const readPage = (name) => readFile(new URL(name, root), 'utf8');
 const externalAnchors = (html) => (html.match(/<a\b[^>]*>/gi) ?? [])
   .filter((anchor) => /href=["'](?:https?:)?\/\//i.test(anchor));
+const visibleText = (fragment) => fragment
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/<br\s*\/?\s*>/gi, ' ')
+  .replace(/<\/(?:p|h[1-6]|li|th|td|blockquote|cite)>/gi, ' ')
+  .replace(/<[^>]+>/g, '')
+  .replace(/\s+/g, ' ')
+  .trim();
 
 async function siteFiles() {
   const [html, css] = await Promise.all([
@@ -34,12 +42,22 @@ test('preserves the Task 1 semantic landmarks and Gamma section flow', async () 
     'value-comparison',
     'transformation',
     'testimonials',
+    'role-journey',
     'closing',
   ];
   assert.deepEqual([...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]), ids);
   assert.match(css, /:focus-visible\s*\{[^}]*outline:\s*3px/i);
   assert.match(css, /\.skip-link:focus-visible\s*\{[^}]*top:\s*0/i);
   assert.match(css, /\.skip-link:focus(?:-visible)?\s*\{[^}]*top:\s*0/i);
+});
+
+test('marks the current route in shared navigation', async () => {
+  for (const page of pages) {
+    const html = await readPage(page);
+    assert.equal((html.match(/\baria-current=["']page["']/gi) ?? []).length, 1, `${page} needs one current-page marker`);
+    const footer = html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? '';
+    assert.ok(visibleText(footer).includes(brandOperatorStatement), `${page} needs the exact operator statement`);
+  }
 });
 
 test('respects reduced motion and protects external navigation', async () => {
