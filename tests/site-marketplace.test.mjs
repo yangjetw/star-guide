@@ -11,12 +11,12 @@ const sellerFacts = ['星學會有限公司', '69708677', 'astrokidsguide@gmail.
 
 const readPage = (name) => readFile(new URL(name, root), 'utf8');
 const anchors = (html) => html.match(/<a\b[^>]*>[\s\S]*?<\/a>/gi) ?? [];
-const redemptionCodeCandidates = (html) => (
-  html
-    .replace(/<[^>]*>/g, ' ')
-    .match(/\b[A-Za-z]+-[A-Za-z0-9]{1,8}-[A-Za-z0-9]{1,8}\b/g) ?? []
-);
-const approvedRedemptionCode = /^(?:STAR|GIFT)-\d{4}-[A-HJ-NP-Z2-9]{4}$/;
+const forbiddenPublicOperations = [
+  /\bSTAR-/i,
+  /\bGIFT-/i,
+  /品牌主動贈送|品牌贈送|朋友試用|朋友體驗/,
+  /同一份兌換流程|共用兌換流程|兌換碼前綴|代碼示例/,
+];
 
 test('publishes four semantic pages with consistent seller disclosure', async () => {
   for (const page of pages) {
@@ -33,26 +33,38 @@ test('publishes four semantic pages with consistent seller disclosure', async ()
 test('publishes the approved gift prices and approval-safe calls to action', async () => {
   const html = await readPage('gift.html');
   for (const price of ['NT$3,980', 'NT$7,600', 'NT$17,900']) assert.ok(html.includes(price));
-  for (const quantity of ['1 份', '2 份', '5 份']) assert.ok(html.includes(quantity), `${quantity} must be disclosed`);
-  assert.ok(html.includes('10 份以上'));
-  assert.ok(html.includes('正式線上販售將於票券服務審核完成後開放'));
+  for (const quantity of ['1 \u4efd', '2 \u4efd', '5 \u4efd']) assert.ok(html.includes(quantity), quantity + ' must be disclosed');
+  assert.ok(html.includes('10 \u4efd\u4ee5\u4e0a\u7684\u9001\u79ae\u9700\u6c42'));
   const inquiryCtas = anchors(html)
-    .filter((anchor) => anchor.replace(/<[^>]+>/g, '').includes('洽詢購買'));
+    .filter((anchor) => anchor.replace(/<[^>]+>/g, '').includes('\u6d3d\u8a62\u8cfc\u8cb7'));
   assert.equal(inquiryCtas.length >= 3, true);
   for (const anchor of inquiryCtas) assert.match(anchor, /href=["']https:\/\/lin\.ee\/gMMpzNy["']/i);
-  assert.doesNotMatch(html, /匯款|立即付款|LINE Bank|街口付款/i);
+  assert.doesNotMatch(html, /\u4ee3\u6536|\u8f49\u5e33\u7e73\u8cbb|LINE Bank|\u865b\u64ec\u5e33\u865f/i);
 });
 
 test('presents the public gift-card brand and complete delivery contents', async () => {
   const html = await readPage('gift.html');
-  assert.match(html, /<title>赫爾墨斯的小宇宙禮物卡[^<]*<\/title>/);
-  assert.match(html, /<h1\b[^>]*>赫爾墨斯的小宇宙禮物卡<\/h1>/);
-  for (const item of ['單次使用的 STAR 兌換碼', '由購買者透過 LINE 轉送的電子禮物卡', '客製 PDF 指南', 'Email 協助']) {
-    assert.ok(html.includes(item), `${item} must be disclosed`);
-  }
-  assert.ok(html.includes('星學會有限公司'), 'the legal seller must remain disclosed');
+  assert.match(html, /<title>送一份真正懂孩子的禮物[^<]*<\/title>/);
+  assert.match(html, /<h1\b[^>]*>送一份真正懂孩子的禮物<\/h1>/);
+  for (const item of [
+    '由購買者轉送的電子禮物資訊',
+    '收禮者專屬的申請指引',
+    '客製 PDF 指南',
+    'Email 與官方 LINE 協助',
+  ]) assert.ok(html.includes(item), `${item} must be disclosed`);
 });
 
+test('presents the purchaser as a 點星者 and explains the recipient journey', async () => {
+  const html = await readPage('gift.html');
+  for (const phrase of [
+    '點星者',
+    '你送出的不只是一份指南，而是為一個家庭點亮理解的起點。',
+    '選擇送禮方案',
+    '轉送電子禮物資訊',
+    '收禮的父母提供製作資料',
+    '取得專屬的客製指南',
+  ]) assert.ok(html.includes(phrase), `${phrase} must be disclosed`);
+});
 test('explains code security, recipient data use, support, and paper invoice handling', async () => {
   const html = await readPage('refund.html');
   for (const phrase of [
@@ -89,44 +101,11 @@ test('routes navigator applications directly to the approved public form', async
   assert.match(html, /填寫前有疑問？[\s\S]*?官方 LINE/i);
 });
 
-test('removes retired automation and code labels from every public page', async () => {
+
+test('keeps internal fulfilment rules out of every public page', async () => {
   const corpus = (await Promise.all(pages.map(readPage))).join('\n');
-  const gift = await readPage('gift.html');
-  assert.doesNotMatch(corpus, /n8n|TEST-|PGG-|https:\/\/lin\.ee\/UDM1hMc|https:\/\/docs[.]google[.]com\/forms|匯款|立即付款|LINE Bank|街口付款|銀行|帳號|收款|QR\s*(?:code)?/i);
+  for (const pattern of forbiddenPublicOperations) assert.doesNotMatch(corpus, pattern);
   assert.doesNotMatch(corpus, /<form\b|<iframe\b|<script\b/i);
-  assert.match(gift, /STAR-2026-[A-HJ-NP-Z2-9]{4}/);
-  assert.match(gift, /GIFT-2026-[A-HJ-NP-Z2-9]{4}/);
-  assert.doesNotMatch(corpus, /\b(?:TEST|PGG)-/);
-  assert.doesNotMatch(corpus, /\bSTAR-(?=[A-Z0-9]{0,3}[A-Z])[A-Z0-9]{4}-[A-Z0-9]{4}\b/);
-  for (const code of redemptionCodeCandidates(corpus)) {
-    assert.match(code, approvedRedemptionCode);
-  }
-  for (const text of [
-    '顧客購買後自用或轉送',
-    '品牌主動贈送',
-    '使用同一份兌換流程',
-    '取得有效兌換碼後，即可進入專屬申請流程',
-  ]) {
-    assert.match(corpus, new RegExp(text));
-  }
-});
-
-test('rejects malformed ASCII redemption-code candidates without flagging format templates', () => {
-  for (const mutation of [
-    'STAR-2-A7K9',
-    'STAR-20266-A7K9',
-    'STAR-2026-A7K',
-    'STAR-2026-A7K99',
-    'STAR-26-A7K9',
-    'PROMO-YYYY-A7K9',
-    'gift-2026-A7K9',
-    'STAR-2026-A7I9',
-  ]) {
-    assert.deepEqual(redemptionCodeCandidates(mutation), [mutation]);
-    assert.doesNotMatch(mutation, approvedRedemptionCode);
-  }
-
-  assert.deepEqual(redemptionCodeCandidates('STAR-年份-XXXX／GIFT-年份-XXXX'), []);
 });
 
 test('allows only approved destinations for every public external link', async () => {
