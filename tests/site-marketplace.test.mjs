@@ -42,26 +42,33 @@ test('publishes four semantic pages with consistent seller disclosure', async ()
   }
 });
 
-test('limits LINE escalation to purchases and genuine service exceptions', async () => {
+test('uses LINE as a self-service purchase channel instead of a general inquiry prompt', async () => {
   const [home, gift, navigator, refund] = await Promise.all(pages.map(readPage));
 
   for (const html of [home, gift, navigator, refund]) {
     const navigation = html.match(/<nav\b[\s\S]*?<\/nav>/i)?.[0] ?? '';
     const footer = html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? '';
-    assert.doesNotMatch(navigation, new RegExp(lineUrl));
-    assert.doesNotMatch(footer, new RegExp(lineUrl));
+    assert.match(navigation, new RegExp(lineUrl));
+    assert.match(footer, new RegExp(lineUrl));
   }
 
-  assert.doesNotMatch(home, new RegExp(lineUrl));
-  assert.doesNotMatch(navigator, new RegExp(lineUrl));
+  assert.match(home, /進入官方 LINE/);
 
   const assurance = gift.match(/<section\b[^>]*class=["'][^"']*\bgift-assurance\b[^"']*["'][\s\S]*?<\/section>/i)?.[0] ?? '';
-  assert.doesNotMatch(assurance, new RegExp(lineUrl));
+  assert.match(assurance, new RegExp(lineUrl));
   assert.doesNotMatch(assurance, /\beyebrow\b/i);
   assert.ok(assurance.includes('孩子的出生時間必須可以確認，建議誤差不超過 30 分鐘；若無法確認，請勿購買。'));
+  assert.ok(assurance.includes('加入 LINE 完成購買'));
 
   const pricing = gift.match(/<section\b[^>]*id=["']gift-plans["'][\s\S]*?<\/section>/i)?.[0] ?? '';
-  assert.match(pricing, new RegExp(lineUrl));
+  assert.equal((pricing.match(/前往 LINE 選購/g) ?? []).length, 3);
+  assert.ok(gift.includes('加入官方 LINE，依選單選擇方案並自行完成購買。'));
+
+  for (const phrase of ['洽詢購買', '客服陪伴', '有問題請詢問', '填寫前有疑問']) {
+    assert.ok(!home.includes(phrase), `${phrase} must not appear on the homepage`);
+    assert.ok(!gift.includes(phrase), `${phrase} must not appear in the ordinary gift flow`);
+    assert.ok(!navigator.includes(phrase), `${phrase} must not appear beside navigator application`);
+  }
   assert.match(refund, new RegExp(lineUrl));
 });
 
@@ -70,10 +77,10 @@ test('publishes the approved gift prices and approval-safe calls to action', asy
   for (const price of ['NT$3,980', 'NT$7,600', 'NT$17,900']) assert.ok(html.includes(price));
   for (const quantity of ['1 \u4efd', '2 \u4efd', '5 \u4efd']) assert.ok(html.includes(quantity), quantity + ' must be disclosed');
   assert.ok(html.includes('10 \u4efd\u4ee5\u4e0a\u7684\u9001\u79ae\u9700\u6c42'));
-  const inquiryCtas = anchors(html)
-    .filter((anchor) => anchor.replace(/<[^>]+>/g, '').includes('\u6d3d\u8a62\u8cfc\u8cb7'));
-  assert.equal(inquiryCtas.length >= 3, true);
-  for (const anchor of inquiryCtas) assert.match(anchor, /href=["']https:\/\/lin\.ee\/gMMpzNy["']/i);
+  const purchaseCtas = anchors(html)
+    .filter((anchor) => anchor.replace(/<[^>]+>/g, '').includes('前往 LINE 選購'));
+  assert.equal(purchaseCtas.length, 3);
+  for (const anchor of purchaseCtas) assert.match(anchor, /href=["']https:\/\/lin\.ee\/gMMpzNy["']/i);
   assert.doesNotMatch(html, /\u532f\u6b3e|\u7acb\u5373\u4ed8\u6b3e|\u8857\u53e3\u4ed8\u6b3e|\u4ee3\u6536|\u8f49\u5e33\u7e73\u8cbb|LINE Bank|\u865b\u64ec\u5e33\u865f/i);
 });
 
@@ -132,7 +139,18 @@ test('routes navigator applications directly to the approved public form', async
   assert.match(formAnchor, /\btarget=["']_blank["']/i);
   assert.match(formAnchor, /\brel=["'][^"']*\bnoopener\b[^"']*\bnoreferrer\b[^"']*["']/i);
   assert.match(html, new RegExp(`<a\\b[^>]*class=["'][^"']*button-primary[^"']*["'][^>]*href=["']${navigatorFormUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["'][^>]*>填寫導航者申請表<\\/a>`, 'i'));
-  assert.doesNotMatch(html, new RegExp(lineUrl));
+});
+
+test('presents navigator development as continuous growth without publishing a curriculum', async () => {
+  const html = await readPage('navigator.html');
+  const growth = html.match(/<section\b[^>]*class=["'][^"']*\bnavigator-growth\b[^"']*["'][\s\S]*?<\/section>/i)?.[0] ?? '';
+  for (const phrase of [
+    '持續成長',
+    '看懂星盤，只是導航者的起點',
+    '要陪伴更多家庭，導航者需要在每一次實踐中持續學習、持續修正，也持續成長。',
+  ]) assert.ok(growth.includes(phrase), `${phrase} must appear in navigator growth`);
+  assert.doesNotMatch(html, /\bcapability-grid\b/i);
+  assert.doesNotMatch(growth, /<li\b|01|02|03|能力地圖|課綱/i);
 });
 
 test('defines 領航者 and 導航者 without unsupported professional claims', async () => {

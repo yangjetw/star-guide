@@ -197,7 +197,7 @@ test('supports tablet and phone layouts without clipped copy or fixed controls',
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.fact-list\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.pricing-grid\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.role-cards\s*\{[^}]*grid-template-columns:\s*1fr/is);
-  for (const page of pages) assert.doesNotMatch(page, /\bclass=["'][^"']*\bnav-line\b/i);
+  for (const page of pages) assert.match(page, /<a\b[^>]*class="nav-line"[^>]*>官方 LINE<\/a>/i);
   assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/is);
   assert.match(css, /\.table-wrap\s*\{[^}]*overflow-x:\s*auto/is);
   assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/is);
@@ -205,7 +205,7 @@ test('supports tablet and phone layouts without clipped copy or fixed controls',
   assert.doesNotMatch(css, /font-size:\s*(?:1[0-5]|[0-9])px/i);
 });
 
-test('keeps all four routes visible in a balanced two-row mobile navigation grid', async () => {
+test('keeps all five routes visible in the exact two-row mobile navigation grid', async () => {
   const [css, ...pages] = await Promise.all([
     read('styles.css'),
     ...['index.html', 'gift.html', 'navigator.html', 'refund.html'].map(read),
@@ -216,22 +216,31 @@ test('keeps all four routes visible in a balanced two-row mobile navigation grid
     /\.site-nav\s*\{(?=[^}]*display:\s*grid)(?=[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\))[^}]*\}/is,
   );
   assert.match(mobile, /\.site-nav a\s*\{(?=[^}]*min-width:\s*0)(?=[^}]*min-height:\s*44px)[^}]*\}/is);
-  assert.match(mobile, /\.site-nav a:first-child\s*\{(?=[^}]*grid-column:\s*1\s*\/\s*-1)(?=[^}]*grid-row:\s*1)[^}]*\}/is);
+  assert.match(mobile, /\.site-nav a:first-child\s*\{(?=[^}]*grid-column:\s*1\s*\/\s*3)(?=[^}]*grid-row:\s*1)[^}]*\}/is);
   for (const [child, column] of [[2, 1], [3, 2], [4, 3]]) {
     assert.match(
       mobile,
       new RegExp(`\\.site-nav a:nth-child\\(${child}\\)\\s*\\{(?=[^}]*grid-column:\\s*${column})(?=[^}]*grid-row:\\s*2)[^}]*\\}`, 'is'),
     );
   }
-  assert.doesNotMatch(mobile, /\.site-nav \.nav-line\s*\{/is);
+  assert.match(mobile, /\.site-nav \.nav-line\s*\{(?=[^}]*grid-column:\s*3)(?=[^}]*grid-row:\s*1)[^}]*\}/is);
   assert.doesNotMatch(mobile, /\.site-nav [^{]*\{[^}]*display:\s*none/is);
   for (const [index, page] of pages.entries()) {
     const nav = page.match(/<nav\b[\s\S]*?<\/nav>/i)?.[0] ?? '';
-    for (const href of ['index.html', 'gift.html', 'navigator.html', 'refund.html']) {
+    for (const href of ['index.html', 'gift.html', 'navigator.html', 'refund.html', 'https://lin.ee/gMMpzNy']) {
       assert.match(nav, new RegExp(`href=["']${href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`, 'i'), `page ${index + 1} needs ${href}`);
     }
-    assert.doesNotMatch(nav, /https:\/\/lin\.ee\//i);
   }
+});
+
+test('presents navigator growth as a focused editorial statement', async () => {
+  const css = await read('styles.css');
+  assert.match(
+    css,
+    /\.navigator-growth\s*\{(?=[^}]*width:\s*100%)(?=[^}]*background:)(?=[^}]*text-align:\s*center)[^}]*\}/is,
+  );
+  assert.match(css, /\.navigator-growth \.content-copy\s*\{[^}]*max-width:\s*760px[^}]*margin-inline:\s*auto/is);
+  assert.match(css, /\.navigator-growth \.content-copy > p:last-child\s*\{[^}]*font-size:\s*clamp\(20px,[^}]*24px\)/is);
 });
 
 test('stacks the navigator role comparison at the mobile breakpoint', async () => {
