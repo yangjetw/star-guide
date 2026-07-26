@@ -39,7 +39,7 @@ test('publishes the approved gift prices and approval-safe calls to action', asy
     .filter((anchor) => anchor.replace(/<[^>]+>/g, '').includes('\u6d3d\u8a62\u8cfc\u8cb7'));
   assert.equal(inquiryCtas.length >= 3, true);
   for (const anchor of inquiryCtas) assert.match(anchor, /href=["']https:\/\/lin\.ee\/gMMpzNy["']/i);
-  assert.doesNotMatch(html, /\u4ee3\u6536|\u8f49\u5e33\u7e73\u8cbb|LINE Bank|\u865b\u64ec\u5e33\u865f/i);
+  assert.doesNotMatch(html, /\u532f\u6b3e|\u7acb\u5373\u4ed8\u6b3e|\u8857\u53e3\u4ed8\u6b3e|\u4ee3\u6536|\u8f49\u5e33\u7e73\u8cbb|LINE Bank|\u865b\u64ec\u5e33\u865f/i);
 });
 
 test('presents the public gift-card brand and complete delivery contents', async () => {
