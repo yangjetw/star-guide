@@ -115,6 +115,16 @@ test('styles role cards as a warm brand system rather than sales tiles', async (
   assert.doesNotMatch(css, /\.role-cards article\s*\{[^}]*transform:\s*scale/is);
 });
 
+test('gives homepage role links accessible text-link targets without sales-button effects', async () => {
+  const css = await read('styles.css');
+  const roleLinkRule = css.match(/\.role-cards article > a\s*\{[^}]*\}/is)?.[0] ?? '';
+  assert.match(roleLinkRule, /display:\s*inline-flex/i);
+  assert.match(roleLinkRule, /align-items:\s*center/i);
+  assert.match(roleLinkRule, /min-height:\s*44px/i);
+  assert.match(roleLinkRule, /padding-block:\s*10px/i);
+  assert.doesNotMatch(roleLinkRule, /background:|border-radius:|transform:\s*scale/i);
+});
+
 test('builds a cinematic starry hero with a readable overlay', async () => {
   const css = await read('styles.css');
   assert.match(css, /\.hero-section\s*\{[^}]*min-height:\s*min\(860px,\s*calc\(100svh/is);
@@ -179,15 +189,40 @@ test('supports tablet and phone layouts without clipped copy or fixed controls',
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.fact-list\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.pricing-grid\s*\{[^}]*grid-template-columns:\s*1fr/is);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.role-cards\s*\{[^}]*grid-template-columns:\s*1fr/is);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav a:first-child\s*\{[^}]*font-size:\s*clamp\(16px,[^;]+17px\)/is);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav a:not\(:first-child\):not\(\.nav-line\)\s*\{[^}]*display:\s*none/is);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-nav \.nav-line\s*\{[^}]*padding-inline:\s*12px/is);
   for (const page of pages) assert.match(page, /<a\b[^>]*class="nav-line"[^>]*>官方 LINE<\/a>/i);
   assert.match(css, /\.button\s*\{[^}]*min-height:\s*52px/is);
   assert.match(css, /\.table-wrap\s*\{[^}]*overflow-x:\s*auto/is);
   assert.doesNotMatch(css, /position:\s*fixed[^}]*bottom:/is);
   assert.match(css, /body\s*\{[^}]*overflow-x:\s*(?:clip|hidden)/is);
   assert.doesNotMatch(css, /font-size:\s*(?:1[0-5]|[0-9])px/i);
+});
+
+test('keeps all five routes visible in the exact two-row mobile navigation grid', async () => {
+  const [css, ...pages] = await Promise.all([
+    read('styles.css'),
+    ...['index.html', 'gift.html', 'navigator.html', 'refund.html'].map(read),
+  ]);
+  const mobile = css.match(/@media\s*\(max-width:\s*768px\)\s*\{[\s\S]*?(?=\n@media|\s*$)/i)?.[0] ?? '';
+  assert.match(
+    mobile,
+    /\.site-nav\s*\{(?=[^}]*display:\s*grid)(?=[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\))[^}]*\}/is,
+  );
+  assert.match(mobile, /\.site-nav a\s*\{(?=[^}]*min-width:\s*0)(?=[^}]*min-height:\s*44px)[^}]*\}/is);
+  assert.match(mobile, /\.site-nav a:first-child\s*\{(?=[^}]*grid-column:\s*1\s*\/\s*3)(?=[^}]*grid-row:\s*1)[^}]*\}/is);
+  for (const [child, column] of [[2, 1], [3, 2], [4, 3]]) {
+    assert.match(
+      mobile,
+      new RegExp(`\\.site-nav a:nth-child\\(${child}\\)\\s*\\{(?=[^}]*grid-column:\\s*${column})(?=[^}]*grid-row:\\s*2)[^}]*\\}`, 'is'),
+    );
+  }
+  assert.match(mobile, /\.site-nav \.nav-line\s*\{(?=[^}]*grid-column:\s*3)(?=[^}]*grid-row:\s*1)[^}]*\}/is);
+  assert.doesNotMatch(mobile, /\.site-nav [^{]*\{[^}]*display:\s*none/is);
+  for (const [index, page] of pages.entries()) {
+    const nav = page.match(/<nav\b[\s\S]*?<\/nav>/i)?.[0] ?? '';
+    for (const href of ['index.html', 'gift.html', 'navigator.html', 'refund.html', 'https://lin.ee/gMMpzNy']) {
+      assert.match(nav, new RegExp(`href=["']${href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`, 'i'), `page ${index + 1} needs ${href}`);
+    }
+  }
 });
 
 test('stacks the navigator role comparison at the mobile breakpoint', async () => {
@@ -198,7 +233,7 @@ test('stacks the navigator role comparison at the mobile breakpoint', async () =
   );
 });
 
-test('keeps safe-area padding from doubling the homepage section-shell gutter', async () => {
+test('keeps independent safe-area padding without doubling the homepage section-shell gutter', async () => {
   const css = await read('styles.css');
   assert.doesNotMatch(
     css,
@@ -206,7 +241,7 @@ test('keeps safe-area padding from doubling the homepage section-shell gutter', 
   );
   assert.match(
     css,
-    /@media\s*\(max-width:\s*768px\)[\s\S]*?\.content-section\s*\{[^}]*padding-inline:\s*max\(20px,\s*env\(safe-area-inset-left\)\)/is,
+    /@media\s*\(max-width:\s*768px\)[\s\S]*?\.content-section\s*\{(?=[^}]*padding-left:\s*max\(20px,\s*env\(safe-area-inset-left\)\))(?=[^}]*padding-right:\s*max\(20px,\s*env\(safe-area-inset-right\)\))[^}]*\}/is,
   );
 });
 

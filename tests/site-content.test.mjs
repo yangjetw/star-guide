@@ -173,7 +173,7 @@ const expectedSectionText = {
     '可使用暱稱，完成個人化內容',
     '父母資料',
     '選填，用於更完整的關係互動分析',
-    '資料僅用於本次內容客製化。應用範圍不涉及個人識別，敬請安心。',
+    '提供的資料會用於確認申請、製作與交付本次客製指南；可識別資料依《安心購買與服務說明》所載期限保存與刪除。另行參與回饋或研究，會以獨立說明與同意程序辦理。',
   ],
   deliverables: [
     '你將得到什麼？',
@@ -320,6 +320,7 @@ const brandOperatorStatement = '赫爾墨斯的小宇宙，由星學會運營。
 
 test('keeps the guide primary and introduces the three roles only after product proof', async () => {
   const html = await read('index.html');
+  const roleJourney = section(html, 'role-journey');
   const guideStart = html.indexOf('《親子成長指南》');
   const testimonials = html.indexOf('家長們的真實心聲');
   const roles = html.indexOf('三種方式，讓理解繼續發生');
@@ -328,8 +329,22 @@ test('keeps the guide primary and introduces the three roles only after product 
     '點星者',
     '領航者',
     '導航者',
-    brandOperatorStatement,
-  ]) assert.ok(html.includes(phrase), `${phrase} must appear in the role journey`);
+  ]) assert.ok(roleJourney.includes(phrase), `${phrase} must appear in #role-journey`);
+  assert.ok(html.includes(brandOperatorStatement), 'the homepage needs the exact operator statement');
+});
+
+test('uses current customer-facing metadata for navigator and assurance routes', async () => {
+  const [navigator, refund] = await Promise.all([read('navigator.html'), read('refund.html')]);
+  assert.match(navigator, /<title>導航者計畫｜赫爾墨斯的小宇宙<\/title>/i);
+  assert.match(
+    navigator,
+    /<meta\s+name=["']description["']\s+content=["']認識導航者計畫：給願意陪伴家庭的大人，學習以方法、能力與責任協助多個家庭理解孩子。["']/i,
+  );
+  assert.match(refund, /<title>安心購買與服務說明｜赫爾墨斯的小宇宙<\/title>/i);
+  assert.match(
+    refund,
+    /<meta\s+name=["']description["']\s+content=["']安心了解親子成長指南的購買、製作、交付、可識別資料保存與刪除，以及聯絡與狀態處理方式。["']/i,
+  );
 });
 
 test('reproduces the original Gamma story in order', async () => {

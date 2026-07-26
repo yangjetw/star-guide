@@ -54,7 +54,14 @@ test('preserves the Task 1 semantic landmarks and Gamma section flow', async () 
 test('marks the current route in shared navigation', async () => {
   for (const page of pages) {
     const html = await readPage(page);
-    assert.equal((html.match(/\baria-current=["']page["']/gi) ?? []).length, 1, `${page} needs one current-page marker`);
+    const nav = html.match(/<nav\b[\s\S]*?<\/nav>/i)?.[0] ?? '';
+    const currentAnchors = nav.match(/<a\b[^>]*\baria-current=["']page["'][^>]*>/gi) ?? [];
+    assert.equal(currentAnchors.length, 1, `${page} needs one current-page marker in its navigation`);
+    assert.equal(
+      currentAnchors[0].match(/\bhref=["']([^"']+)["']/i)?.[1],
+      page,
+      `${page} must mark its own route as current`,
+    );
     const footer = html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? '';
     assert.ok(visibleText(footer).includes(brandOperatorStatement), `${page} needs the exact operator statement`);
   }
