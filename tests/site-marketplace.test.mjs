@@ -12,11 +12,18 @@ const sellerFacts = ['星學會有限公司', '69708677', 'astrokidsguide@gmail.
 const readPage = (name) => readFile(new URL(name, root), 'utf8');
 const anchors = (html) => html.match(/<a\b[^>]*>[\s\S]*?<\/a>/gi) ?? [];
 const forbiddenPublicOperations = [
-  /\bSTAR-/i,
-  /\bGIFT-/i,
+  /\bSTAR-/,
+  /\bGIFT-/,
   /品牌主動贈送|品牌贈送|朋友試用|朋友體驗/,
   /同一份兌換流程|共用兌換流程|兌換碼前綴|代碼示例/,
 ];
+
+test('treats only uppercase internal code prefixes as forbidden', () => {
+  assert.doesNotMatch('gift-hero', forbiddenPublicOperations[1]);
+  assert.match('GIFT-2026-001', forbiddenPublicOperations[1]);
+  assert.doesNotMatch('star-guide', forbiddenPublicOperations[0]);
+  assert.match('STAR-2026-001', forbiddenPublicOperations[0]);
+});
 
 test('publishes four semantic pages with consistent seller disclosure', async () => {
   for (const page of pages) {
@@ -65,20 +72,19 @@ test('presents the purchaser as a 點星者 and explains the recipient journey',
     '取得專屬的客製指南',
   ]) assert.ok(html.includes(phrase), `${phrase} must be disclosed`);
 });
-test('explains code security, recipient data use, support, and paper invoice handling', async () => {
+test('explains purchase, delivery, privacy, paper invoices, and support without internal operations', async () => {
   const html = await readPage('refund.html');
   for (const phrase of [
-    '兌換碼沒有使用期限',
-    '兌換碼不可公開',
-    '不可重複使用',
-    '客製 PDF 指南製作與交付',
-    '姓名、Email、孩子出生資料',
-    'astrokidsguide@gmail.com',
+    '星學會有限公司',
     '目前開立紙本統一發票',
-    '票券服務審核完成後，將依核准內容調整',
-  ]) {
-    assert.ok(html.includes(phrase), `${phrase} must be disclosed`);
-  }
+    '客製 PDF 指南製作與交付',
+    '孩子的出生資料',
+    '購買前',
+    '開始製作後',
+    'astrokidsguide@gmail.com',
+    '官方 LINE',
+  ]) assert.ok(html.includes(phrase), `${phrase} must be disclosed`);
+  for (const pattern of forbiddenPublicOperations) assert.doesNotMatch(html, pattern);
 });
 
 test('uses three local testimonial screenshots with approved trust copy', async () => {
