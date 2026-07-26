@@ -107,6 +107,20 @@ test('routes navigator applications directly to the approved public form', async
   assert.match(html, /填寫前有疑問？[\s\S]*?官方 LINE/i);
 });
 
+test('defines 領航者 and 導航者 without unsupported professional claims', async () => {
+  const html = await readPage('navigator.html');
+  for (const phrase of [
+    '領航者',
+    '引領自己家的孩子',
+    '導航者',
+    '協助多位領航者',
+    '陪伴一個孩子，需要理解；陪伴更多家庭，更需要方法、能力與責任。',
+    '不代替家長作決定',
+    '不為孩子貼標籤',
+  ]) assert.ok(html.includes(phrase), `${phrase} must be disclosed`);
+  assert.doesNotMatch(html, /保證就業|保證收入|專業執照|取得認證|官方認證/);
+});
+
 
 test('keeps internal fulfilment rules out of every public page', async () => {
   const corpus = (await Promise.all(pages.map(readPage))).join('\n');
