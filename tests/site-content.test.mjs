@@ -49,6 +49,24 @@ test('ships approved original imagery locally with stable metadata', async () =>
   assert.equal((html.match(/loading="lazy"/g) ?? []).length >= 6, true);
 });
 
+test('reserves image space and supplies responsive sizing hints', async () => {
+  const html = await read('index.html');
+  for (const image of html.match(/<img\b[^>]*>/gi) ?? []) {
+    assert.match(image, /\bwidth="\d+"/i);
+    assert.match(image, /\bheight="\d+"/i);
+  }
+  for (const asset of [
+    'concerns-family.webp',
+    'guide-parent-child.webp',
+    'process-wonder.webp',
+    'required-data-family.webp',
+    'deliverables-reading.webp',
+  ]) {
+    const tag = html.match(new RegExp(`<img\\b[^>]*src="assets/images/${asset}"[^>]*>`, 'i'))?.[0] ?? '';
+    assert.match(tag, /\bsizes="/i, `${asset} needs responsive sizes`);
+  }
+});
+
 test('includes the GitHub Pages publishing package', async () => {
   assert.ok(existsSync(new URL('.nojekyll', root)));
   assert.equal(await read('.nojekyll'), '');
@@ -155,7 +173,7 @@ const expectedSectionText = {
     '可使用暱稱，完成個人化內容',
     '父母資料',
     '選填，用於更完整的關係互動分析',
-    '資料僅用於本次內容客製化。應用範圍不涉及個人識別，敬請安心。',
+    '提供的資料會用於確認申請、製作與交付本次客製指南；可識別資料依《安心購買與服務說明》所載期限保存與刪除。另行參與回饋或研究，會以獨立說明與同意程序辦理。',
   ],
   deliverables: [
     '你將得到什麼？',
@@ -255,7 +273,7 @@ test('groups the story into one semantic brand journey without decorative chapte
   assert.match(main, /^<main\b[^>]*id="main-content"[^>]*>\s*<article\b[^>]*class="brand-story"/i);
   assert.match(main, /<\/article>\s*<\/main>$/i);
 
-  for (const id of ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'gift-bridge', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'closing']) {
+  for (const id of ['hero', 'concerns', 'unique-child', 'method', 'required-data', 'gift-bridge', 'deliverables', 'value-comparison', 'transformation', 'testimonials', 'role-journey', 'closing']) {
     assert.ok(section(main, id), `${id} should remain in the gift journey`);
   }
 
@@ -293,8 +311,40 @@ test('uses professional semantic content patterns and consistent static chrome',
     .match(new RegExp(`<${tag}\\b[\\s\\S]*?<\\/${tag}>`, 'i'))?.[0]
     .replace(/\s+/g, ' ')
     .trim();
-  assert.equal(new Set(publicPages.map((html) => extract(html, 'nav'))).size, 1);
+  const normalizedNav = (html) => extract(html, 'nav').replace(/\s+aria-current=["']page["']/gi, '');
+  assert.equal(new Set(publicPages.map(normalizedNav)).size, 1);
   assert.equal(new Set(publicPages.map((html) => extract(html, 'footer'))).size, 1);
+});
+
+const brandOperatorStatement = '赫爾墨斯的小宇宙，由星學會運營。';
+
+test('keeps the guide primary and introduces the three roles only after product proof', async () => {
+  const html = await read('index.html');
+  const roleJourney = section(html, 'role-journey');
+  const guideStart = html.indexOf('《親子成長指南》');
+  const testimonials = html.indexOf('家長們的真實心聲');
+  const roles = html.indexOf('三種方式，讓理解繼續發生');
+  assert.ok(guideStart >= 0 && testimonials > guideStart && roles > testimonials);
+  for (const phrase of [
+    '點星者',
+    '領航者',
+    '導航者',
+  ]) assert.ok(roleJourney.includes(phrase), `${phrase} must appear in #role-journey`);
+  assert.ok(html.includes(brandOperatorStatement), 'the homepage needs the exact operator statement');
+});
+
+test('uses current customer-facing metadata for navigator and assurance routes', async () => {
+  const [navigator, refund] = await Promise.all([read('navigator.html'), read('refund.html')]);
+  assert.match(navigator, /<title>導航者計畫｜赫爾墨斯的小宇宙<\/title>/i);
+  assert.match(
+    navigator,
+    /<meta\s+name=["']description["']\s+content=["']認識導航者計畫：給願意陪伴家庭的大人，學習以方法、能力與責任協助多個家庭理解孩子。["']/i,
+  );
+  assert.match(refund, /<title>安心購買與服務說明｜赫爾墨斯的小宇宙<\/title>/i);
+  assert.match(
+    refund,
+    /<meta\s+name=["']description["']\s+content=["']安心了解親子成長指南的購買、製作、交付、可識別資料保存與刪除，以及聯絡與狀態處理方式。["']/i,
+  );
 });
 
 test('reproduces the original Gamma story in order', async () => {
@@ -369,6 +419,6 @@ test('identifies comparison table column and row headers for assistive technolog
 test('retains the exact visible site chrome copy', async () => {
   const html = await read('index.html');
   assert.equal(visibleText(html.match(/<a\b[^>]*class="skip-link"[\s\S]*?<\/a>/i)?.[0] ?? ''), '跳到主要內容');
-  assert.equal(visibleText(html.match(/<header\b[\s\S]*?<\/header>/i)?.[0] ?? ''), '指南介紹 送一份祝福 導航者 購買與退款 官方 LINE');
-  assert.equal(visibleText(html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? ''), '赫爾墨斯的小宇宙 ｜星學會有限公司｜統一編號 69708677 astrokidsguide@gmail.com ｜官方 LINE ｜購買與退款政策');
+  assert.equal(visibleText(html.match(/<header\b[\s\S]*?<\/header>/i)?.[0] ?? ''), '指南介紹 送一份祝福 導航者 安心購買 官方 LINE');
+  assert.equal(visibleText(html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? ''), '赫爾墨斯的小宇宙 ，由星學會運營。 星學會有限公司｜統一編號 69708677 astrokidsguide@gmail.com ｜官方 LINE ｜安心購買與服務說明');
 });
