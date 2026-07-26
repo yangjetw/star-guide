@@ -801,6 +801,14 @@ tbody tr:last-child td {
     var(--color-ivory);
 }
 
+@media (min-width: 769px) {
+  .section-shell.role-journey {
+    width: 100%;
+    max-width: none;
+    padding-inline: clamp(36px, 7.5vw, 154px);
+  }
+}
+
 .section-heading {
   max-width: 48rem;
   margin: 0 auto 40px;

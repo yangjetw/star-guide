@@ -330,6 +330,7 @@ test('keeps the guide primary and introduces the three roles only after product 
     '領航者',
     '導航者',
   ]) assert.ok(roleJourney.includes(phrase), `${phrase} must appear in #role-journey`);
+  assert.doesNotMatch(roleJourney, /<p\b[^>]*class=["'][^"']*\beyebrow\b[^"']*["']/i);
   assert.ok(html.includes(brandOperatorStatement), 'the homepage needs the exact operator statement');
 });
 

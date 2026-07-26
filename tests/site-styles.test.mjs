@@ -115,6 +115,14 @@ test('styles role cards as a warm brand system rather than sales tiles', async (
   assert.doesNotMatch(css, /\.role-cards article\s*\{[^}]*transform:\s*scale/is);
 });
 
+test('extends the role journey background edge to edge without widening its content', async () => {
+  const css = await read('styles.css');
+  assert.match(
+    css,
+    /@media\s*\(min-width:\s*769px\)[\s\S]*?\.section-shell\.role-journey\s*\{(?=[^}]*width:\s*100%)(?=[^}]*max-width:\s*none)(?=[^}]*padding-inline:\s*clamp\(36px,\s*7\.5vw,\s*154px\))[^}]*\}/i,
+  );
+});
+
 test('gives homepage role links accessible text-link targets without sales-button effects', async () => {
   const css = await read('styles.css');
   const roleLinkRule = css.match(/\.role-cards article > a\s*\{[^}]*\}/is)?.[0] ?? '';
