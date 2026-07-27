@@ -339,7 +339,7 @@ test('uses current customer-facing metadata for navigator and assurance routes',
   assert.match(navigator, /<title>導航者計畫｜赫爾墨斯的小宇宙<\/title>/i);
   assert.match(
     navigator,
-    /<meta\s+name=["']description["']\s+content=["']認識導航者計畫：給願意陪伴家庭的大人，學習以方法、能力與責任協助多個家庭理解孩子。["']/i,
+    /<meta\s+name=["']description["']\s+content=["']從理解孩子開始，讓個人幸福、家庭幸福與社會和諧在日常關係中發生；加入導航者同行名單，一起學習、實踐並把理解帶進更多家庭。["']/i,
   );
   assert.match(refund, /<title>安心購買與服務說明｜赫爾墨斯的小宇宙<\/title>/i);
   assert.match(

@@ -133,36 +133,39 @@ test('uses three local testimonial screenshots with approved trust copy', async 
   assert.match(html, /<figure\b[^>]*>\s*<img\b[^>]*loading=["']lazy["'][^>]*width=["']\d+["'][^>]*height=["']\d+["']/i);
 });
 
-test('routes navigator applications directly to the approved public form', async () => {
+test('routes navigator interest directly to the approved public form', async () => {
   const html = await readPage('navigator.html');
   const formAnchor = anchors(html).find((anchor) => anchor.includes(navigatorFormUrl)) ?? '';
   assert.match(formAnchor, /\btarget=["']_blank["']/i);
   assert.match(formAnchor, /\brel=["'][^"']*\bnoopener\b[^"']*\bnoreferrer\b[^"']*["']/i);
-  assert.match(html, new RegExp(`<a\\b[^>]*class=["'][^"']*button-primary[^"']*["'][^>]*href=["']${navigatorFormUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["'][^>]*>填寫導航者申請表<\\/a>`, 'i'));
+  assert.match(html, new RegExp(`<a\\b[^>]*class=["'][^"']*button-primary[^"']*["'][^>]*href=["']${navigatorFormUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["'][^>]*>加入導航者同行名單<\\/a>`, 'i'));
 });
 
-test('presents navigator development as continuous growth without publishing a curriculum', async () => {
+test('presents the navigator page as a concise vision call without publishing a curriculum', async () => {
   const html = await readPage('navigator.html');
-  const growth = html.match(/<section\b[^>]*class=["'][^"']*\bnavigator-growth\b[^"']*["'][\s\S]*?<\/section>/i)?.[0] ?? '';
   for (const phrase of [
-    '持續成長',
-    '看懂星盤，只是導航者的起點',
-    '要陪伴更多家庭，導航者需要在每一次實踐中持續學習、持續修正，也持續成長。',
-  ]) assert.ok(growth.includes(phrase), `${phrase} must appear in navigator growth`);
+    '讓理解走進更多家庭',
+    '我們想改變的，不只是一段親子關係',
+    '身邊幾個重要的人，就是我們的全世界',
+    '社會便少一分暴戾，多一分安康與和諧',
+    '願景要成真，理解就必須被學習',
+    '先為自己的家庭而學',
+    '願意走得更遠',
+    '這條路還在形成，方向已經很清楚',
+    '加入導航者同行名單',
+  ]) assert.ok(html.includes(phrase), `${phrase} must appear on the navigator page`);
   assert.doesNotMatch(html, /\bcapability-grid\b/i);
-  assert.doesNotMatch(growth, /<li\b|01|02|03|能力地圖|課綱/i);
+  assert.doesNotMatch(html, /四階|NT\$|認證|收入|保證|填寫導航者申請表|申請了解導航者計畫/i);
 });
 
-test('defines 領航者 and 導航者 without unsupported professional claims', async () => {
+test('defines both learning paths and service boundaries without unsupported claims', async () => {
   const html = await readPage('navigator.html');
   for (const phrase of [
     '領航者',
-    '引領自己家的孩子',
     '導航者',
-    '協助多位領航者',
-    '陪伴一個孩子，需要理解；陪伴更多家庭，更需要方法、能力與責任。',
     '不代替家長作決定',
     '不為孩子貼標籤',
+    '不提供醫療、心理治療、發展篩檢或教育診斷',
   ]) assert.ok(html.includes(phrase), `${phrase} must be disclosed`);
   assert.doesNotMatch(html, /保證就業|保證收入|專業執照|取得認證|官方認證/);
 });
