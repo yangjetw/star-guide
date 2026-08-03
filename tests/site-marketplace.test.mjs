@@ -113,12 +113,17 @@ test('explains purchase, delivery, privacy, paper invoices, and support without 
     '星學會有限公司',
     '目前開立紙本統一發票',
     '客製 PDF 指南製作與交付',
-    '孩子的出生資料',
+    '可識別的申請與出生資料原則上保存至指南交付後 90 日，期滿刪除；依法應保存的訂單、付款與發票資料不在此限。',
     '購買前',
     '開始製作後',
     'astrokidsguide@gmail.com',
     '官方 LINE',
   ]) assert.ok(html.includes(phrase), `${phrase} must be disclosed`);
+  for (const phrase of [
+    '這些資料用於確認申請、製作內容、交付檔案與提供客服。',
+    '孩子的出生資料將僅用於確認申請、製作內容與交付指南。',
+    '指南交付後如另行邀請參與回饋或研究',
+  ]) assert.equal(html.includes(phrase), false, `${phrase} must be removed`);
   for (const pattern of forbiddenPublicOperations) assert.doesNotMatch(html, pattern);
 });
 
