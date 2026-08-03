@@ -110,6 +110,8 @@ test('presents the purchaser as a 點星者 and explains the recipient journey',
 test('explains purchase, delivery, privacy, paper invoices, and support without internal operations', async () => {
   const html = await readPage('refund.html');
   for (const phrase of [
+    '購買前說明',
+    '服務流程與資料保護原則',
     '星學會有限公司',
     '目前開立紙本統一發票',
     '客製 PDF 指南製作與交付',
@@ -120,10 +122,16 @@ test('explains purchase, delivery, privacy, paper invoices, and support without 
     '官方 LINE',
   ]) assert.ok(html.includes(phrase), `${phrase} must be disclosed`);
   for (const phrase of [
+    '購買前的清楚說明',
+    '從洽詢、資料確認到客製指南交付，我們以清楚的服務流程與資料保護原則，讓每一步都能安心進行。',
+    '若對方案、申請資料或指南交付有任何疑問',
     '這些資料用於確認申請、製作內容、交付檔案與提供客服。',
     '孩子的出生資料將僅用於確認申請、製作內容與交付指南。',
     '指南交付後如另行邀請參與回饋或研究',
   ]) assert.equal(html.includes(phrase), false, `${phrase} must be removed`);
+  const contactSection = html.match(/<section\b[^>]*class=["'][^"']*\bservice-contact\b[^"']*["'][\s\S]*?<\/section>/i)?.[0] ?? '';
+  assert.match(contactSection, /<h2\b[^>]*>需要協助時，請直接聯絡我們<\/h2>/i);
+  assert.doesNotMatch(contactSection, /<p\b/i);
   for (const pattern of forbiddenPublicOperations) assert.doesNotMatch(html, pattern);
 });
 
@@ -149,21 +157,30 @@ test('routes navigator interest directly to the approved public form', async () 
 test('presents the navigator page as a concise vision call without publishing a curriculum', async () => {
   const html = await readPage('navigator.html');
   for (const phrase of [
-    '讓理解走進更多家庭',
+    '領航者的獲利，來自幫助他人提高幸福能力',
     '我們想改變的，不只是一段親子關係',
+    '在重要的關係裡被理解，獲得的將是一生感受幸福與好好愛人的能力。',
     '身邊幾個重要的人，就是我們的全世界',
-    '社會便少一分暴戾，多一分安康與和諧',
+    '對平凡的我們而言，世界和平就是少一些誤解與傷害，多一些理解與修復，社會將更安康與和諧。',
+    '我們還不知道這條路最後會長成什麼模樣。但我們知道，理解值得被學習，也值得被帶進更多家庭。如果你也相信，邀請你留下同行意願。',
+    '加入導航者同行名單',
+  ]) assert.ok(html.includes(phrase), `${phrase} must appear on the navigator page`);
+  for (const phrase of [
+    '世界，從身邊開始',
+    '把願景變成日常',
     '願景要成真，理解就必須被學習',
     '先為自己的家庭而學',
     '願意走得更遠',
+    '一起把它做出來',
     '這條路還在形成，方向已經很清楚',
-    '加入導航者同行名單',
-  ]) assert.ok(html.includes(phrase), `${phrase} must appear on the navigator page`);
+    '我們以占星的象徵語言協助理解差異',
+  ]) assert.equal(html.includes(phrase), false, `${phrase} must be removed`);
+  assert.doesNotMatch(html, /\brole-contrast\b/i);
   assert.doesNotMatch(html, /\bcapability-grid\b/i);
   assert.doesNotMatch(html, /四階|NT\$|認證|收入|保證|填寫導航者申請表|申請了解導航者計畫/i);
 });
 
-test('defines both learning paths and service boundaries without unsupported claims', async () => {
+test('defines the navigator role and service boundaries without unsupported claims', async () => {
   const html = await readPage('navigator.html');
   for (const phrase of [
     '領航者',
